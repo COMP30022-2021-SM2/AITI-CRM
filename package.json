@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/COMP30022-2021-SM1/AITI-CRM#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.7"
   }
 }
