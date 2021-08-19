@@ -19,7 +19,7 @@ const addressSchema = new mongoose.Schema({
     addressLine2: String,
     postcode: { type: Number, required: true },
     suburb: { type: String, required: true },
-    state: { type: String, required: true}
+    state: { type: String, enum: ["ACT", "NSW", "NT", "QLD", "SA", "VIC", "TAS", "WA"], required: true}
 })
 
 const Customer = mongoose.model('Customer', customerSchema)
