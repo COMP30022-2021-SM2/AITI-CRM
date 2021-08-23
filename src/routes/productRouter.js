@@ -4,4 +4,6 @@ const productRouter = express.Router()
 
 productRouter.post('/add-product', productController.addProduct)
 
+productRouter.post('/edit/:tag', productController.updateProduct)
+
 module.exports = productRouter;

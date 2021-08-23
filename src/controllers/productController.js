@@ -14,4 +14,32 @@ const addProduct = async(req,res)=>{
     res.send(result)
 }
 
-module.exports = {addProduct}
+const updateProduct = async(req, res)=>{
+    const productTag = req.params.tag;
+    try{
+        let product = await Product.findOne({tag: productTag})
+        let productname = req.body.name;
+        let productDescription = req.body.description
+
+        if (productname){
+            await Product.updateOne({tag: productTag}, {$set: {name: productname}})
+        }
+        if (productDescription){
+            await Product.updateOne({ tag: productTag}, {$set: {description: productDescription}})
+        }
+        product = await Product.findOne({tag: productTag})
+        if (product){
+            console.log("Update product sucessfully")
+            res.send(product)
+        }else{
+            console.log("cannot find product")
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+    
+}
+
+module.exports = {addProduct, updateProduct}
