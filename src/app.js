@@ -1,4 +1,5 @@
 const express = require('express')
+const db = require('./db')
 
 // Define routers
 const loginRouter = require('./routes/loginRouter')
