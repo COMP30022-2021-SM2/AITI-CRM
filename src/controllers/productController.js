@@ -10,8 +10,8 @@ const addProduct = async(req,res)=>{
     })
 
     await newProduct.save()
-    result = await Product.find({tag: req.body.tag})
-    res.send(result)
+    .then( (result) => res.send(result))
+    .catch((err)=> res.send(err))
 }
 
 const updateProduct = async(req, res)=>{

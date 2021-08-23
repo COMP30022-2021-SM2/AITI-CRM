@@ -9,9 +9,11 @@ require('./db')
 
 // Define routers
 const userRouter = require('./routes/userRouter')
+const productRouter = require('./routes/productRouter')
 
 // Express configuration
 const app = express()
+app.use(express.json())
 
 app.use(cors({
     credentials: true, // add Access-Control-Allow-Credentials to header
@@ -51,7 +53,7 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/', userRouter) //for login signup etc
-
+app.use('/product', productRouter)
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
