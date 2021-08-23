@@ -3,6 +3,7 @@ const express = require('express')
 // Define routers
 const loginRouter = require('./routes/loginRouter')
 const signupRouter = require('./routes/signupRouter')
+const productRouter = require('./routes/productRouter')
 
 // Express configuration
 const app = express()
@@ -16,7 +17,7 @@ app.get('/', (req,res)=>{
 
 app.use('/login', loginRouter)
 app.use('/signup', signupRouter)
-
+app.use('/product', productRouter)
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
