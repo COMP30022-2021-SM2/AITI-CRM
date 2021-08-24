@@ -51,7 +51,10 @@ app.use(express.static('public'))
 /* --------------------------------------------------------------- */
 
 app.get('/', (req,res)=>{
-    res.send('Have you sold grape today:)')
+    if (req.isAuthenticated()) {
+        return res.send("Welcome to homepage: " + req.user.givenName + " " + req.user.familyName)
+    }
+    res.send('Welcome to homepage, but you have not logged in')
 })
 
 app.use('/', userRouter) //for login signup etc
