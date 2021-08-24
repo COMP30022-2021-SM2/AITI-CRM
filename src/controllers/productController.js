@@ -1,11 +1,11 @@
 const Product = require('../models/product')
 const mongoose = require('mongoose')
 
+// add product
 const addProduct = async(req,res)=>{
     const newProduct = new Product({
         tag: req.body.tag,
         name: req.body.name,
-        photo: req.body.photo,
         description: req.body.description
     })
 
@@ -14,20 +14,30 @@ const addProduct = async(req,res)=>{
     .catch((err)=> res.send(err))
 }
 
+// update product information
 const updateProduct = async(req, res)=>{
     const productTag = req.params.tag;
     try{
-        let product = await Product.findOne({tag: productTag})
+        let product = await Product.findOne({tag: req.params.tag})
         let productname = req.body.name;
         let productDescription = req.body.description
+        let productTag = req.body.tag
+        let productAvailable = req.body.available
 
+        if(productTag){
+            await Product.updateOne({tag: req.params.tag}, {$set: {tag: productTag}})
+        }
         if (productname){
-            await Product.updateOne({tag: productTag}, {$set: {name: productname}})
+            await Product.updateOne({tag: req.params.tag}, {$set: {name: productname}})
         }
         if (productDescription){
-            await Product.updateOne({ tag: productTag}, {$set: {description: productDescription}})
+            await Product.updateOne({ tag: req.params.tag}, {$set: {description: productDescription}})
         }
-        product = await Product.findOne({tag: productTag})
+        if (productAvailable){
+            await Product.updateOne({ tag: req.params.tag}, {$set: {available: productAvailable}})
+        }
+        
+        product = await Product.findOne({tag: req.params.tag})
         if (product){
             console.log("Update product sucessfully")
             res.send(product)
@@ -37,9 +47,29 @@ const updateProduct = async(req, res)=>{
     }
     catch (err) {
         console.log(err)
-    }
-
-    
+    } 
 }
 
-module.exports = {addProduct, updateProduct}
+// delete product 
+const deleteProduct = async(req, res)=>{
+    await Product.findOneAndDelete({tag: req.params.tag})
+    .then( (result) => res.send(result))
+    .catch((err)=> res.send(err))
+}
+
+// get product
+const getProduct = async(req, res)=>{
+    try {
+        // find the product
+        const product = await Product.find({ tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
+            // if product does not exist
+        if (food.length == 0) {
+            console.log("Product does not exist!")
+        }
+        res.send(product)
+    } catch (err) {
+        console.log("Database query 'menu' failed!")
+    }
+}
+
+module.exports = {addProduct, updateProduct, deleteProduct, getProduct}
