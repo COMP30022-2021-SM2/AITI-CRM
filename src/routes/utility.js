@@ -7,14 +7,14 @@ exports.isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
-    console.log('login first')
+    console.log('Login first')
     res.redirect('/login')
 }
 
 exports.isNotLoggedIn = function(req, res, next) {
     // if logged in then go to main page
     if (req.isAuthenticated()) {
-        console.log('already logged in')
+        console.log('Already logged in:', req.user.emailAddress)
         return res.redirect('/')
     }
     next()
