@@ -1,17 +1,18 @@
-const cors = require('cors')
-const dotenv = require('dotenv').config()
 const express = require('express')
 const flash = require('connect-flash-plus')
+const cors = require('cors')
 const passport = require('passport')
 const session = require('express-session')
 
-require('./db')
+require('dotenv').config()
+require('./db') // connect to database
 
 // Define routers
 const userRouter = require('./routes/userRouter')
 const productRouter = require('./routes/productRouter')
 
-// Express configuration
+/* ----------------------Express configuration----------------------- */
+
 const app = express()
 app.use(express.json())
 
@@ -27,7 +28,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000 * 30
+        maxAge: 1000 * 30   //30 days
     }
 }));
 
@@ -47,6 +48,7 @@ app.use(express.urlencoded({ extended: true }))
 // define where static assets live
 app.use(express.static('public'))
 
+/* --------------------------------------------------------------- */
 
 app.get('/', (req,res)=>{
     res.send('Have you sold grape today:)')
