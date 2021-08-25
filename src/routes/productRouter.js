@@ -7,4 +7,6 @@ productRouter.post('/add-product', utilities.isLoggedIn, productController.addPr
 
 productRouter.post('/edit/:tag', utilities.isLoggedIn, productController.updateProduct)
 
+productRouter.post('/delete-product/:tag', utilities.isLoggedIn, productController.deleteProduct)
+
 module.exports = productRouter;
