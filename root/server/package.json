@@ -1,5 +1,5 @@
 {
-  "name": "aiti-crm",
+  "name": "aiti-crm-server",
   "version": "1.0.0",
   "description": "IT project",
   "main": "app.js",
