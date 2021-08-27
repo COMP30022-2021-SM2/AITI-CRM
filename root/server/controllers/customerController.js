@@ -2,7 +2,7 @@ const Customer = require('../models/customer')
 const mongoose = require('mongoose')
 
 // Add new customer
-const addCustomer = async(req,res) => {
+const addCustomer = async(req, res) => {
     const newCustomer = new Customer({
         tag: req.body.tag,
         name: req.body.name,
@@ -17,7 +17,7 @@ const addCustomer = async(req,res) => {
         notes : req.body.notes
     })
 
-    await newCustomer.save((err, result) => {
+    await newCustomer.save((err) => {
         if (err) {
             console.log(err)
             return res.send(err)
