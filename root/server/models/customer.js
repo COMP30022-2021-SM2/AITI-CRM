@@ -3,8 +3,8 @@ const Order = require('order')
 
 // Customer model
 const customerSchema = new mongoose.Schema({
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
+    givenName: { type: String, require: true },
+    familyName: { type: String, require: true },
     emailAddress: { type: String, require: true, unique: true },
     phoneNumber: { type: Number, require: true, unique: true},
     companyName: { type: String, require: true },
