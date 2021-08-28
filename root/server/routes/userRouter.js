@@ -3,6 +3,7 @@ const passport = require('passport')
 const utilities = require('./utility')
 require('../config/passport')(passport)
 const userRouter = express.Router()
+const userController = require('../controllers/userController')
 
 // Login
 userRouter.get('/login',utilities.isNotLoggedIn, (req, res) => {
@@ -34,5 +35,13 @@ userRouter.post('/logout', function(req, res) {
     res.redirect('/login');
 });
 
+// render view profile page
+userRouter.get('/profile', utilities.isLoggedIn, (req, res) => userController.renderProfilePage(req, res,1))
+
+// handle get request to render edit profile page
+userRouter.get('/profile/update/:userid', utilities.isLoggedIn, (req, res) => userController.renderProfilePage(req, res,0))
+
+// edit profile
+userRouter.post('/profile/update/:userid', userController.updateProfile(req, res))
 
 module.exports = userRouter
