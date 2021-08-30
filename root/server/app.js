@@ -45,9 +45,6 @@ app.use(flash());
 // body of a POST request as  using JSON like syntax
 app.use(express.urlencoded({ extended: true }))
 
-// define where static assets live
-app.use(express.static('public'))
-
 /* --------------------------------------------------------------- */
 
 app.get('/', (req,res)=>{
