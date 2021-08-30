@@ -42,6 +42,6 @@ userRouter.get('/profile', utilities.isLoggedIn, (req, res) => userController.re
 userRouter.get('/profile/update/:userid', utilities.isLoggedIn, (req, res) => userController.renderProfilePage(req, res,0))
 
 // edit profile
-userRouter.post('/profile/update/:userid', userController.updateProfile(req, res))
+userRouter.post('/profile/update/:userid', userController.updateProfile)
 
 module.exports = userRouter
