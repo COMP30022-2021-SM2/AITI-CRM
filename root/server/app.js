@@ -10,7 +10,7 @@ require('./config/db') // connect to database
 // Define routers
 const userRouter = require('./routes/userRouter')
 const productRouter = require('./routes/productRouter')
-
+const testAPIRouter = require('./routes/testAPI')
 /* ----------------------Express configuration----------------------- */
 
 const app = express()
@@ -50,7 +50,7 @@ app.use(express.static('public'))
 
 /* --------------------------------------------------------------- */
 
-app.get('/', (req,res)=>{
+app.get('/', (req, res) => {
     if (req.isAuthenticated()) {
         return res.send("Welcome to homepage: " + req.user.givenName + " " + req.user.familyName)
     }
@@ -59,8 +59,9 @@ app.get('/', (req,res)=>{
 
 app.use('/', userRouter) //for login signup etc
 app.use('/product', productRouter)
+app.use('/testAPI', testAPIRouter)
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 app.listen(port, () => {
     console.log('Listening on port ' + port + '...')
 })
