@@ -58,7 +58,7 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/', userRouter) //for login signup etc
-app.use('/product', productRouter)
+app.use('/product', passport.authenticate('jwt', { session: false }), productRouter)
 
 const port = process.env.PORT || 5000
 app.listen(port, () => {

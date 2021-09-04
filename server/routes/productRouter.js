@@ -4,7 +4,7 @@ const passport = require('passport');
 const productController = require("../controllers/productController")
 const productRouter = express.Router()
 
-productRouter.get('/:tag', passport.authenticate('jwt', { session: false }), productController.getProduct)
+productRouter.get('/:tag', productController.getProduct)
 
 productRouter.post('/add-product', productController.addProduct)
 
