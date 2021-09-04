@@ -49,7 +49,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req,res)=>{
     if (req.isAuthenticated()) {
-        return res.send("Welcome to homepage: " + req.user.givenName + " " + req.user.familyName)
+        const fullName = { givenName: req.user.givenName, familyName: req.user.familyName }
+        return res.json(fullName)
     }
     res.send('Welcome to homepage, but you have not logged in')
 })
