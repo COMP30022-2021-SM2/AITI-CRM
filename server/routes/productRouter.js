@@ -1,12 +1,15 @@
 const express = require("express")
+require('jsonwebtoken');
+const passport = require('passport');
 const productController = require("../controllers/productController")
-const utilities = require('./utility')
 const productRouter = express.Router()
 
-productRouter.post('/add-product', utilities.isLoggedIn, productController.addProduct)
+productRouter.get('/:tag', passport.authenticate('jwt', { session: false }), productController.getProduct)
 
-productRouter.post('/edit/:tag', utilities.isLoggedIn, productController.updateProduct)
+productRouter.post('/add-product', productController.addProduct)
 
-productRouter.post('/delete-product/:tag', utilities.isLoggedIn, productController.deleteProduct)
+productRouter.post('/edit/:tag', productController.updateProduct)
+
+productRouter.post('/delete-product/:tag', productController.deleteProduct)
 
 module.exports = productRouter;

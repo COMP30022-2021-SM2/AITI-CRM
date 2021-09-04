@@ -3,6 +3,8 @@ const flash = require('connect-flash-plus')
 const cors = require('cors')
 const passport = require('passport')
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 require('dotenv').config()
 require('./config/db') // connect to database
@@ -15,16 +17,16 @@ const productRouter = require('./routes/productRouter')
 
 const app = express()
 app.use(express.json())
+app.use(cookieParser());
 
 app.use(cors({
     credentials: true, // add Access-Control-Allow-Credentials to header
-    origin: "http://localhost:3000"
+    origin: "http://localhost:5000"
 }));
 
 // setup a session store signing the contents using the secret key
 app.use(session({
-    //secret: process.env.SECRET,
-    secret: 'some secret',
+    secret: process.env.PASSPORT_KEY,
     resave: true,
     saveUninitialized: true,
     cookie: {
@@ -58,7 +60,7 @@ app.get('/', (req,res)=>{
 app.use('/', userRouter) //for login signup etc
 app.use('/product', productRouter)
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 app.listen(port, () => {
     console.log('Listening on port ' + port + '...')
 })

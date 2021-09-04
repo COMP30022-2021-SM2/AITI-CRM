@@ -1,21 +1,20 @@
 /*
 This file stores some helpful middleware functions :)
 */
-
-exports.isLoggedIn = function(req, res, next) {
-    // if logged in then next
-    if (req.isAuthenticated()) {
-        return next()
+exports.validatePassword = function(password) {
+    let regex = /\d/g;
+    let regex1 = /[A-Za-z]/g
+    if (password.length < 8) {
+        console.log("less")
+        return 0;
     }
-    console.log('Login first')
-    res.redirect('/login')
-}
-
-exports.isNotLoggedIn = function(req, res, next) {
-    // if logged in then go to main page
-    if (req.isAuthenticated()) {
-        console.log('Already logged in:', req.user.emailAddress)
-        return res.redirect('/')
+    if (!regex.test(password)) {
+        console.log("1");
+        return 0;
     }
-    next()
+    if (!regex1.test(password)) {
+        console.log("a");
+        return 0;
+    }
+    return 1;
 }

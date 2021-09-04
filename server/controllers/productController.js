@@ -63,12 +63,14 @@ const getProduct = async(req, res)=>{
         // find the product
         const product = await Product.find({ tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
             // if product does not exist
-        if (food.length == 0) {
+        if (product.length == 0) {
             console.log("Product does not exist!")
+            res.status(400).json({ msg: '"Product does not exist!' })
         }
         res.send(product)
     } catch (err) {
         console.log("Database query 'menu' failed!")
+        res.status(500).json({ msg: err })
     }
 }
 
