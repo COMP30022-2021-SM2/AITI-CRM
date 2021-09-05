@@ -58,7 +58,7 @@ const login = async(req, res, next) => {
             if(err) {
                 return res.status(500).json({ msg: err })
             } else if (!user) {
-                return res.status(500).json({ msg: 'No user found' })
+                return res.status(400).json({ msg: 'No user found' })
             }
 
             req.login(user, { session : false }, async (error) => {
