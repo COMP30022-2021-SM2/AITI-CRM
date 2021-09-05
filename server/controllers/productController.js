@@ -1,34 +1,38 @@
-const Product = require('../models/product')
-const mongoose = require('mongoose')
+const Product = require('../models/product');
+const mongoose = require('mongoose');
 
 // add product
-const addProduct = async(req,res)=>{
+const addProduct = async(req,res) => {
     const newProduct = new Product({
         tag: req.body.tag,
         name: req.body.name,
-        description: req.body.description
-    })
+        description: req.body.description,
+        available: req.body.available
+    });
 
-    await newProduct.save()
-    .then( (result) => res.send(result))
-    .catch((err)=> res.send(err))
+    await newProduct.save((err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ msg: err });
+        }
+        console.log("Product", newProduct.tag, "added successfully!");
+        return res.status(200).json(newProduct);
+    })
 }
 
 // update product information
 const updateProduct = async(req, res)=>{
-    const productTag = req.params.tag;
     try{
-        let product = await Product.findOne({tag: req.params.tag})
-        let productname = req.body.name;
-        let productDescription = req.body.description
+        let productName = req.body.name;
+        let productDescription = req.body.description;
         let productTag = req.body.tag
         let productAvailable = req.body.available
 
-        if(productTag){
+        if (productTag){
             await Product.updateOne({tag: req.params.tag}, {$set: {tag: productTag}})
         }
-        if (productname){
-            await Product.updateOne({tag: req.params.tag}, {$set: {name: productname}})
+        if (productName){
+            await Product.updateOne({tag: req.params.tag}, {$set: {name: productName}})
         }
         if (productDescription){
             await Product.updateOne({ tag: req.params.tag}, {$set: {description: productDescription}})
@@ -37,24 +41,27 @@ const updateProduct = async(req, res)=>{
             await Product.updateOne({ tag: req.params.tag}, {$set: {available: productAvailable}})
         }
         
-        product = await Product.findOne({tag: req.params.tag})
+        let product = await Product.findOne({tag: req.params.tag});
         if (product){
-            console.log("Update product sucessfully")
-            res.send(product)
+            console.log("Update product successfully")
+            return res.status(200).json(product);
         }else{
-            console.log("cannot find product")
+            console.log("could not find product")
+            return res.status(500).json({ msg: 'could not find product' })
         }
     }
     catch (err) {
         console.log(err)
+        return
     } 
 }
 
 // delete product 
 const deleteProduct = async(req, res)=>{
-    await Product.findOneAndDelete({tag: req.params.tag})
-    .then( (result) => res.send(result))
-    .catch((err)=> res.send(err))
+    let productTag = req.params.tag;
+    await Product.findOneAndDelete({ tag: productTag })
+    .then( (result) => res.status(200).send(result))
+    .catch((err)=> res.status(500).json({ msg: err }));
 }
 
 // get product
@@ -65,7 +72,7 @@ const getProduct = async(req, res)=>{
             // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
-            res.status(400).json({ msg: '"Product does not exist!' })
+            res.status(400).json({ msg: 'Product does not exist!' })
         }
         res.send(product)
     } catch (err) {
@@ -74,4 +81,4 @@ const getProduct = async(req, res)=>{
     }
 }
 
-module.exports = {addProduct, updateProduct, deleteProduct, getProduct}
+module.exports = { addProduct, updateProduct, deleteProduct, getProduct }
