@@ -20,10 +20,10 @@ userRouter.post('/logout', function(req, res) {
     res.status(200).json({ msg: 'Logout successfully' })
 });
 
-// render view profile page
+// Get user info
 userRouter.get('/profile', passport.authenticate('jwt', { session: false }), userController.getUserInfo)
 
-// edit profile
+// Edit profile
 userRouter.post('/profile/update/:userid', passport.authenticate('jwt', { session: false }),  userController.updateProfile)
 
 module.exports = userRouter
