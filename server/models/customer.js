@@ -1,5 +1,14 @@
-const mongoose = require("mongoose")
-const Order = require('order')
+const mongoose = require('mongoose')
+const Order = require('./order')
+
+const addressSchema = new mongoose.Schema({
+    _id: false,
+    addressLine1: { type: String, required: true },
+    addressLine2: String,
+    postcode: { type: Number, required: true },
+    suburb: { type: String, required: true },
+    state: { type: String, enum: ["ACT", "NSW", "NT", "QLD", "SA", "VIC", "TAS", "WA"], required: true}
+})
 
 // Customer model
 const customerSchema = new mongoose.Schema({
@@ -11,15 +20,6 @@ const customerSchema = new mongoose.Schema({
     address: { type: addressSchema, required: true },
     abn: { type: Number, require: true, unique: true },
     notes : String
-})
-
-const addressSchema = new mongoose.Schema({
-    _id: false,
-    addressLine1: { type: String, required: true },
-    addressLine2: String,
-    postcode: { type: Number, required: true },
-    suburb: { type: String, required: true },
-    state: { type: String, enum: ["ACT", "NSW", "NT", "QLD", "SA", "VIC", "TAS", "WA"], required: true}
 })
 
 const Customer = mongoose.model('Customer', customerSchema)
