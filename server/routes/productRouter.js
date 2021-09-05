@@ -8,8 +8,8 @@ productRouter.get('/:tag', productController.getProduct)
 
 productRouter.post('/add-product', productController.addProduct)
 
-productRouter.post('/edit/:tag', productController.updateProduct)
+productRouter.put('/edit/:tag', productController.updateProduct)
 
-productRouter.post('/delete-product/:tag', productController.deleteProduct)
+productRouter.delete('/delete-product/:tag', productController.deleteProduct)
 
 module.exports = productRouter;
