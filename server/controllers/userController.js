@@ -80,40 +80,44 @@ const login = async(req, res, next) => {
 
 const updateProfile = async(req, res) => {
 
-    const Userid = req.params.userid;
+    const userId = req.params.userid;
     try {
         let user = await User.findOne({ _id: userid })
-        let givenname = req.body.givenName;
-        let familyname = req.body.familyName;
-        let emailadress = req.body.emailAddress;
+        let givenName = req.body.givenName;
+        let familyName = req.body.familyName;
+        let emailAdress = req.body.emailAddress;
         let password = req.body.password;
 
         // udpate the information that User has changed
-        if (givenname){
-            await User.updateOne({ _id: Userid }, { $set: { givenName: givenname } })
+        if (givenName){
+            await User.updateOne({ _id: userId }, { $set: { givenName: givenname } })
         }
-        if (familyname){
-            await User.updateOne({ _id: Userid }, { $set: { familyName: familyname } })
+        if (familyName){
+            await User.updateOne({ _id: userId }, { $set: { familyName: familyname } })
         }
-        if (emailadress){
-            await User.updateOne({ _id: Userid }, { $set: { emailAddress: emailadress } })
+        if (emailAdress){
+            await User.updateOne({ _id: userId }, { $set: { emailAddress: emailadress } })
         }
         if (password){
-            await User.updateOne({ _id: Userid }, { $set: { password: User.generateHash(req.body.password) } })
+            if (!validatePassword(password)) {
+                  return res.status(400).json({ code: -1, msg: "Password must be longer than 8 characters!" });
+            }
+            await User.updateOne({ _id: userId }, { $set: { password: User.generateHash(req.body.password) } })
+    
         }
         
         // get User after updating
-        user = await User.findOne({ _id: Userid }, { givenName: true, familyName: true, emailAddress: true }).lean()
+        user = await User.findOne({ _id: userId }, { givenName: true, familyName: true, emailAddress: true }).lean()
 
         if (user) {
             console.log("update profile sucessfully")
-            res.send(user)
+            res.status(200).send(user)
         } else {
             console.log('User not found')
-            res.send("User not found")
+            res.status(409).send("User not found")
         }
     } catch (err) {
-        console.log(err)
+        res.status(500).json({msg:err})
     }
 }
 
