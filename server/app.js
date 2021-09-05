@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.use(cors({
     credentials: true, // add Access-Control-Allow-Credentials to header
-    origin: "http://localhost:5000"
+    origin: "http://localhost:3000"
 }));
 
 // setup a session store signing the contents using the secret key
