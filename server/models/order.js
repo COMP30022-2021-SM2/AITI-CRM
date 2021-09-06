@@ -9,6 +9,7 @@ const cartSchema = new mongoose.Schema({
 
 // Sales model
 const orderSchema = new mongoose.Schema({
+    userId: {type: mongoose.Types.ObjectId, required: true, ref: "User"},
     customerId: { type: mongoose.Types.ObjectId, required: true, ref: "Customer" },
     status: { type: String, enum: ["ongoing", "completed", "cancelled"] },
     details: { type: [cartSchema], required: true },
