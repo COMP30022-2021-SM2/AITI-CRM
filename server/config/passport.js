@@ -24,51 +24,43 @@ module.exports = function(passport) {
             done(err, user);
         });
     });
-
     // for signup
     passport.use('local-signup', new LocalStrategy({
             usernameField : 'emailAddress',
             passwordField : 'password',
-            passReqToCallback : true }, // pass the req as the first arg to the callback for verification
-
-        function(req, emailAddress, password, done) {
-            process.nextTick( function() {
-                User.findOne({'emailAddress': emailAddress}, function(err, existingUser) {
-                    // search a user by the username (email in our case)
-                    // if user is not found or exists, exit with false indicating
-                    // authentication failure
+            passReqToCallback : true
+        },async (req, email, password, done) => {
+            try {
+                User.findOne({'emailAddress': req.body.emailAddress}, function(err, existingUser) {
                     if (err) {
                         console.log(err);
                         return done(err);
                     }
                     if (existingUser) {
-                        console.log("Customer signup failed:", emailAddress, "ALREADY REGISTERED!");
-                        return done(null, false, req.flash('signupMessage', 'This email address is already taken.'));
+                        console.log("Customer signup failed:", req.body.emailAddress, "ALREADY REGISTERED!");
+                        return done(null, false, 'This email address is already taken.');
                     }
                     else {
-                        // otherwise
-                        // create a new user
+                        // otherwise create a new user
                         let newUser = new User();
-                        newUser.emailAddress = emailAddress;
+                        newUser.emailAddress = req.body.emailAddress;
                         newUser.password = newUser.generateHash(password);
                         newUser.familyName = req.body.familyName;
                         newUser.givenName = req.body.givenName;
 
                         // and save the user
                         newUser.save(function(err) {
-                            if (err)
-                                throw err;
+                            if (err) throw err;
                             return done(null, newUser);
                         });
-
-                        // put the user's email in the session so that it can now be used for all
-                        // communications between the client (browser) and the FoodBuddy app
-                        req.session.emailAddress = emailAddress;
-                        console.log('User signed up and logged in successfully:', emailAddress)
+                        console.log('User signed up and logged in successfully:', req.body.emailAddress)
                     }
                 });
-            });
-        }));
+            } catch (err) {
+                return done(err)
+            };
+        })
+    );
 
     // depending on what data you store in your token, setup a strategy
     // to verify that the token is valid. This strategy is used to check
@@ -113,12 +105,12 @@ module.exports = function(passport) {
                 // user is found but the password doesn't match
                 if (!user.validPassword(password)) {
                     console.log('WRONG PASSWORD:', emailAddress);
-                    return done(null, false, { message: 'Oops! Wrong password.' });
+                    return done(null, false, 'Oops! Wrong password.');
                 }
                 // everything is fine, provide user instance to passport
                 else {
                     console.log('LOGIN SUCCESSFULLY:', emailAddress)
-                    return done(null, user, {message: 'Login successful'});
+                    return done(null, user, 'Login successful');
                 }
             });
         } catch (error) {
