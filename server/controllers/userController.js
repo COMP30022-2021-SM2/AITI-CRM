@@ -54,7 +54,7 @@ const login = async(req, res, next) => {
                 const token = jwt.sign({ body },process.env.PASSPORT_KEY);
                 //Send back the token to the client
                 res.cookie('jwt', token, { httpOnly: false, sameSite: false, secure: true });
-                res.cookie('_id', user.id, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+                res.cookie('userId', user.id, { maxAge: 30 * 24 * 60 * 60 * 1000 });
                 const data = { _id: user.id };
                 return res.status(200).json({ data: data, token: token });
             });
