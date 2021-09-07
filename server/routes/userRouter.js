@@ -15,7 +15,8 @@ userRouter.post('/signup', userController.signup);
 // Logout
 userRouter.post('/logout', function(req, res) {
     // save the favourites
-    res.clearCookie('_id');
+    res.clearCookie('userId');
+    res.clearCookie('jwt');
     console.log('logout successfully')
     res.status(200).json({ msg: 'Logout successfully' })
 });

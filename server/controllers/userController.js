@@ -112,6 +112,9 @@ const getUserInfo = async(req, res) => {
     console.log('getUserInfo:', userId);
     try {
         let result = await User.findOne({ _id: userId }, { givenName: true, familyName: true, emailAddress: true }).lean();
+        if (!result){
+            return res.status(400).json({ msg: 'Login token expired' });
+        }
         return res.status(200).json(result);
     } catch (err) {
         console.log(err);
