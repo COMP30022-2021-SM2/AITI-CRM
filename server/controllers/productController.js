@@ -1,13 +1,17 @@
 const Product = require('../models/product');
+const User = require('../models/user')
+const ObjectId = require('mongoose').Types.ObjectId;
 const mongoose = require('mongoose');
 
 // add product
 const addProduct = async(req,res) => {
+    let userId = req.cookies['_id'];
     const newProduct = new Product({
         tag: req.body.tag,
         name: req.body.name,
         description: req.body.description,
-        available: req.body.available
+        available: req.body.available,
+        userId: userId
     });
 
     await newProduct.save((err) => {
@@ -65,7 +69,7 @@ const deleteProduct = async(req, res)=>{
 }
 
 // get product
-const getProduct = async(req, res)=>{
+const getOneProduct = async(req, res)=>{
     try {
         // find the product
         const product = await Product.find({ tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
@@ -81,4 +85,40 @@ const getProduct = async(req, res)=>{
     }
 }
 
-module.exports = { addProduct, updateProduct, deleteProduct, getProduct }
+const getAllProduct = async(req, res)=>{
+    let userId = req.cookies['_id']
+    userId = new ObjectId(userId)
+    try{
+        const products = await Product.find({userId: userId}, {}).lean()
+
+        if (products.length == 0){
+            return res.json("Please insert product first")
+        }
+
+        return res.status(200).json(products)
+    }catch (err) {
+        console.log("failed to get product to the database!")
+        return res.status(500).json({ msg: err });
+    }
+}
+
+    const getAvavilableProduct = async(req, res)=>{
+        let userId = req.cookies['_id']
+        userId = new ObjectId(userId)
+        try{
+            const availableProducts = await Product.find({userId: userId}, {available: "true"}).lean()
+    
+            if (availableProducts.length == 0){
+                return res.json("Please insert product first")
+            }
+    
+            return res.status(200).json(availableProducts)
+        }catch (err) {
+            console.log("failed to get available product to the database!")
+            return res.status(500).json({ msg: err });
+        }
+
+
+}
+
+module.exports = { addProduct, updateProduct, deleteProduct, getOneProduct, getAllProduct, getAvavilableProduct }
