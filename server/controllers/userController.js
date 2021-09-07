@@ -108,7 +108,7 @@ const updateProfile = async(req, res) => {
 }
 
 const getUserInfo = async(req, res) => {
-    let userId = req.cookies['_id'];
+    let userId = req.cookies['userId'];
     console.log('getUserInfo:', userId);
     try {
         let result = await User.findOne({ _id: userId }, { givenName: true, familyName: true, emailAddress: true }).lean();
