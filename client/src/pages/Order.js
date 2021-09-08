@@ -5,9 +5,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Button, Container, Stack, Typography } from '@material-ui/core';
 // components
 import Page from '../components/Page';
-import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../components/_dashboard/blog';
+import { OrderPostCard, OrderPostsSort, OrderPostsSearch } from '../components/_dashboard/order';
 //
-import POSTS from '../_mocks_/blog';
+import POSTS from '../_mocks_/order';
 
 // ----------------------------------------------------------------------
 
@@ -19,13 +19,13 @@ const SORT_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function Blog() {
+export default function Order() {
   return (
-    <Page title="Dashboard: Blog | Minimal-UI">
+    <Page title="Dashboard: Order | Minimal-UI">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Blog
+            Order
           </Typography>
           <Button
             variant="contained"
@@ -38,13 +38,13 @@ export default function Blog() {
         </Stack>
 
         <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-          <BlogPostsSearch posts={POSTS} />
-          <BlogPostsSort options={SORT_OPTIONS} />
+          <OrderPostsSearch posts={POSTS} />
+          <OrderPostsSort options={SORT_OPTIONS} />
         </Stack>
 
         <Grid container spacing={3}>
           {POSTS.map((post, index) => (
-            <BlogPostCard key={post.id} post={post} index={index} />
+            <OrderPostCard key={post.id} post={post} index={index} />
           ))}
         </Grid>
       </Container>

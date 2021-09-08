@@ -4,12 +4,12 @@ import { MenuItem, TextField } from '@material-ui/core';
 
 // ----------------------------------------------------------------------
 
-BlogPostsSort.propTypes = {
+OrderPostsSort.propTypes = {
   options: PropTypes.array,
   onSort: PropTypes.func
 };
 
-export default function BlogPostsSort({ options, onSort }) {
+export default function OrderPostsSort({ options, onSort }) {
   return (
     <TextField select size="small" value="latest" onChange={onSort}>
       {options.map((option) => (
