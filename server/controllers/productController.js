@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 // add product
 const addProduct = async(req,res) => {
-    let userId = req.cookies['_id'];
+    let userId = req.cookies['userId'];
     const newProduct = new Product({
         tag: req.body.tag,
         name: req.body.name,
@@ -86,7 +86,7 @@ const getOneProduct = async(req, res)=>{
 }
 
 const getAllProduct = async(req, res)=>{
-    let userId = req.cookies['_id']
+    let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try{
         const products = await Product.find({userId: userId}, {}).lean()
@@ -103,7 +103,7 @@ const getAllProduct = async(req, res)=>{
 }
 
     const getAvavilableProduct = async(req, res)=>{
-        let userId = req.cookies['_id']
+        let userId = req.cookies['userId'];
         userId = new ObjectId(userId)
         try{
             const availableProducts = await Product.find({userId: userId}, {available: "true"}).lean()
