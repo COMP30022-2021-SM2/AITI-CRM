@@ -13,7 +13,7 @@ import AccountPopover from './AccountPopover';
 
 // ----------------------------------------------------------------------
 
-const DRAWER_WIDTH = 280;
+const DRAWER_WIDTH = 200;
 const APPBAR_MOBILE = 64;
 const APPBAR_DESKTOP = 92;
 
@@ -52,7 +52,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         </MHidden>
 
         {/* <Searchbar /> */}
-        {/* <Box sx={{ flexGrow: 1 }} /> */}
+        <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           {/* <NotificationsPopover /> */}
