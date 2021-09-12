@@ -25,31 +25,34 @@ const addProduct = async(req,res) => {
 }
 
 // update product information
-const updateProduct = async(req, res)=>{
+const updateProduct = async(req, res) => { 
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
     try{
         let productName = req.body.name;
         let productDescription = req.body.description;
         let productTag = req.body.tag
         let productAvailable = req.body.available
 
-        if (productTag){
-            await Product.updateOne({tag: req.params.tag}, {$set: {tag: productTag}})
+        // update  fild that changed
+        if (productTag) {
+            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {tag: productTag}})
         }
-        if (productName){
-            await Product.updateOne({tag: req.params.tag}, {$set: {name: productName}})
+        if (productName) {
+            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {name: productName}})
         }
-        if (productDescription){
-            await Product.updateOne({ tag: req.params.tag}, {$set: {description: productDescription}})
+        if (productDescription) {
+            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {description: productDescription}})
         }
-        if (productAvailable){
-            await Product.updateOne({ tag: req.params.tag}, {$set: {available: productAvailable}})
+        if (productAvailable) {
+            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {available: productAvailable}})
         }
         
-        let product = await Product.findOne({tag: req.params.tag});
-        if (product){
+        let product = await Product.findOne({userId: userId, tag: req.params.tag});
+        if (product) {
             console.log("Update product successfully")
             return res.status(200).json(product);
-        }else{
+        } else {
             console.log("could not find product")
             return res.status(500).json({ msg: 'could not find product' })
         }
@@ -61,11 +64,13 @@ const updateProduct = async(req, res)=>{
 }
 
 // delete product 
-const deleteProduct = async(req, res)=>{
+const deleteProduct = async(req, res) => { 
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
     let productTag = req.params.tag;
-    await Product.findOneAndDelete({ tag: productTag })
-    .then( (result) => res.status(200).send(result))
-    .catch((err)=> res.status(500).json({ msg: err }));
+    await Product.findOneAndDelete({userId: userId, tag: productTag })
+    .then( (result) => res.status(200).send( result ))
+    .catch( (err) => res.status(500).json({ msg: err }));
 }
 
 // get product
@@ -85,13 +90,13 @@ const getOneProduct = async(req, res)=>{
     }
 }
 
-const getAllProduct = async(req, res)=>{
+const getAllProduct = async(req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try{
-        const products = await Product.find({userId: userId}, {}).lean()
+        const products = await Product.find({userId: userId}, '-_id').lean()
 
-        if (products.length == 0){
+        if (products.length == 0) {
             return res.json("Please insert product first")
         }
 
@@ -102,21 +107,21 @@ const getAllProduct = async(req, res)=>{
     }
 }
 
-    const getAvavilableProduct = async(req, res)=>{
-        let userId = req.cookies['userId'];
-        userId = new ObjectId(userId)
-        try{
-            const availableProducts = await Product.find({userId: userId}, {available: "true"}).lean()
-    
-            if (availableProducts.length == 0){
-                return res.json("Please insert product first")
-            }
-    
-            return res.status(200).json(availableProducts)
-        }catch (err) {
-            console.log("failed to get available product to the database!")
-            return res.status(500).json({ msg: err });
+const getAvavilableProduct = async (req, res) => {
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId)
+    try {
+        const availableProducts = await Product.find({ userId: userId }, { available: "true" }).lean()
+
+        if (availableProducts.length == 0) {
+            return res.json("No available product")
         }
+
+        return res.status(200).json(availableProducts)
+    } catch (err) {
+        console.log("failed to get available product to the database!")
+        return res.status(500).json({ msg: err });
+    }
 
 
 }
