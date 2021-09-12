@@ -3,6 +3,7 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const ObjectId = require('mongoose').Types.ObjectId;
 const { validatePassword } = require('../routes/utility')
 
 
@@ -65,7 +66,6 @@ const login = async(req, res, next) => {
 }
 
 const updateProfile = async(req, res) => {
-
     const userId = req.params.userId;
     try {
         let user = await User.findOne({ _id: userId })
@@ -93,7 +93,7 @@ const updateProfile = async(req, res) => {
         }
         
         // get User after updating
-        user = await User.findOne({ _id: userId }, { givenName: true, familyName: true, emailAddress: true }).lean()
+        user = await User.findOne({ _id: userId }, { _id: true, givenName: true, familyName: true, emailAddress: true }).lean()
 
         if (user) {
             console.log("update profile sucessfully")
@@ -108,10 +108,9 @@ const updateProfile = async(req, res) => {
 }
 
 const getUserInfo = async(req, res) => {
-    let userId = req.cookies['userId'];
-    console.log('getUserInfo:', userId);
+    let userId = new ObjectId(req.cookies['userId']);
     try {
-        let result = await User.findOne({ _id: userId }, { givenName: true, familyName: true, emailAddress: true }).lean();
+        let result = await User.findOne({ _id: userId }, { _id: false, givenName: true, familyName: true, emailAddress: true }).lean();
         if (!result){
             return res.status(400).json({ msg: 'Login token expired' });
         }
