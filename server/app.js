@@ -5,6 +5,7 @@ const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const { validateUserCookies } = require('./routes/utility')
 
 require('dotenv').config();
 require('./config/db'); // connect to database
@@ -51,8 +52,8 @@ app.use(express.urlencoded({ extended: true }));
 /* --------------------------------------------------------------- */
 
 app.use('/', userRouter); //for login signup etc
-app.use('/product', passport.authenticate('jwt', { session: false }), productRouter);
-app.use('/customer', passport.authenticate('jwt', { session: false }), customerRouter);
+app.use('/product', validateUserCookies, passport.authenticate('jwt', { session: false }), productRouter);
+app.use('/customer', validateUserCookies, passport.authenticate('jwt', { session: false }), customerRouter);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

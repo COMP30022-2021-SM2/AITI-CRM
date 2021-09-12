@@ -1,12 +1,10 @@
 const express = require("express");
-
 const jwt = require('jsonwebtoken');
-const { deserializeUser } = require('passport');
-
 const passport = require('passport')
 require('../config/passport')(passport)
 const userRouter = express.Router()
 const userController = require('../controllers/userController')
+const { validateUserCookies } = require('./utility')
 
 userRouter.post('/login', userController.login);
 
@@ -22,9 +20,9 @@ userRouter.post('/logout', function(req, res) {
 });
 
 // Get user info
-userRouter.get('/profile', passport.authenticate('jwt', { session: false }), userController.getUserInfo)
+userRouter.get('/profile', validateUserCookies, passport.authenticate('jwt', { session: false }), userController.getUserInfo)
 
 // Edit profile
-userRouter.put('/profile', passport.authenticate('jwt', { session: false }),  userController.updateProfile)
+userRouter.put('/profile', validateUserCookies, passport.authenticate('jwt', { session: false }),  userController.updateProfile)
 
 module.exports = userRouter

@@ -110,11 +110,8 @@ const updateProfile = async(req, res) => {
 const getUserInfo = async(req, res) => {
     let userId = new ObjectId(req.cookies['userId']);
     try {
-        let result = await User.findOne({ _id: userId }, { _id: false, givenName: true, familyName: true, emailAddress: true }).lean();
-        if (!result){
-            return res.status(400).json({ msg: 'Login token expired' });
-        }
-        return res.status(200).json(result);
+        let user = await User.findOne({ _id: userId }, { _id: false, givenName: true, familyName: true, emailAddress: true }).lean();
+        return res.status(200).json(user);
     } catch (err) {
         console.log(err);
         return res.status(500).json({ msg: err });

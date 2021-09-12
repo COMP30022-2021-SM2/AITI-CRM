@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const User = require('../models/user')
 const ObjectId = require('mongoose').Types.ObjectId;
 const mongoose = require('mongoose');
 
