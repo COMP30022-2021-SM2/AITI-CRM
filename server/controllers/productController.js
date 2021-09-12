@@ -28,6 +28,7 @@ const addProduct = async(req,res) => {
 const updateProduct = async(req, res) => { 
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId);
+    let productRequest = req.params.tag
     try{
         let productName = req.body.name;
         let productDescription = req.body.description;
@@ -36,19 +37,20 @@ const updateProduct = async(req, res) => {
 
         // update  fild that changed
         if (productTag) {
-            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {tag: productTag}})
+            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {tag: productTag}})
+            productRequest = productTag;
         }
         if (productName) {
-            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {name: productName}})
+            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {name: productName}})
         }
         if (productDescription) {
-            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {description: productDescription}})
+            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {description: productDescription}})
         }
         if (productAvailable) {
-            await Product.updateOne({userId: userId, tag: req.params.tag}, {$set: {available: productAvailable}})
+            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {available: productAvailable}})
         }
         
-        let product = await Product.findOne({userId: userId, tag: req.params.tag});
+        let product = await Product.findOne({userId: userId, tag: productRequest});
         if (product) {
             console.log("Update product successfully")
             return res.status(200).json(product);
@@ -59,7 +61,7 @@ const updateProduct = async(req, res) => {
     }
     catch (err) {
         console.log(err)
-        return
+        return res.status(500).json({ msg: err })
     } 
 }
 
@@ -69,7 +71,7 @@ const deleteProduct = async(req, res) => {
     userId = new ObjectId(userId);
     let productTag = req.params.tag;
     await Product.findOneAndDelete({userId: userId, tag: productTag })
-    .then( (result) => res.status(200).send( result ))
+    .then( (result) => res.status(200).json(result))
     .catch( (err) => res.status(500).json({ msg: err }));
 }
 
@@ -81,12 +83,12 @@ const getOneProduct = async(req, res)=>{
             // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
-            res.status(400).json({ msg: 'Product does not exist!' })
+            return res.status(400).json({ msg: 'Product does not exist!' })
         }
         res.send(product)
     } catch (err) {
         console.log("Database query 'menu' failed!")
-        res.status(500).json({ msg: err })
+        return res.status(500).json({ msg: err })
     }
 }
 
