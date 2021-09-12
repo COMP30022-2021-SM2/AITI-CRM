@@ -5,7 +5,8 @@ const mongoose = require('mongoose')
 const Product = require("../models/product")
 const Timestamp = mongoose.model('Timestamp')
 
-const addOrder = async(req, res)=>{
+// add new order
+const addOrder = async(req, res) => {
     let cart = req.body;
     let totalPrice = 0;
     // calculate total price
@@ -13,7 +14,7 @@ const addOrder = async(req, res)=>{
         totalPrice += cart[i]["price"]
     }
 
-    let userId = req.cookies['_id'];
+    let userId = req.cookies['userId'];
     let customerId = req.params.customerId;
     console.log('getUserInfo:', userId);
     console.log('getCustomerInfo:', customerId);
@@ -52,5 +53,53 @@ const addOrder = async(req, res)=>{
     })
 
 }
+
+// get orders under one user
+const getAllOrder = async(req, res) => {
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
+    try{
+        const orders = await Product.find({userId: userId}, {}).lean()
+
+        if (orders.length == 0){
+            return res.json("No orders")
+        }
+
+        return res.status(200).json(orders)
+    } catch (err) {
+        console.log("failed to get product to the database!")
+        return res.status(500).json({ msg: err });
+    }
+}
+
+// order relatd to particular customer
+const getCustomerOrder = async(req,res) => {
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
+    let customerId = req.params.customerId;
+    customerId = new ObjectId(customerId);
+    try {
+        const orders = await Product.find({userId: userId, customerId: customerId}, {}).populate("customerId", "-_id").lean()
+        if (orders.length == 0){
+            return res.json("No transaction with this customer ")
+        }
+
+        return res.status(200).json(orders)
+    } catch (err) {
+        console.log("failed to get product to the database!")
+        return res.status(500).json({ msg: err });
+    }
+}
+
+// update order
+// const updateOrder = async(req, res) => {
+//     let userId = req.cookies['userId'];
+//     userId = new ObjectId(userId);
+
+//     try{
+        
+//     }
+// }
+
 
 module.exports ={addOrder}
