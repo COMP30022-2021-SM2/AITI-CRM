@@ -6,12 +6,12 @@ const productRouter = express.Router()
 
 productRouter.get('/:tag', productController.getOneProduct)
 
-productRouter.post('/add-product', productController.addProduct)
+productRouter.post('', productController.addProduct)
 
-productRouter.put('/edit/:tag', productController.updateProduct)
+productRouter.put('/:tag', productController.updateProduct)
 
-productRouter.delete('/delete-product/:tag', productController.deleteProduct)
+productRouter.delete('/:tag', productController.deleteProduct)
 
-productRouter.get('/', productController.getAllProduct)
+productRouter.get('', productController.getAllProduct)
 
 module.exports = productRouter;
