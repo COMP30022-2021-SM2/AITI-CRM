@@ -25,6 +25,6 @@ userRouter.post('/logout', function(req, res) {
 userRouter.get('/profile', passport.authenticate('jwt', { session: false }), userController.getUserInfo)
 
 // Edit profile
-userRouter.post('/profile/update/:userid', passport.authenticate('jwt', { session: false }),  userController.updateProfile)
+userRouter.put('/profile', passport.authenticate('jwt', { session: false }),  userController.updateProfile)
 
 module.exports = userRouter
