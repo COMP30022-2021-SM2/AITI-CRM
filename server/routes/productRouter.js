@@ -4,14 +4,22 @@ const passport = require('passport');
 const productController = require("../controllers/productController")
 const productRouter = express.Router()
 
+// get particular product
 productRouter.get('/:tag', productController.getOneProduct)
 
+// add product
 productRouter.post('', productController.addProduct)
 
+// update product
 productRouter.put('/:tag', productController.updateProduct)
 
+// delete product
 productRouter.delete('/:tag', productController.deleteProduct)
 
+// get all product
 productRouter.get('', productController.getAllProduct)
+
+// get all available product 
+productRouter.get('available', productController.getAvavilableProduct)
 
 module.exports = productRouter;

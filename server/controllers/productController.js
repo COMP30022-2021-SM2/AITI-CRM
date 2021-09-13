@@ -74,7 +74,7 @@ const deleteProduct = async(req, res) => {
     .catch( (err) => res.status(500).json({ msg: err }));
 }
 
-// get product
+// get particular product
 const getOneProduct = async(req, res)=>{
     try {
         // find the product
@@ -91,6 +91,7 @@ const getOneProduct = async(req, res)=>{
     }
 }
 
+// get all product
 const getAllProduct = async(req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
@@ -108,6 +109,7 @@ const getAllProduct = async(req, res) => {
     }
 }
 
+// get all available product
 const getAvavilableProduct = async (req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
