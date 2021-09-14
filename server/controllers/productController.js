@@ -5,9 +5,11 @@ const mongoose = require('mongoose');
 // add product
 const addProduct = async(req,res) => {
     let userId = req.cookies['userId'];
+    let name = req.body.name;
+    let tag = name.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
     const newProduct = new Product({
-        tag: req.body.tag,
-        name: req.body.name,
+        tag: tag,
+        name: name,
         description: req.body.description,
         available: req.body.available,
         userId: userId
@@ -34,7 +36,7 @@ const updateProduct = async(req, res) => {
         let productTag = req.body.tag
         let productAvailable = req.body.available
 
-        // update  fild that changed
+        // update field that changed
         if (productTag) {
             await Product.updateOne({userId: userId, tag: productRequest}, {$set: {tag: productTag}})
             productRequest = productTag;
