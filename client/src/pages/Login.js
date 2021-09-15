@@ -9,7 +9,6 @@ import AuthLayout from '../layouts/AuthLayout';
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { LoginForm } from '../components/authentication/login';
-import AuthSocial from '../components/authentication/AuthSocial';
 
 // ----------------------------------------------------------------------
 
@@ -71,11 +70,11 @@ export default function Login() {
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
+              Sign in to AITI CRM :)
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
           </Stack>
-          <AuthSocial />
+          {/* <AuthSocial /> */}
 
           <LoginForm />
 

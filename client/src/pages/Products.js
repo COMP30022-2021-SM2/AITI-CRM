@@ -1,79 +1,96 @@
-import { useFormik } from 'formik';
+// import { useFormik } from 'formik';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 // material
-import { Container, Stack, Typography } from '@material-ui/core';
+import { Icon } from '@iconify/react';
+import plusFill from '@iconify/icons-eva/plus-fill';
+import { Link as RouterLink } from 'react-router-dom';
+import { Container, Stack, Typography, Button, TextField } from '@material-ui/core';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
 // components
 import Page from '../components/Page';
-import {
-  ProductSort,
-  ProductList,
-  ProductCartWidget,
-  ProductFilterSidebar
-} from '../components/_dashboard/products';
+import { ProductList } from '../components/_dashboard/products';
 //
 import PRODUCTS from '../_mocks_/products';
 
 // ----------------------------------------------------------------------
 
+function SimpleDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Add New Product</DialogTitle>
+      <DialogContent>
+        <DialogContentText> nter details of your new product delow. </DialogContentText>
+        <TextField autoFocus margin="dense" id="name" label="Product Name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product Price" type="text" fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
+
 export default function EcommerceShop() {
-  const [openFilter, setOpenFilter] = useState(false);
+  // const formik = useFormik({
+  //   initialValues: {
+  //     gender: '',
+  //     category: '',
+  //     colors: '',
+  //     priceRange: '',
+  //     rating: ''
+  //   }
+  // });
 
-  const formik = useFormik({
-    initialValues: {
-      gender: '',
-      category: '',
-      colors: '',
-      priceRange: '',
-      rating: ''
-    },
-    onSubmit: () => {
-      setOpenFilter(false);
-    }
-  });
+  const [open, setOpen] = useState(false);
 
-  const { resetForm, handleSubmit } = formik;
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
-
-  const handleResetFilter = () => {
-    handleSubmit();
-    resetForm();
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Products
-        </Typography>
-
-        <Stack
-          direction="row"
-          flexWrap="wrap-reverse"
-          alignItems="center"
-          justifyContent="flex-end"
-          sx={{ mb: 5 }}
-        >
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <ProductFilterSidebar
-              formik={formik}
-              isOpenFilter={openFilter}
-              onResetFilter={handleResetFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
-            <ProductSort />
-          </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Products
+          </Typography>
+          <Button
+            variant="contained"
+            component={RouterLink}
+            to="#"
+            startIcon={<Icon icon={plusFill} />}
+            onClick={handleClickOpen}
+          >
+            New Product
+          </Button>
+          <SimpleDialog open={open} onClose={handleClose} />
         </Stack>
-
         <ProductList products={PRODUCTS} />
-        <ProductCartWidget />
       </Container>
     </Page>
   );

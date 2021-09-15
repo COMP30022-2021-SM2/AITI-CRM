@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@material-ui/core/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@material-ui/core';
+import { Box, Drawer } from '@material-ui/core';
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
@@ -11,7 +11,6 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
@@ -24,13 +23,13 @@ const RootStyle = styled('div')(({ theme }) => ({
   }
 }));
 
-const AccountStyle = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(2, 2.5),
-  borderRadius: theme.shape.borderRadiusSm,
-  backgroundColor: '#D8C6E1'
-}));
+// const AccountStyle = styled('div')(({ theme }) => ({
+//   display: 'flex',
+//   alignItems: 'center',
+//   padding: theme.spacing(2, 2.5),
+//   borderRadius: theme.shape.borderRadiusSm,
+//   backgroundColor: '#D8C6E1'
+// }));
 
 // ----------------------------------------------------------------------
 

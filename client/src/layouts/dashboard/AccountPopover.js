@@ -1,12 +1,13 @@
-import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
-import homeFill from '@iconify/icons-eva/home-fill';
-import personFill from '@iconify/icons-eva/person-fill';
-import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 // material
 import { alpha } from '@material-ui/core/styles';
-import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '@material-ui/core';
+import { Button, Box, Divider, Typography, Avatar, IconButton, TextField } from '@material-ui/core';
 // components
 import MenuPopover from '../../components/MenuPopover';
 //
@@ -14,20 +15,37 @@ import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: homeFill,
-    linkTo: '/dashboard/app'
-  },
-  {
-    label: 'Profile',
-    icon: personFill,
-    linkTo: '#'
-  }
-];
+function SimpleDialog(props) {
+  const { open, onClose } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
 
-// ----------------------------------------------------------------------
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Update personal information</DialogTitle>
+      <DialogContent>
+        <DialogContentText> Enter a new name and email below.</DialogContentText>
+        <TextField autoFocus margin="dense" id="name" label="First name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Last name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Email" type="email" fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
@@ -38,6 +56,16 @@ export default function AccountPopover() {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [openDialog, setDialogOpen] = useState(false);
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -82,34 +110,24 @@ export default function AccountPopover() {
 
         <Divider sx={{ my: 1 }} />
 
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem
-            key={option.label}
-            to={option.linkTo}
-            component={RouterLink}
-            onClick={handleClose}
-            sx={{ typography: 'body2', py: 1, px: 2.5 }}
-          >
-            <Box
-              component={Icon}
-              icon={option.icon}
-              sx={{
-                mr: 2,
-                width: 24,
-                height: 24
-              }}
-            />
-
-            {option.label}
-          </MenuItem>
-        ))}
-
         <Box sx={{ p: 2, pt: 1.5 }}>
+          <Button
+            fullWidth
+            color="inherit"
+            variant="outlined"
+            onClick={() => {
+              handleClose();
+              handleDialogOpen();
+            }}
+          >
+            Edit Profile
+          </Button>
           <Button fullWidth color="inherit" variant="outlined">
             Logout
           </Button>
         </Box>
       </MenuPopover>
+      <SimpleDialog open={openDialog} onClose={handleDialogClose} />
     </>
   );
 }
