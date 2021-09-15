@@ -78,9 +78,11 @@ const deleteProduct = async(req, res) => {
 
 // get particular product
 const getOneProduct = async(req, res)=>{
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
     try {
         // find the product
-        const product = await Product.find({ tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
+        const product = await Product.find({userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
             // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
