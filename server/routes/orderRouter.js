@@ -7,8 +7,11 @@ const orderRouter = express.Router()
 // get all order
 orderRouter.get('', orderController.getAllOrder)
 
-// get order of one customer
-orderRouter.get('/:emailAddress', orderController.getCustomerOrder)
+// get order by customer
+orderRouter.get('/customer/:emailAddress', orderController.getCustomerOrder)
+
+// get order by product
+orderRouter.get('/product/:productTag', orderController.getGrapeOrder)
 
 // add order
 orderRouter.post('/:emailAddress', orderController.addOrder)

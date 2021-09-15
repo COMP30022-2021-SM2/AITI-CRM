@@ -94,14 +94,24 @@ const getCustomerOrder = async(req,res) => {
 }
 
 // get order by graph types
-// const getGrapeOrder = async(req, res) => {
-//     let userId = req.cookies['userId'];
-//     userId = new ObjectId(userId);
-//     try{
-//         const orders = await Order.find({userId: userId, })
-        
-//     }
-// }
+const getGrapeOrder = async(req, res) => {
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
+    let productTag = req.params.productTag
+    try{
+        const orders = await Order.find({userId: userId, details: {$all: [
+            { "$elemMatch" : { name : productTag} }
+        ]}})
+        if (orders.length == 0){
+            return res.json("No transaction with this customer ")
+        }
+
+        return res.status(200).json(orders)
+    } catch (err) {
+        console.log("failed to get product to the database!")
+        return res.status(500).json({ msg: err });
+    }
+}
 
 // delete order
 const deleteOrder = async(req, res) => {
@@ -163,4 +173,4 @@ const updateOrderDetails = async(req, res) => {
 
 
 
-module.exports ={addOrder, getAllOrder, deleteOrder, getCustomerOrder, updateOrderStatus, updateOrderDetails}
+module.exports ={addOrder, getAllOrder, deleteOrder, getCustomerOrder, updateOrderStatus, updateOrderDetails, getGrapeOrder}
