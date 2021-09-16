@@ -52,7 +52,7 @@ export default function OrderPostsSearch({ posts }) {
         renderInput={(params) => (
           <TextField
             {...params}
-            placeholder="Search post..."
+            placeholder="Search order..."
             InputProps={{
               ...params.InputProps,
               startAdornment: (
