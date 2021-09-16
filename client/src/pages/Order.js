@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import { sentenceCase } from 'change-case';
 import { filter } from 'lodash';
 import {
@@ -41,7 +47,6 @@ import POSTS from '../_mocks_/order';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserMoreMenu } from '../components/_dashboard/user';
 //
 import USERLIST from '../_mocks_/user';
 
@@ -54,33 +59,6 @@ const SORT_OPTIONS = [
 ];
 
 // ----------------------------------------------------------------------
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
-  };
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: 'absolute',
-    width: 700,
-    backgroundColor: '#FFFEF3',
-    borderRadius: 20,
-    border: '0.2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
-}));
 
 // sorting table related functions
 const TABLE_HEAD = [
@@ -123,14 +101,43 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Order() {
-  const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+function SimpleDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
 
-  // modal related function
-  const handleOpen = () => {
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Adding a new order...</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Please enter the details of your new order below. </DialogContentText>
+        <TextField autoFocus margin="dense" id="name" label="Customer Name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Company" type="text" fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
+
+export default function Order() {
+  // const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
@@ -138,12 +145,12 @@ export default function Order() {
     setOpen(false);
   };
 
-  // input textbox related function
-  const [value, setValue] = React.useState('');
+  // // input textbox related function
+  // const [value, setValue] = React.useState('');
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setValue(event.target.value);
+  // };
 
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -204,51 +211,20 @@ export default function Order() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
-  // render the modal body
-  const body = (
-    <div style={modalStyle} className={classes.paper}>
-      <h2 style={{ marginTop: '5%' }}>Adding a new order</h2>
-      <p style={{ marginTop: '2%' }}>
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-      {/* <SimpleModal /> */}
-      <TextField style={{ marginTop: '3%' }} id="standard-name-input" label="customer name" />
-      <div> </div>
-      <TextField
-        style={{ marginTop: '3%' }}
-        id="standard-multiline-flexible"
-        label="Order Description"
-        multiline
-        maxRows={5}
-        value={value}
-        onChange={handleChange}
-      />
-
-      <Button style={{ marginLeft: '50%' }} color="primary" variant="contained">
-        submit
-      </Button>
-    </div>
-  );
-
   return (
     <Page title="Dashboard: Order">
       <Container>
-        <Stack direction="row" algnItems="center" justifyContent="space-between" mb={5}>
+        <Stack direction="row" algnItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h3">Order</Typography>
-          <Button variant="contained" onClick={handleOpen} startIcon={<Icon icon={plusFill} />}>
+          <Button
+            variant="contained"
+            onClick={handleClickOpen}
+            startIcon={<Icon icon={plusFill} />}
+          >
             New Order
           </Button>
         </Stack>
-        <div>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {body}
-          </Modal>
-        </div>
+        <SimpleDialog open={open} onClose={handleClose} />
 
         <Stack mb={5} direction="row" alignItems="right" justifyContent="space-between">
           {/* <OrderPostsSearch posts={POSTS} /> */}
@@ -317,7 +293,7 @@ export default function Order() {
                           </TableCell>
 
                           <TableCell align="right">
-                            <UserMoreMenu />
+                            <OrderMoreMenu />
                           </TableCell>
                         </TableRow>
                       );

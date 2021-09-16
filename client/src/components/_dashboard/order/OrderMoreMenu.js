@@ -1,53 +1,100 @@
 import { Icon } from '@iconify/react';
-import React, { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 // material
-import Modal from '@material-ui/core/Modal';
-import { makeStyles } from '@material-ui/styles';
-import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Container,
+  Stack,
+  Typography,
+  Button,
+  TextField
+} from '@material-ui/core';
+import ListItem from '@material-ui/core/ListItem';
 
 // ----------------------------------------------------------------------
 
-// modal function
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
+function SimpleDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
   };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Edit your order </DialogTitle>
+      <DialogContent>
+        <DialogContentText> Please modify the details of your order below...</DialogContentText>
+        <TextField autoFocus margin="dense" id="name" label="Customer Name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product Company" type="text" fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
-}));
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
+
+function DeleteDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Delete the Order </DialogTitle>
+      <DialogContent>
+        <DialogContentText> Are you sure you want to delete this order?</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          No
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Yes
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+DeleteDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
 
 export default function OrderMoreMenu() {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
@@ -55,14 +102,15 @@ export default function OrderMoreMenu() {
     setOpen(false);
   };
 
-  const body = (
-    <div style={modalStyle} className={classes.paper}>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-    </div>
-  );
+  const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteDialogOpen = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+  };
 
   return (
     <>
@@ -80,32 +128,29 @@ export default function OrderMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <ListItem
+          button="true"
+          onClick={() => {
+            handleClose();
+            handleDeleteDialogOpen();
+          }}
+          sx={{ color: 'text.secondary' }}
+        >
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
 
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
+          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+        </ListItem>
+        <DeleteDialog open={openDeleteDialog} onClose={handleDeleteDialogClose} />
+
+        <ListItem button="true" onClick={handleClickOpen} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-        <div>
-          <button type="button" onClick={handleOpen}>
-            Open Modal
-          </button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {body}
-          </Modal>
-        </div>
+        </ListItem>
+        <SimpleDialog open={open} onClose={handleClose} />
       </Menu>
     </>
   );
