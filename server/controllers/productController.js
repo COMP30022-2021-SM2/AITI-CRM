@@ -100,7 +100,7 @@ const getAllProduct = async(req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try{
-        const products = await Product.find({userId: userId}, '-_id').lean()
+        const products = await Product.find({userId: userId}, {_id: false, userId: false}).lean()
 
         if (products.length == 0) {
             return res.json("Please insert product first")

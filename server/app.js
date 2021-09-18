@@ -15,6 +15,7 @@ const userRouter = require('./routes/userRouter');
 const productRouter = require('./routes/productRouter');
 const customerRouter = require('./routes/customerRouter');
 const orderRouter = require('./routes/orderRouter');
+const scheduleRouter = require('./routes/scheduleRouter');
 
 /* ----------------------Express configuration----------------------- */
 
@@ -56,6 +57,8 @@ app.use('/', userRouter); //for login signup etc
 app.use('/product', validateUserCookies, passport.authenticate('jwt', { session: false }), productRouter);
 app.use('/customer', validateUserCookies, passport.authenticate('jwt', { session: false }), customerRouter);
 app.use('/order', validateUserCookies, passport.authenticate('jwt', { session: false }), orderRouter);
+app.use('/schedule', validateUserCookies, passport.authenticate('jwt', { session: false }), scheduleRouter);
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log('Listening on port ' + port + '...');
