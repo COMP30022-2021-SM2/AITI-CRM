@@ -94,4 +94,23 @@ const updateScheduleDetails = async(req, res) => {
     } 
 }
 
-module.exports = {addSchedule, updateScheduleDetails, updateScheduleStatus}
+// get all schedule
+const getAllSchedule = async(req, res) => {
+    let userId = req.cookies['userId'];
+    userId = new ObjectId(userId);
+
+    try{
+        const schedules = await Schedule.find({userId: userId}, {_id: false, userId: false}).populate("customerId", "-_id").lean()
+
+        if (schedules.length == 0) {
+            return res.json("No schedule")
+        }
+
+        return res.status(200).json(schedules)
+    }catch (err) {
+        console.log("failed to get schedule to the database!")
+        return res.status(500).json({ msg: err });
+    }
+}
+
+module.exports = {addSchedule, updateScheduleDetails, updateScheduleStatus, getAllSchedule}

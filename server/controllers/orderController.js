@@ -61,7 +61,7 @@ const getAllOrder = async(req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId);
     try{
-        const orders = await Order.find({userId: userId}, {}).lean()
+        const orders = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
 
         if (orders.length == 0){
             return res.json("No orders")
@@ -81,7 +81,7 @@ const getCustomerOrder = async(req,res) => {
     let  customerDetail = await Customer.findOne({userId: userId, emailAddress: req.params.emailAddress}, {_id: true})
     let customerId = new ObjectId(customerDetail._id);
     try {
-        const orders = await Order.find({userId: userId, customerId: customerId}, {}).populate("customerId", "-_id").lean()
+        const orders = await Order.find({userId: userId, customerId: customerId}, {userId: false}).populate("customerId", "-_id").lean()
         if (orders.length == 0){
             return res.json("No transaction with this customer ")
         }

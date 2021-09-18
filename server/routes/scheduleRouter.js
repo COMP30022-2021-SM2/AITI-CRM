@@ -4,6 +4,9 @@ const passport = require('passport');
 const scheduleController = require("../controllers/scheduleController")
 const scheduleRouter = express.Router()
 
+// get all schedule
+scheduleRouter.get('', scheduleController.getAllSchedule)
+
 // add schedule
 scheduleRouter.post('', scheduleController.addSchedule)
 
