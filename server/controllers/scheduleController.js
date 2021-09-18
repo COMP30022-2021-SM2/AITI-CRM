@@ -47,11 +47,11 @@ const updateScheduleStatus = async(req, res) => {
     let scheduleId = req.params.scheduleId
     try{
         let status = req.body.status
-        await Order.updateOne({_id: scheduleId}, {$set: {status: status}})
+        await Schedule.updateOne({_id: scheduleId}, {$set: {status: status}})
 
         let schedule = await Schedule.findOne({_id: scheduleId});
         if (schedule) {
-            console.log("Update order successfully")
+            console.log("Update schedule successfully")
             return res.status(200).json(schedule);
         } else {
             console.log("could not find product")
@@ -81,11 +81,11 @@ const updateScheduleDetails = async(req, res) => {
         
         let schedule = await Schedule.findOne({_id: scheduleId});
         if (schedule) {
-            console.log("Update product successfully")
+            console.log("Update schedule successfully")
             return res.status(200).json(schedule);
         } else {
-            console.log("could not find product")
-            return res.status(500).json({ msg: 'could not find product' })
+            console.log("could not find schedule")
+            return res.status(500).json({ msg: 'could not find schedule' })
         }
     }
     catch (err) {
