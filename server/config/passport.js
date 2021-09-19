@@ -76,6 +76,10 @@ module.exports = function(passport) {
             }
             // if we found user, provide the user instance to passport
             if (user) {
+                // If previously saved user cookies does not match with jwt extract
+                if (user.id != req.cookies['userId']){
+                    return done(null, false);
+                }
                 return done(null, user);
             } else { // otherwise assign false to indicate that authentication failed
                 return done(null, false);
@@ -100,7 +104,7 @@ module.exports = function(passport) {
                 }
                 if (!user) {
                     console.log('NO USER FOUND:', emailAddress);
-                    return done(null, false, {message: 'No user found.'});
+                    return done(null, false, 'No user found.');
                 }
                 // user is found but the password doesn't match
                 if (!user.validPassword(password)) {
