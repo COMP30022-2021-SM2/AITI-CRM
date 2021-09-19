@@ -30,7 +30,7 @@ const signup = (req, res, next) => {
             const body = { _id: user.emailAddress };
             const token = jwt.sign({ body }, process.env.PASSPORT_KEY);
             res.cookie('jwt', token, { httpOnly: false, sameSite: false, secure: true });
-            res.cookie('_id');
+            res.cookie('userId', user.id, { maxAge: 30 * 24 * 60 * 60 * 1000 });
             const data = { userId: user.id };
             res.status(200).json({ data: data, token: token});
         })
@@ -41,15 +41,16 @@ const login = async(req, res, next) => {
     passport.authenticate('login', async (err, user, msg) => {
         try {
             // if there were errors during executing the strategy
-            // or the user was not found, we display and error
+            // or the user was not found, we display and error and
+            // delete related cookies for security reason
             if(err) {
-                return res.status(500).json({ msg: err })
+                return res.status(500).json({ msg: msg })
             } else if (!user) {
                 return res.status(400).json({ msg: msg })
             }
 
-            req.login(user, { session : false }, async (error) => {
-                if( error ) return next(error);
+            req.login(user, { session : false }, async (err) => {
+                if(err) return next(err);
                 const body = { _id : user.emailAddress };
                 //Sign the JWT token and populate the payload with the user email
                 const token = jwt.sign({ body },process.env.PASSPORT_KEY);
@@ -60,7 +61,7 @@ const login = async(req, res, next) => {
                 return res.status(200).json({ data: data, token: token });
             });
         } catch (err) {
-            return res.status(500).json({ msg: err });
+            return res.status(500).json({ msg: msg });
         }
     })(req, res, next)
 }
@@ -74,7 +75,7 @@ const updateProfile = async(req, res) => {
         let emailAddress = req.body.emailAddress;
         let password = req.body.password;
 
-        // udpate the information that User has changed
+        // update the information that User has changed
         if (givenName){
             await User.updateOne({ _id: userId }, { $set: { givenName: givenName } })
         }
