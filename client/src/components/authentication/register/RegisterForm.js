@@ -5,13 +5,14 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { useNavigate } from 'react-router-dom';
+// import axios from '../commons/axios.js';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 
 // ----------------------------------------------------------------------
 
-export default function RegisterForm() {
+export default function RegisterForm(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,7 +31,8 @@ export default function RegisterForm() {
       firstName: '',
       lastName: '',
       email: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
@@ -39,6 +41,26 @@ export default function RegisterForm() {
   });
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+
+  //  // Sign up and go to dashboard
+  //  const signup = () => {
+  //  axios.post('/signup', {
+  //     firstName: values.firstName,
+  //     lastName: values.lastName,
+  //     email: values.email,
+  //     password: values.password,
+  //     confirmPassword: values.confirmPassword
+  //   }).then(response =>{
+  //       if (response.data.success) {
+  //         message.success('Successfully registered!');
+  //         props.history.push('/dashboard', { user: response.data.user });
+  //       } else {
+  //           message.error(response.data.error)
+  //       }
+  //   }).catch(error => {
+  //       message.error("Register failed!")
+  //   })
+  // }
 
   return (
     <FormikProvider value={formik}>
@@ -78,6 +100,25 @@ export default function RegisterForm() {
             type={showPassword ? 'text' : 'password'}
             label="Password"
             {...getFieldProps('password')}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            error={Boolean(touched.password && errors.password)}
+            helperText={touched.password && errors.password}
+          />
+
+          <TextField
+            fullWidth
+            autoComplete="current-password"
+            type={showPassword ? 'text' : 'password'}
+            label="Confirm password"
+            {...getFieldProps('confirmPassword')}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
