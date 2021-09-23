@@ -23,7 +23,9 @@ const users = [...Array(24)].map((_, index) => ({
     'Full Stack Designer',
     'Front End Developer',
     'Full Stack Developer'
-  ])
+  ]),
+  email: sample(['1234567890@123.com', '123456@123.com']),
+  phone: sample(['123456', '321123'])
 }));
 
 export default users;
