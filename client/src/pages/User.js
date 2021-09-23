@@ -1,5 +1,6 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
@@ -9,7 +10,6 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -18,8 +18,15 @@ import {
   Container,
   Typography,
   TableContainer,
-  TablePagination
+  TablePagination,
+  TextField
 } from '@material-ui/core';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -32,11 +39,10 @@ import USERLIST from '../_mocks_/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'name', label: 'Customer Name', alignRight: false },
   { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
   { id: '' }
 ];
 
@@ -72,6 +78,68 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
+  const [open, setOpen] = useState(false);
+  const handleInsertOpen = () => {
+    setOpen(true);
+  };
+  const handleInsertClose = () => {
+    setOpen(false);
+  };
+
+  function AddCustomerDialog(props) {
+    const { onClose, open } = props;
+    const handleClose = () => {
+      onClose(true);
+    };
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="add-customer-dialog" open={open}>
+        <DialogTitle id="add-customer-dialog">Add New Customer</DialogTitle>
+        <DialogContent>
+          <DialogContentText> Enter details of new customer delow. </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="customer-first-name"
+            label="First Name"
+            type="text"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="customer-last-name"
+            label="Last Name"
+            type="text"
+            fullWidth
+          />
+          <TextField margin="dense" id="customer-email" label="Email" type="text" fullWidth />
+          <TextField
+            margin="dense"
+            id="customer-phone-number"
+            label="Phone Number"
+            type="text"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="customer-company-name"
+            label="Company Name"
+            type="text"
+            fullWidth
+          />
+          <TextField margin="dense" id="customer-abn" label="ABN" type="ABN" fullWidth />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleClose} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -132,23 +200,26 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User | Minimal-UI">
+    <Page title="Dashboard: Customer">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            User
+          <Typography variant="h3" gutterBottom>
+            Customer
           </Typography>
           <Button
             variant="contained"
             component={RouterLink}
             to="#"
             startIcon={<Icon icon={plusFill} />}
+            onClick={handleInsertOpen}
           >
-            New User
+            New Customer
           </Button>
+          <AddCustomerDialog open={open} onClose={handleInsertClose} />
         </Stack>
 
         <Card>
+          {/* search bar to search the customers */}
           <UserListToolbar
             numSelected={selected.length}
             filterName={filterName}
@@ -171,7 +242,7 @@ export default function User() {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                      const { id, name, email, phone, company } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
@@ -189,26 +260,14 @@ export default function User() {
                               onChange={(event) => handleClick(event, name)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={avatarUrl} />
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
+                          <TableCell component="th" scope="row" padding="1px">
+                            <Typography variant="subtitle2" noWrap>
+                              {name}
+                            </Typography>
                           </TableCell>
                           <TableCell align="left">{company}</TableCell>
-                          <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant="ghost"
-                              color={(status === 'banned' && 'error') || 'success'}
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
-
+                          <TableCell align="left">{email}</TableCell>
+                          <TableCell align="left">{phone}</TableCell>
                           <TableCell align="right">
                             <UserMoreMenu />
                           </TableCell>
@@ -234,6 +293,7 @@ export default function User() {
             </TableContainer>
           </Scrollbar>
 
+          {/* display amount, change page and change row per page */}
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
