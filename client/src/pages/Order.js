@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
+// import axios from '../commons/axios.js';
 // material
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -63,7 +64,7 @@ const SORT_OPTIONS = [
 // sorting table related functions
 const TABLE_HEAD = [
   { id: 'name', label: 'Customer Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
+  { id: 'details', label: 'Details', alignRight: false },
   // { id: 'role', label: 'Role', alignRight: false },
   { id: 'isVerified', label: 'Completed', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
@@ -112,8 +113,10 @@ function SimpleDialog(props) {
       <DialogTitle id="simple-dialog-title">Adding a new order...</DialogTitle>
       <DialogContent>
         <DialogContentText>Please enter the details of your new order below. </DialogContentText>
-        <TextField autoFocus margin="dense" id="name" label="Customer Name" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Company" type="text" fullWidth />
+        <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product Detail" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Status" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Price" type="text" fullWidth />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
@@ -282,11 +285,11 @@ export default function Order() {
                           </TableCell>
                           <TableCell align="left">{company}</TableCell>
                           {/* <TableCell align="left">{role}</TableCell> */}
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{isVerified ? '123' : '123'}</TableCell>
                           <TableCell align="left">
                             <Label
                               variant="ghost"
-                              color={(status === 'banned' && 'error') || 'success'}
+                              color={(status === 'ongoing' && 'error') || 'success'}
                             >
                               {sentenceCase(status)}
                             </Label>

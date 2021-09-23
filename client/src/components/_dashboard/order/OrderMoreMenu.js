@@ -39,8 +39,10 @@ function SimpleDialog(props) {
       <DialogTitle id="simple-dialog-title">Edit your order </DialogTitle>
       <DialogContent>
         <DialogContentText> Please modify the details of your order below...</DialogContentText>
-        <TextField autoFocus margin="dense" id="name" label="Customer Name" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product Company" type="text" fullWidth />
+        <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product Detail" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Status" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Price" type="text" fullWidth />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

@@ -203,7 +203,7 @@ export default function User() {
                           <TableCell align="left">
                             <Label
                               variant="ghost"
-                              color={(status === 'banned' && 'error') || 'success'}
+                              color={(status === 'ongoing' && 'error') || 'success'}
                             >
                               {sentenceCase(status)}
                             </Label>
