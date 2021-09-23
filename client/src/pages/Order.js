@@ -66,7 +66,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Customer Name', alignRight: false },
   { id: 'details', label: 'Details', alignRight: false },
   // { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Completed', alignRight: false },
+  { id: 'isVerified', label: 'Total', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' }
 ];
