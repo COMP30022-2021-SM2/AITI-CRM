@@ -40,44 +40,40 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 export default function Register() {
   return (
-    <RootStyle title="Register | Minimal-UI">
-      <AuthLayout>
-        Already have an account? &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
-          Login
-        </Link>
-      </AuthLayout>
-
-      <MHidden width="mdDown">
+    <RootStyle title="Register" style={{ backgroundColor: '#fffef4' }}>
+      {/* <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
             Manage the job more effectively with AITI CRM
           </Typography>
           <img alt="register" src="/static/illustrations/illustration_register.png" />
         </SectionStyle>
-      </MHidden>
+      </MHidden> */}
 
       <Container>
         <ContentStyle>
           <Box sx={{ mb: 5 }}>
+            <Typography variant="h3" gutterBottom>
+              Manage the job more effectively
+            </Typography>
             <Typography variant="h4" gutterBottom>
-              Get started absolutely free.
+              with AITI CRM
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>
+            {/* <Typography sx={{ color: 'text.secondary' }}>
               Free forever. No credit card needed.
-            </Typography>
+            </Typography> */}
           </Box>
 
           <RegisterForm />
 
-          <MHidden width="smUp">
+          {/* <MHidden width="smUp">
             <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
               Already have an account?&nbsp;
               <Link to="/login" component={RouterLink}>
                 Login
               </Link>
             </Typography>
-          </MHidden>
+          </MHidden> */}
         </ContentStyle>
       </Container>
     </RootStyle>

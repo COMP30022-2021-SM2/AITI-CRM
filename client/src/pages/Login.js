@@ -9,7 +9,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { LoginForm } from '../components/authentication/login';
-
+import background from './309344022557741423.png';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -42,35 +42,41 @@ const ContentStyle = styled('div')(({ theme }) => ({
 export default function Login() {
   const [data, setData] = React.useState(null);
 
-  React.useEffect(() => {
-    fetch('http://localhost:5000/testAPI')
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+  // React.useEffect(() => {
+  //   fetch('http://localhost:5000/testAPI')
+  //     .then((res) => res.json())
+  //     .then((data) => setData(data.message));
+  // }, []);
 
   return (
-    <RootStyle title="Login">
-      <AuthLayout>
-        Don’t have an account? &nbsp;
+    <RootStyle title="Login" style={{ backgroundColor: '#fffef4' }}>
+      {/* <div style={{ backgroundImage: `url(${background})` }} /> */}
+      {/* <img src="./loginbackground.png" alt="background" /> */}
+      {/* <AuthLayout>
+        <b>Don’t have an account?</b> &nbsp;
         <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
-          Get started
+          <b>Get started</b>
         </Link>
-      </AuthLayout>
+      </AuthLayout> */}
 
-      <MHidden width="mdDown">
+      {/* <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            {!data ? 'Loading...' : data} Hi, Welcome Back
+            {!data ? 'Loading...' : data}
+            Hi, Welcome Back
           </Typography>
           <img src="/static/illustrations/illustration_login.png" alt="login" />
         </SectionStyle>
-      </MHidden>
+      </MHidden> */}
 
       <Container maxWidth="sm">
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
+            <Typography variant="h1" gutterBottom sx={{ color: '#5d3b6b' }}>
+              Sign in to
+            </Typography>
             <Typography variant="h4" gutterBottom>
-              Sign in to AITI CRM :)
+              AITI CRM :)
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
           </Stack>
@@ -78,15 +84,21 @@ export default function Login() {
 
           <LoginForm />
 
-          <MHidden width="smUp">
+          {/* <MHidden width="smUp">
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don’t have an account?&nbsp;
               <Link variant="subtitle2" component={RouterLink} to="register">
                 Get started
               </Link>
             </Typography>
-          </MHidden>
+          </MHidden> */}
         </ContentStyle>
+        {/* <AuthLayout>
+          <b>Don’t have an account?</b> &nbsp;
+          <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
+            <b>Get started</b>
+          </Link>
+        </AuthLayout> */}
       </Container>
     </RootStyle>
   );

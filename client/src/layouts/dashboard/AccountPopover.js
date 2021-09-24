@@ -113,9 +113,10 @@ export default function AccountPopover({ user }) {
         ref={anchorRef}
         onClick={handleOpen}
         sx={{
+          marginTop: 2,
           padding: 0,
-          width: 44,
-          height: 44,
+          width: 60,
+          height: 60,
           ...(open && {
             '&:before': {
               zIndex: 1,
@@ -129,7 +130,7 @@ export default function AccountPopover({ user }) {
           })
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={account.photoURL} alt="photoURL" sx={{ width: 60, height: 60 }} />
       </IconButton>
 
       <MenuPopover

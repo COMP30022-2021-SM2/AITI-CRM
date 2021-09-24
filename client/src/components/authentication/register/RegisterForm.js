@@ -4,10 +4,10 @@ import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // import axios from '../commons/axios.js';
 // material
-import { Stack, TextField, IconButton, InputAdornment } from '@material-ui/core';
+import { Stack, TextField, IconButton, InputAdornment, Link } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 
 // ----------------------------------------------------------------------
@@ -131,6 +131,13 @@ export default function RegisterForm(props) {
             error={Boolean(touched.password && errors.password)}
             helperText={touched.password && errors.password}
           />
+
+          <Stack direction="row" alignItems="center" sx={{ my: 2 }}>
+            <b>Already have an account?</b> &nbsp; &nbsp;
+            <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
+              <b>Login</b>
+            </Link>
+          </Stack>
 
           <LoadingButton
             fullWidth

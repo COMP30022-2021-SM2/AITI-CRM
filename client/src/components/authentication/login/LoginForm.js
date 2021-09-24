@@ -17,7 +17,6 @@ import {
   FormControlLabel
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
-
 // ----------------------------------------------------------------------
 
 export default function LoginForm(props) {
@@ -95,15 +94,11 @@ export default function LoginForm(props) {
           />
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          {/* <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
-          />
-
-          <Link component={RouterLink} variant="subtitle2" to="#">
-            Forgot password?
-          </Link> */}
+        <Stack direction="row" alignItems="center" sx={{ my: 2 }}>
+          <b>Don’t have an account?</b> &nbsp; &nbsp;
+          <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
+            <b>Get started</b>
+          </Link>
         </Stack>
 
         <LoadingButton
