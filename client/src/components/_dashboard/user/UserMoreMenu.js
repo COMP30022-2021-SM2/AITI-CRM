@@ -23,6 +23,8 @@ import {
 } from '@material-ui/core';
 
 // ----------------------------------------------------------------------
+
+// Change customer details popup
 function ChangeCustomerDialog(props) {
   const { onClose, open } = props;
   const handleClose = () => {
@@ -72,6 +74,37 @@ function ChangeCustomerDialog(props) {
 }
 
 ChangeCustomerDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
+
+// see customer details popup
+function CustomerDetailsDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="customer-details-dialog" open={open}>
+      <DialogTitle id="customer-details-dialog">Name </DialogTitle>
+      <DialogContent>
+        <DialogContentText>Company: 1234567</DialogContentText>
+        <DialogContentText>Email: 1234567</DialogContentText>
+        <DialogContentText>Phone: 1234567</DialogContentText>
+        <DialogContentText>ABN: 1234567</DialogContentText>
+      </DialogContent>
+      <DialogTitle id="customer-orders-details-dialog">Order History </DialogTitle>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+CustomerDetailsDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired
 };
@@ -127,6 +160,16 @@ export default function UserMoreMenu() {
     setDeleteDialogOpen(false);
   };
 
+  const [openDetailsDialog, setDetailsDialogOpen] = useState(false);
+
+  const handleDetailsDialogOpen = () => {
+    setDetailsDialogOpen(true);
+  };
+
+  const handleDetailsDialogClose = () => {
+    setDetailsDialogOpen(false);
+  };
+
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -143,6 +186,14 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+        <MenuItem button="true" onClick={handleDetailsDialogOpen} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon="mdi:card-account-details" width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Details" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <CustomerDetailsDialog open={openDetailsDialog} onClose={handleDetailsDialogClose} />
+
         <MenuItem
           button="true"
           onClick={() => {
