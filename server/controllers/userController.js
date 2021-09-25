@@ -11,7 +11,7 @@ const signup = (req, res, next) => {
     // validate password
     if (!validatePassword(req.body.password)) {
         console.log('Password must be longer than 8 characters!')
-       return res.status(400).json({ code: -1, msg: "Password must be longer than 8 characters!" });
+       return res.status(400).json({ msg: "Password must be longer than 8 characters!" });
     }
     // check if both password match
     else if (req.body.password !== req.body.confirmPassword){
@@ -32,7 +32,7 @@ const signup = (req, res, next) => {
             res.cookie('jwt', token, { httpOnly: false, sameSite: false, secure: true });
             res.cookie('userId', user.id, { maxAge: 30 * 24 * 60 * 60 * 1000 });
             const data = { userId: user.id };
-            res.status(200).json({ data: data, token: token});
+            return res.status(200).json({ data: data, token: token});
         })
     })(req, res, next)
 };
@@ -46,7 +46,7 @@ const login = async(req, res, next) => {
             if(err) {
                 return res.status(500).json({ msg: msg })
             } else if (!user) {
-                return res.status(400).json({ msg: msg })
+                return res.status(401).json({ msg: msg })
             }
 
             req.login(user, { session : false }, async (err) => {

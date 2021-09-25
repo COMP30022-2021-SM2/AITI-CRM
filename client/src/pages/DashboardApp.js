@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { Box, Grid, Container, Typography } from '@material-ui/core';
 // components
+import Cookies from 'js-cookie';
 import Page from '../components/Page';
 import {
   AppTasks,
@@ -19,7 +22,18 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardApp() {
+export default function DashboardApp(props) {
+  const navigate = useNavigate();
+  // // Get basic information when render this page
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      console.log('success');
+      // get data here
+    } else {
+      navigate('/404', { replace: true });
+    }
+  }, []);
+
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -40,10 +54,6 @@ export default function DashboardApp() {
             <AppProduct />
           </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits />
-          </Grid> */}
-
           <Grid item xs={12} md={6} lg={6}>
             <AppOrderCondition />
           </Grid>
@@ -55,6 +65,10 @@ export default function DashboardApp() {
           <Grid item xs={12} md={6} lg={12}>
             <AppEachProductsSales />
           </Grid>
+
+          {/* <Grid item xs={12} md={6} lg={8}>
+            <AppWebsiteVisits />
+          </Grid> */}
 
           {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject />

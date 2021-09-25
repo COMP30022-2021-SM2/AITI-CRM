@@ -1,11 +1,12 @@
+import Cookies from 'js-cookie';
 import * as Yup from 'yup';
 import { useState } from 'react';
+import { message } from 'antd';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-// import axios from '../commons/axios.js';
 // material
 import {
   Link,
@@ -17,6 +18,8 @@ import {
   FormControlLabel
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+import axios from '../../../commons/axios';
+
 // ----------------------------------------------------------------------
 
 export default function LoginForm(props) {
@@ -36,29 +39,24 @@ export default function LoginForm(props) {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      axios
+        .post('/login', { emailAddress: values.email, password: values.password })
+        .then((response) => {
+          if (response.status === 200) {
+            Cookies.set('token', response.data.token);
+            navigate('/dashboard', { replace: true });
+          }
+        })
+        .catch((error) => {
+          alert('wrong account!');
+          navigate('/', { replace: true });
+        });
     }
   });
-
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
-
-  //  // Login and go to dashboard
-  //  const login = () => {
-  //   axios.post('/login', { email: values.email, password: values.password}).then(response =>{
-  //       if (response.data.success) {
-  //         message.success('Successfully login!');
-  //         props.history.push('/dashboard', { user: response.data.user });
-  //       } else {
-  //           message.error(response.data.error)
-  //       }
-  //   }).catch(error => {
-  //       message.error("Login failed!")
-  //   })
-  // }
 
   return (
     <FormikProvider value={formik}>

@@ -59,6 +59,12 @@ app.use('/customer', validateUserCookies, passport.authenticate('jwt', { session
 app.use('/order', validateUserCookies, passport.authenticate('jwt', { session: false }), orderRouter);
 app.use('/schedule', validateUserCookies, passport.authenticate('jwt', { session: false }), scheduleRouter);
 
+// if(process.env.NODE_ENV === 'production') {
+//     // Serve static files from the React app
+//     app.use(express.static('frontend/build'));
+//     app.get('*', (req, res) => { res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')); });
+// }
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log('Listening on port ' + port + '...');

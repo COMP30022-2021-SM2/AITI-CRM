@@ -5,17 +5,16 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// import axios from '../commons/axios.js';
 // material
 import { Stack, TextField, IconButton, InputAdornment, Link } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
@@ -32,35 +31,41 @@ export default function RegisterForm(props) {
       lastName: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      remember: true
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      // navigate('/dashboard', { replace: true });
+      console.log(
+        values.firstName,
+        values.lastName,
+        values.email,
+        values.password,
+        values.confirmPassword
+      );
+      axios
+        .post('/signup', {
+          givenName: values.firstName,
+          familyName: values.lastName,
+          emailAddress: values.email,
+          password: values.password,
+          confirmPassword: values.confirmPassword
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            alert('Register success!');
+            navigate('/', { replace: true });
+          }
+        })
+        .catch((error) => {
+          alert('Account register failed!');
+          window.location.reload();
+        });
     }
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
-
-  //  // Sign up and go to dashboard
-  //  const signup = () => {
-  //  axios.post('/signup', {
-  //     firstName: values.firstName,
-  //     lastName: values.lastName,
-  //     email: values.email,
-  //     password: values.password,
-  //     confirmPassword: values.confirmPassword
-  //   }).then(response =>{
-  //       if (response.data.success) {
-  //         message.success('Successfully registered!');
-  //         props.history.push('/dashboard', { user: response.data.user });
-  //       } else {
-  //           message.error(response.data.error)
-  //       }
-  //   }).catch(error => {
-  //       message.error("Register failed!")
-  //   })
-  // }
+  const { errors, values, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
