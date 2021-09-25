@@ -12,15 +12,17 @@ const addressSchema = new mongoose.Schema({
 
 // Customer model
 const customerSchema = new mongoose.Schema({
+    userId: { type: mongoose.Types.ObjectId, require: true, ref: "User" },
     givenName: { type: String, require: true },
     familyName: { type: String, require: true },
     emailAddress: { type: String, require: true, unique: true },
     phoneNumber: { type: Number, require: true, unique: true},
     companyName: { type: String, require: true },
-    address: { type: addressSchema, required: true },
+    address: { type: String },
     abn: { type: Number, require: true, unique: true },
     notes : String
 })
 
+customerSchema.index({ "userId": 1, "emailAddress": 1, "phoneNumber": 1, "abn":1 }, { unique: true });
 const Customer = mongoose.model('Customer', customerSchema)
 module.exports = Customer
