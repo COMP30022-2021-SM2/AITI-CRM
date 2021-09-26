@@ -33,7 +33,7 @@ const updateProduct = async(req, res) => {
     try{
         let productName = req.body.name;
         let productDescription = req.body.description;
-        let productTag = req.body.tag
+        let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
         let productAvailable = req.body.available
 
         // update field that changed
@@ -114,7 +114,7 @@ const getAllProduct = async(req, res) => {
 }
 
 // get all available product
-const getAvavilableProduct = async (req, res) => {
+const getAvailableProduct = async (req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try {
@@ -133,4 +133,4 @@ const getAvavilableProduct = async (req, res) => {
 
 }
 
-module.exports = { addProduct, updateProduct, deleteProduct, getOneProduct, getAllProduct, getAvavilableProduct }
+module.exports = { addProduct, updateProduct, deleteProduct, getOneProduct, getAllProduct, getAvailableProduct }

@@ -20,6 +20,6 @@ productRouter.delete('/:tag', productController.deleteProduct)
 productRouter.get('', productController.getAllProduct)
 
 // get all available product 
-productRouter.get('available', productController.getAvavilableProduct)
+productRouter.get('/available', productController.getAvailableProduct)
 
 module.exports = productRouter;

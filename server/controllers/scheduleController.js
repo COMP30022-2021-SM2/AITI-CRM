@@ -69,6 +69,7 @@ const updateScheduleDetails = async(req, res) => {
     try{
         let time = req.body.time;
         let type = req.body.type;
+        let notes = req.body.notes;
 
         // update field that changed
         if (time) {
@@ -77,6 +78,10 @@ const updateScheduleDetails = async(req, res) => {
         }
         if (type) {
             await Schedule.updateOne({_id: scheduleId}, {$set: {type: type}})
+        }
+
+        if (notes) {
+            await Schedule.updateOne({_id: scheduleId}, {$set: {notes: notes}})
         }
         
         let schedule = await Schedule.findOne({_id: scheduleId});
