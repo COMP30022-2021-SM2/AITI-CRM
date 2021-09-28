@@ -82,7 +82,7 @@ const getOneProduct = async(req, res)=>{
     userId = new ObjectId(userId);
     try {
         // find the product
-        const product = await Product.find({userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true }).lean()
+        const product = await Product.find({userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true , available: 'true' }).lean()
             // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
@@ -100,7 +100,7 @@ const getAllProduct = async(req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try{
-        const products = await Product.find({userId: userId}, {_id: false, userId: false}).lean()
+        const products = await Product.find({ userId: userId }, { _id: false, userId: false }).lean()
 
         if (products.length == 0) {
             return res.json("Please insert product first")
@@ -116,9 +116,10 @@ const getAllProduct = async(req, res) => {
 // get all available product
 const getAvailableProduct = async (req, res) => {
     let userId = req.cookies['userId'];
+    console.log(userId)
     userId = new ObjectId(userId)
     try {
-        const availableProducts = await Product.find({ userId: userId, available: "true" }).lean()
+        const availableProducts = await Product.find({ userId: userId, available: 'true' }, { _id: false }).lean()
 
         if (availableProducts.length == 0) {
             return res.json("No available product")
