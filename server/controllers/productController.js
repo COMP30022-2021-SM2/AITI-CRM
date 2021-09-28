@@ -118,7 +118,7 @@ const getAvailableProduct = async (req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId)
     try {
-        const availableProducts = await Product.find({ userId: userId }, { available: "true" }).lean()
+        const availableProducts = await Product.find({ userId: userId, available: "true" }).lean()
 
         if (availableProducts.length == 0) {
             return res.json("No available product")
