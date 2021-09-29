@@ -16,7 +16,7 @@ userRouter.post('/logout', function(req, res) {
     res.clearCookie('userId');
     res.clearCookie('jwt');
     console.log('logout successfully')
-    res.status(200).json({ msg: 'Logout successfully' })
+    return res.status(200).json({ msg: 'Logout successfully' })
 });
 
 // Get user info

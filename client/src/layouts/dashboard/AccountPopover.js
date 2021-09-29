@@ -1,24 +1,41 @@
-import { useRef, useState } from 'react';
-// import axios from '../commons/axios.js';
+import { useRef, useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import eyeFill from '@iconify/icons-eva/eye-fill';
+import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
 import { alpha } from '@material-ui/core/styles';
-import { Button, Box, Divider, Typography, Avatar, IconButton, TextField } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Box,
+  Divider,
+  Typography,
+  Avatar,
+  IconButton,
+  TextField,
+  InputAdornment
+} from '@material-ui/core';
 // components
 import { Navigate } from 'react-router';
+import Cookies from 'js-cookie';
+import axios from '../../commons/axios';
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
+// import { negate } from 'lodash';
 
 // ----------------------------------------------------------------------
-export default function AccountPopover({ user }) {
+export default function AccountPopover() {
   // const { givenName, familyName, emailAddress, password } = user;
   const anchorRef = useRef(null);
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -36,77 +53,101 @@ export default function AccountPopover({ user }) {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-  // const [newGivenName, setName] = useState('');
-  // const [newFamilyName, setFamilyName] = useState('');
-  // const [newPassword, setPassword] = useState('');
-  // const [newConfirmPassword, setComfirmPassword] = useState('');
-  // const submitUpdate= () => {
-  //   if (newPassword != '' && newConfirmPassword != '') {
-  //     axios.put('/profile', { givenName: newGivenName, familyName: newFamilyName, password: newPassword, confirmPassword: newConfirmPassword }).then(response =>{
-  //       if (response.data.success){
-  //           message.success("profile updated success")
-  //       } else {
-  //           message.error(response.data.error)
-  //       }
-  //     })
-  //   } else {
-  //     axios.put('/profile', { givenName: newGivenName, familyName: newFamilyName }).then(response =>{
-  //       if (response.data.success){
-  //           message.success("profile updated success")
-  //       } else {
-  //           message.error(response.data.error)
-  //       }
-  //     })
-  //   }
-  // }
 
-  function SimpleDialog(props) {
-    const { open, onClose } = props;
-    const handleClose = () => {
-      onClose(true);
-    };
-    return (
-      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">Update personal information</DialogTitle>
-        <DialogContent>
-          <DialogContentText> Enter a new name and email below.</DialogContentText>
-          <TextField
-            margin="dense"
-            id="name"
-            label="First name"
-            type="text"
-            defaultValue="{givenName}"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="name"
-            label="Last name"
-            type="text"
-            defaultValue="{familyName}"
-            fullWidth
-          />
-          <TextField margin="dense" id="name" label="New password" type="text" fullWidth />
-          <TextField margin="dense" id="name" label="Confirm new password" type="text" fullWidth />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClose();
-            }}
-            color="primary"
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+  const [givenName, setGivenName] = useState();
+  const [familyName, setFamilyName] = useState();
+  const [email, setEmail] = useState();
 
+  const [newGivenName, setNewGivenName] = useState('');
+  const [newFamilyName, setNewFamilyName] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newConfirmPassword, setConfirmPassword] = useState('');
+
+  // Get user information
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      console.log('success');
+      axios
+        .get('/profile')
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('get user success');
+            console.log(response.data.user);
+            setGivenName(response.data.user.givenName);
+            setFamilyName(response.data.user.familyName);
+            setEmail(response.data.user.emailAddress);
+          }
+        })
+        .catch((error) => {
+          console.log('cant get user info');
+        });
+      setNewGivenName();
+      setNewFamilyName();
+      setNewPassword();
+      setConfirmPassword();
+    } else {
+      navigate('/404', { replace: true });
+    }
+  }, []);
+
+  // Update profile
+  const submitUpdate = () => {
+    if (newPassword !== '' && newConfirmPassword !== '') {
+      axios
+        .put('/profile', {
+          givenName: newGivenName,
+          familyName: newFamilyName,
+          password: newPassword,
+          confirmPassword: newConfirmPassword
+        })
+        .then((response) => {
+          if (response.data.success) {
+            console.log('profile update success');
+          } else {
+            console.log('profile update fail');
+          }
+        })
+        .catch((error) => {
+          alert('Profile update failed!');
+        });
+    } else {
+      console.log(newGivenName);
+      console.log(newFamilyName);
+      axios
+        .put('/profile', {
+          givenName: newGivenName,
+          familyName: newFamilyName
+        })
+        .then((response) => {
+          if (response.data.success) {
+            console.log('profile update success');
+          } else {
+            console.log('profile update fail');
+          }
+        })
+        .catch((error) => {
+          alert('Profile update failed!');
+        });
+    }
+  };
+
+  // Logout
+  const handleLogout = () => {
+    axios
+      .post('/logout')
+      .then((response) => {
+        if (response.status === 200) {
+          navigate('/', { replace: true });
+        } else {
+          handleClose();
+          alert('logout failed!');
+        }
+      })
+      .catch((error) => {
+        alert('logout failed!');
+        handleClose();
+      });
+  };
   return (
     <>
       <IconButton
@@ -141,10 +182,13 @@ export default function AccountPopover({ user }) {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {account.displayName}
+            {/* {account.displayName} */}
+            {givenName}
+            {familyName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {/* {account.email} */}
+            {email}
           </Typography>
         </Box>
 
@@ -164,12 +208,86 @@ export default function AccountPopover({ user }) {
           </Button>
         </Box>
         <Box sx={{ p: 2, pt: 0.25 }}>
-          <Button fullWidth color="inherit" variant="outlined" href="/">
+          <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
             Logout
           </Button>
         </Box>
       </MenuPopover>
-      <SimpleDialog open={openDialog} onClose={handleDialogClose} />
+      {/* <SimpleDialog open={openDialog} onClose={handleDialogClose} /> */}
+      <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={openDialog}>
+        <DialogTitle id="simple-dialog-title">Update personal information</DialogTitle>
+        <DialogContent>
+          <DialogContentText> Enter a new name below.</DialogContentText>
+          <TextField
+            margin="dense"
+            label="First name"
+            type="text"
+            defaultValue={givenName}
+            value={givenName}
+            onChange={(e) => setNewGivenName(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Last name"
+            type="text"
+            defaultValue={familyName}
+            value={familyName}
+            onChange={(e) => setNewFamilyName(e.target.value)}
+            fullWidth
+          />
+          <DialogContentText>
+            Skip following if you don't want to change your password.
+          </DialogContentText>
+          <TextField
+            margin="dense"
+            label="New password"
+            onChange={(e) => setNewPassword(e.target.value)}
+            fullWidth
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Confirm new password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            fullWidth
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              submitUpdate();
+              handleDialogClose();
+            }}
+            color="primary"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
