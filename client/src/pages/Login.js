@@ -1,13 +1,9 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@material-ui/core/styles';
-import { Card, Stack, Link, Container, Typography } from '@material-ui/core';
-// layouts
-import AuthLayout from '../layouts/AuthLayout';
+import { Card, Stack, Container, Typography } from '@material-ui/core';
 // components
 import Page from '../components/Page';
-import { MHidden } from '../components/@material-extend';
 import { LoginForm } from '../components/authentication/login';
 // ----------------------------------------------------------------------
 
@@ -49,25 +45,6 @@ export default function Login() {
 
   return (
     <RootStyle title="Login" style={{ backgroundColor: '#fffef4' }}>
-      {/* <div style={{ backgroundImage: `url(${background})` }} /> */}
-      {/* <img src="./loginbackground.png" alt="background" /> */}
-      {/* <AuthLayout>
-        <b>Don’t have an account?</b> &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
-          <b>Get started</b>
-        </Link>
-      </AuthLayout> */}
-
-      {/* <MHidden width="mdDown">
-        <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            {!data ? 'Loading...' : data}
-            Hi, Welcome Back
-          </Typography>
-          <img src="/static/illustrations/illustration_login.png" alt="login" />
-        </SectionStyle>
-      </MHidden> */}
-
       <Container maxWidth="sm">
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
@@ -79,25 +56,8 @@ export default function Login() {
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
           </Stack>
-          {/* <AuthSocial /> */}
-
           <LoginForm />
-
-          {/* <MHidden width="smUp">
-            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-              Don’t have an account?&nbsp;
-              <Link variant="subtitle2" component={RouterLink} to="register">
-                Get started
-              </Link>
-            </Typography>
-          </MHidden> */}
         </ContentStyle>
-        {/* <AuthLayout>
-          <b>Don’t have an account?</b> &nbsp;
-          <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
-            <b>Get started</b>
-          </Link>
-        </AuthLayout> */}
       </Container>
     </RootStyle>
   );
