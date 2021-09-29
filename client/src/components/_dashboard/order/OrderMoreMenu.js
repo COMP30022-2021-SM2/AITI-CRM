@@ -90,6 +90,36 @@ DeleteDialog.propTypes = {
   open: PropTypes.bool.isRequired
 };
 
+function OrderDetailsDialog(props) {
+  const { onClose, open } = props;
+  const handleClose = () => {
+    onClose(true);
+  };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="customer-details-dialog" open={open}>
+      <DialogTitle id="customer-details-dialog">Name </DialogTitle>
+      <DialogContent>
+        <DialogContentText>Company: 1234567</DialogContentText>
+        <DialogContentText>Email: 1234567</DialogContentText>
+        <DialogContentText>Phone: 1234567</DialogContentText>
+        <DialogContentText>ABN: 1234567</DialogContentText>
+      </DialogContent>
+      <DialogTitle id="customer-orders-details-dialog">Order History </DialogTitle>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+OrderDetailsDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+};
+
 export default function OrderMoreMenu() {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -112,6 +142,16 @@ export default function OrderMoreMenu() {
 
   const handleDeleteDialogClose = () => {
     setDeleteDialogOpen(false);
+  };
+
+  const [openDetailsDialog, setDetailsDialogOpen] = useState(false);
+
+  const handleDetailsDialogOpen = () => {
+    setDetailsDialogOpen(true);
+  };
+
+  const handleDetailsDialogClose = () => {
+    setDetailsDialogOpen(false);
   };
 
   return (
@@ -153,6 +193,14 @@ export default function OrderMoreMenu() {
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </ListItem>
         <SimpleDialog open={open} onClose={handleClose} />
+
+        <ListItem button="true" onClick={handleDetailsDialogOpen} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon="bx:bx-detail" width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Detail" primaryTypographyProps={{ variant: 'body2' }} />
+        </ListItem>
+        <OrderDetailsDialog open={openDetailsDialog} onClose={handleDetailsDialogClose} />
       </Menu>
     </>
   );
