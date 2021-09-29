@@ -1,22 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // material
 import { Box, Grid, Container, Typography } from '@material-ui/core';
 // components
 import Cookies from 'js-cookie';
+import axios from '../commons/axios';
 import Page from '../components/Page';
 import {
-  AppTasks,
   AppNewUsers,
   AppProduct,
   AppItemOrders,
-  AppNewsUpdate,
   AppWeeklySales,
   AppOrderTimeline,
   AppOrderCondition,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppCurrentSubject,
   AppEachProductsSales
 } from '../components/_dashboard/app';
 
@@ -24,11 +20,11 @@ import {
 
 export default function DashboardApp(props) {
   const navigate = useNavigate();
-  // // Get basic information when render this page
   useEffect(() => {
     if (Cookies.get('token')) {
       console.log('success');
-      // get data here
+      console.log(Cookies.get('token'));
+      // console.log(Cookies.get('userId'));
     } else {
       navigate('/404', { replace: true });
     }
@@ -65,26 +61,6 @@ export default function DashboardApp(props) {
           <Grid item xs={12} md={6} lg={12}>
             <AppEachProductsSales />
           </Grid>
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppTasks />
-          </Grid> */}
         </Grid>
       </Container>
     </Page>

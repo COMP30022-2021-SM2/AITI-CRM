@@ -64,10 +64,10 @@ const SORT_OPTIONS = [
 // sorting table related functions
 const TABLE_HEAD = [
   { id: 'name', label: 'Customer Name', alignRight: false },
-  { id: 'details', label: 'Details', alignRight: false },
+  // { id: 'details', label: 'Details', alignRight: false },
   // { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Total', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'isVerified', label: 'Total Deal Amount', alignRight: false },
+  { id: 'status', label: 'Order Status', alignRight: false },
   { id: '' }
 ];
 
@@ -113,10 +113,17 @@ function SimpleDialog(props) {
       <DialogTitle id="simple-dialog-title">Adding a new order...</DialogTitle>
       <DialogContent>
         <DialogContentText>Please enter the details of your new order below. </DialogContentText>
-        <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product Detail" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Status" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Price" type="text" fullWidth />
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Customer Email Address"
+          type="text"
+          fullWidth
+        />
+        <TextField margin="dense" id="name" label="Product Name" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product Price" type="text" fullWidth />
+        <TextField margin="dense" id="name" label="Product quantity" type="text" fullWidth />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
@@ -283,7 +290,7 @@ export default function Order() {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{company}</TableCell>
+                          {/* <TableCell align="left">{company}</TableCell> */}
                           {/* <TableCell align="left">{role}</TableCell> */}
                           <TableCell align="left">{isVerified ? '123' : '123'}</TableCell>
                           <TableCell align="left">
@@ -330,11 +337,6 @@ export default function Order() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-        {/* <Grid container spacing={3}>
-          {POSTS.map((post, index) => (
-            <OrderPostCard key={post.id} post={post} index={index} />
-          ))}
-        </Grid> */}
       </Container>
     </Page>
   );
