@@ -25,7 +25,7 @@ jobs:
 
       - name: Install client Dependencies
         run: |
-          cd cliemt/
+          cd client/
           npm ci
       
       - name: Install server Dependencies
