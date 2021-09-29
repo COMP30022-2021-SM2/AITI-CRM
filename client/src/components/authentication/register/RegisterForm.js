@@ -36,7 +36,6 @@ export default function RegisterForm(props) {
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      // navigate('/dashboard', { replace: true });
       console.log(
         values.firstName,
         values.lastName,
@@ -115,7 +114,7 @@ export default function RegisterForm(props) {
               )
             }}
             error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
+            helperText="Your password should at least contain 8 characters, with a combination of letters and numbers."
           />
 
           <TextField
@@ -134,7 +133,6 @@ export default function RegisterForm(props) {
               )
             }}
             error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
           />
 
           <Stack direction="row" alignItems="center" sx={{ my: 2 }}>

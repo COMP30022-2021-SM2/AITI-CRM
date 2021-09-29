@@ -1,12 +1,8 @@
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@material-ui/core/styles';
-import { Box, Card, Link, Container, Typography } from '@material-ui/core';
-// layouts
-import AuthLayout from '../layouts/AuthLayout';
+import { Box, Card, Container, Typography } from '@material-ui/core';
 // components
 import Page from '../components/Page';
-import { MHidden } from '../components/@material-extend';
 import { RegisterForm } from '../components/authentication/register';
 
 // ----------------------------------------------------------------------
@@ -41,15 +37,6 @@ const ContentStyle = styled('div')(({ theme }) => ({
 export default function Register() {
   return (
     <RootStyle title="Register" style={{ backgroundColor: '#fffef4' }}>
-      {/* <MHidden width="mdDown">
-        <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Manage the job more effectively with AITI CRM
-          </Typography>
-          <img alt="register" src="/static/illustrations/illustration_register.png" />
-        </SectionStyle>
-      </MHidden> */}
-
       <Container>
         <ContentStyle>
           <Box sx={{ mb: 5 }}>
@@ -59,21 +46,8 @@ export default function Register() {
             <Typography variant="h4" gutterBottom>
               with AITI CRM
             </Typography>
-            {/* <Typography sx={{ color: 'text.secondary' }}>
-              Free forever. No credit card needed.
-            </Typography> */}
           </Box>
-
           <RegisterForm />
-
-          {/* <MHidden width="smUp">
-            <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
-              Already have an account?&nbsp;
-              <Link to="/login" component={RouterLink}>
-                Login
-              </Link>
-            </Typography>
-          </MHidden> */}
         </ContentStyle>
       </Container>
     </RootStyle>
