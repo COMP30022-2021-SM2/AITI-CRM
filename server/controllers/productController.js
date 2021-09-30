@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 // add product
 const addProduct = async(req,res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     let name = req.body.name;
     let tag = name.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
     const newProduct = new Product({
@@ -26,8 +26,8 @@ const addProduct = async(req,res) => {
 }
 
 // update product information
-const updateProduct = async(req, res) => { 
-    let userId = req.cookies['userId'];
+const updateProduct = async(req, res) => {
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productRequest = req.params.tag
     try{
@@ -67,8 +67,8 @@ const updateProduct = async(req, res) => {
 }
 
 // delete product 
-const deleteProduct = async(req, res) => { 
-    let userId = req.cookies['userId'];
+const deleteProduct = async(req, res) => {
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productTag = req.params.tag;
     await Product.findOneAndDelete({userId: userId, tag: productTag })
@@ -97,7 +97,7 @@ const getOneProduct = async(req, res)=>{
 
 // get all product
 const getAllProduct = async(req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId)
     try{
         const products = await Product.find({ userId: userId }, { _id: false, userId: false }).lean()
@@ -115,7 +115,7 @@ const getAllProduct = async(req, res) => {
 
 // get all available product
 const getAvailableProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     console.log(userId)
     userId = new ObjectId(userId)
     try {

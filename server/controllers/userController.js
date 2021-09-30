@@ -109,7 +109,6 @@ const updateProfile = async(req, res) => {
 }
 
 const getUserInfo = async(req, res) => {
-    //let userId = new ObjectId(req.body.userId);
     let userId = new ObjectId(req.user._id);
     try {
         let user = await User.findOne({ _id: userId }, { _id: false, givenName: true, familyName: true, emailAddress: true }).lean();

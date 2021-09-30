@@ -8,6 +8,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 // add new order
 const addOrder = async(req, res) => {
+    let userId = new ObjectId(req.user._id);
     let cart = req.body;
     let totalPrice = 0;
     // calculate total price
@@ -15,8 +16,6 @@ const addOrder = async(req, res) => {
         totalPrice += cart[i]["price"]
     }
 
-    let userId = req.cookies['userId'];
-    userId = new ObjectId(userId);
     let customerEmail = req.params.emailAddress
     console.log('getUserInfo:', userId);
     console.log('getCustomerInfo:', customerEmail);
@@ -58,8 +57,7 @@ const addOrder = async(req, res) => {
 
 // get all order
 const getAllOrder = async(req, res) => {
-    let userId = req.cookies['userId'];
-    userId = new ObjectId(userId);
+    let userId = new ObjectId(req.user._id);
     try{
         const orders = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
 
@@ -74,11 +72,10 @@ const getAllOrder = async(req, res) => {
     }
 }
 
-// order relatd to particular customer
+// order related to particular customer
 const getCustomerOrder = async(req,res) => {
-    let userId = req.cookies['userId'];
-    userId = new ObjectId(userId);
-    let  customerDetail = await Customer.findOne({userId: userId, emailAddress: req.params.emailAddress}, {_id: true})
+    let userId = new ObjectId(req.user._id);
+    let customerDetail = await Customer.findOne({userId: userId, emailAddress: req.params.emailAddress}, {_id: true})
     let customerId = new ObjectId(customerDetail._id);
     try {
         const orders = await Order.find({userId: userId, customerId: customerId}, {userId: false}).populate("customerId", "-_id").lean()
@@ -95,8 +92,7 @@ const getCustomerOrder = async(req,res) => {
 
 // get order by graph types
 const getGrapeOrder = async(req, res) => {
-    let userId = req.cookies['userId'];
-    userId = new ObjectId(userId);
+    let userId = new ObjectId(req.user._id);
     let productTag = req.params.productTag
     try{
         const orders = await Order.find({userId: userId, details: {$all: [
@@ -159,7 +155,7 @@ const updateOrderDetails = async(req, res) => {
         }
 
         const orderChanged = { details: cart, total: totalPrice }
-        // udpate order
+        // update order
         await Order.findOneAndUpdate({ _id: orderId }, orderChanged, { new: true })
         .then( (result) => res.status(200).json(result))
         .catch( (err) => res.status(500).json({ msg: err }));
