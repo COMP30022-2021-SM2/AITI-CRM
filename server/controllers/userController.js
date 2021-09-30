@@ -29,7 +29,7 @@ const signup = (req, res, next) => {
             if (error) return res.status(500).json({ msg: error });
             const body = { _id: user.emailAddress };
             const token = jwt.sign({ body }, process.env.PASSPORT_KEY);
-            res.cookie('jwt', token, { httpOnly: false, sameSite: false, secure: true });
+            res.cookie('jwt', token, { httpOnly: false, sameSite: true, secure: false });
             res.cookie('userId', user.id, { maxAge: 30 * 24 * 60 * 60 * 1000 });
             const data = { userId: user.id };
             return res.status(200).json({ data: data, token: token});
@@ -109,10 +109,11 @@ const updateProfile = async(req, res) => {
 }
 
 const getUserInfo = async(req, res) => {
-    let userId = new ObjectId(req.cookies['userId']);
+    //let userId = new ObjectId(req.body.userId);
+    let userId = new ObjectId(req.user._id);
     try {
         let user = await User.findOne({ _id: userId }, { _id: false, givenName: true, familyName: true, emailAddress: true }).lean();
-        return res.status(200).json(user);
+        return res.status(200).json({ user: user });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ msg: err });

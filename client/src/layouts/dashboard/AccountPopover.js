@@ -66,13 +66,17 @@ export default function AccountPopover() {
   // Get user information
   useEffect(() => {
     if (Cookies.get('token')) {
-      console.log('success');
+      // console.log('success');
+      // console.log(Cookies.get('token'));
+      // console.log(Cookies.get('userId'));
       axios
-        .get('/profile')
+        .get('/profile', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
         .then((response) => {
           if (response.status === 200) {
-            console.log('get user success');
-            console.log(response.data.user);
+            // console.log('get user success');
+            // console.log(response);
             setGivenName(response.data.user.givenName);
             setFamilyName(response.data.user.familyName);
             setEmail(response.data.user.emailAddress);
@@ -133,21 +137,10 @@ export default function AccountPopover() {
 
   // Logout
   const handleLogout = () => {
-    axios
-      .post('/logout')
-      .then((response) => {
-        if (response.status === 200) {
-          navigate('/', { replace: true });
-        } else {
-          handleClose();
-          alert('logout failed!');
-        }
-      })
-      .catch((error) => {
-        alert('logout failed!');
-        handleClose();
-      });
+    Cookies.remove('token');
+    navigate('/', { replace: true });
   };
+
   return (
     <>
       <IconButton

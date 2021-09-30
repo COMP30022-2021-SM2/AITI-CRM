@@ -37,7 +37,9 @@ export default function EcommerceShop(props) {
   useEffect(() => {
     if (Cookies.get('token')) {
       axios
-        .get('/product')
+        .get('/product', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
         .then((response) => {
           setProducts(response.data.products);
         })
@@ -53,7 +55,11 @@ export default function EcommerceShop(props) {
   // insert new product
   const insert = () => {
     axios
-      .post('/product', { name: newName, description: newDescription, avaliable: true })
+      .post(
+        '/product',
+        { name: newName, description: newDescription, avaliable: true },
+        { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+      )
       .then((response) => {
         if (response.status === 200) {
           console.log('insert success');
