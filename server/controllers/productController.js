@@ -33,21 +33,19 @@ const updateProduct = async(req, res) => {
     try{
         let productName = req.body.name;
         let productDescription = req.body.description;
-        let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
         let productAvailable = req.body.available
 
         // update field that changed
-        if (productTag) {
+        if (productName) {
+            let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
             await Product.updateOne({userId: userId, tag: productRequest}, {$set: {tag: productTag}})
             productRequest = productTag;
-        }
-        if (productName) {
             await Product.updateOne({userId: userId, tag: productRequest}, {$set: {name: productName}})
         }
         if (productDescription) {
             await Product.updateOne({userId: userId, tag: productRequest}, {$set: {description: productDescription}})
         }
-        if (productAvailable) {
+        if (productAvailable !== null) {
             await Product.updateOne({userId: userId, tag: productRequest}, {$set: {available: productAvailable}})
         }
         
@@ -83,7 +81,7 @@ const getOneProduct = async(req, res)=>{
     try {
         // find the product
         const product = await Product.find({userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true , available: 'true' }).lean()
-            // if product does not exist
+        // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
             return res.status(400).json({ msg: 'Product does not exist!' })
@@ -101,11 +99,6 @@ const getAllProduct = async(req, res) => {
     userId = new ObjectId(userId)
     try{
         const products = await Product.find({ userId: userId }, { _id: false, userId: false }).lean()
-
-        if (products.length == 0) {
-            return res.json("Please insert product first")
-        }
-
         return res.status(200).json(products)
     }catch (err) {
         console.log("failed to get product to the database!")

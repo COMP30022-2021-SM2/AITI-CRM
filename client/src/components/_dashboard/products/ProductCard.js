@@ -21,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import ColorizeIcon from '@material-ui/icons/Colorize';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { styled } from '@material-ui/core/styles';
+import Cookies from 'js-cookie';
 import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
@@ -41,11 +42,7 @@ ShopProductCard.propTypes = {
 // Product card function
 export default function ShopProductCard({ product }) {
   const { tag, name, available, description } = product;
-  // // check the coming product
-  // useEffect(() => {
-  //   console.log(product);
-  // }, []);
-
+  const [displayLabel, setDisplay] = useState(available);
   const [openEdit, setEditOpen] = useState(false);
   const [newName, setName] = useState('');
   const [newDescription, setDescription] = useState('');
@@ -66,8 +63,13 @@ export default function ShopProductCard({ product }) {
 
   // Handle avaliability
   const handleLabel = () => {
+    setDisplay(!displayLabel);
     axios
-      .put(`/product/update/?tag=${tag}`, { available: !available })
+      .put(
+        `/product/${tag}`,
+        { available: !available },
+        { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+      )
       .then((response) => {
         if (response.status === 200) {
           console.log('avaliability is updated');
@@ -75,17 +77,19 @@ export default function ShopProductCard({ product }) {
           console.log('update fail');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         console.log('update fail');
       });
   };
 
   // Handle update
   const submitUpdate = () => {
-    console.log(newName);
-    console.log(newDescription);
     axios
-      .put(`/product/update/?tag=${tag}`, { name: newName, description: newDescription })
+      .put(
+        `/product/${tag}`,
+        { name: newName, description: newDescription },
+        { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+      )
       .then((response) => {
         if (response.status === 200) {
           console.log('product info is updated');
@@ -93,7 +97,7 @@ export default function ShopProductCard({ product }) {
           console.log('info update fail');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         console.log('update fail');
       });
   };
@@ -101,7 +105,7 @@ export default function ShopProductCard({ product }) {
   // Handle delete
   const submitDelete = () => {
     axios
-      .delete(`/product/delete/?tag=${tag}`)
+      .delete(`/product/${tag}`, { headers: { Authorization: `Bearer ${Cookies.get('token')}` } })
       .then((response) => {
         if (response.status === 200) {
           console.log('product delete success');
@@ -109,7 +113,7 @@ export default function ShopProductCard({ product }) {
           console.log('delete fail');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         console.log('delete fail');
       });
   };
@@ -159,7 +163,7 @@ export default function ShopProductCard({ product }) {
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <FormControlLabel
-            control={<Switch checked={available} onChange={handleLabel} />}
+            control={<Switch checked={displayLabel} onChange={handleLabel} />}
             label="Available"
           />
           <IconButton
@@ -201,7 +205,7 @@ export default function ShopProductCard({ product }) {
                 id="name"
                 label="Description"
                 type="text"
-                defaultValue="{description}"
+                defaultValue={description}
                 fullWidth
                 onChange={(e) => setDescription(e.target.value)}
               />

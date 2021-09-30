@@ -67,14 +67,14 @@ const login = async(req, res, next) => {
 }
 
 const updateProfile = async(req, res) => {
-    const userId = req.params.userId;
+    let userId = new ObjectId(req.user._id);
     try {
         let user = await User.findOne({ _id: userId })
         let givenName = req.body.givenName;
         let familyName = req.body.familyName;
         let emailAddress = req.body.emailAddress;
         let password = req.body.password;
-
+        
         // update the information that User has changed
         if (givenName){
             await User.updateOne({ _id: userId }, { $set: { givenName: givenName } })
@@ -89,8 +89,7 @@ const updateProfile = async(req, res) => {
             if (!validatePassword(password)) {
                   return res.status(400).json({ msg: "Password must be longer than 8 characters!" });
             }
-            await User.updateOne({ _id: userId }, { $set: { password: User.generateHash(req.body.password) } })
-    
+            await User.updateOne({ _id: userId }, { $set: { password: User().generateHash(req.body.password) } })
         }
         
         // get User after updating
