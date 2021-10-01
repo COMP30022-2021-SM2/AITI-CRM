@@ -6,10 +6,6 @@
 const request = require('supertest');
 const app = require('../../app'); // the express server
 
-/*
-  declare the token variable in a scope accessible
-  by the entire test suite
-*/
 let token;
 
 beforeAll((done) => {

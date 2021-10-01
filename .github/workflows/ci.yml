@@ -1,0 +1,42 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: client & Server CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [master]
+
+jobs:
+
+  integration_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["16"]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install client Dependencies
+        run: |
+          cd client/
+          npm ci
+      
+      - name: Install server Dependencies
+        run: |
+          cd server/
+          npm ci
+          
+      - name: Run server integration tests on localhost
+        run: |
+          cd server/
+          npm test

@@ -3,7 +3,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const mongoose = require('mongoose');
 
 // add product
-const addProduct = async(req,res) => {
+const addProduct = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     let name = req.body.name;
     let tag = name.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
@@ -26,11 +26,11 @@ const addProduct = async(req,res) => {
 }
 
 // update product information
-const updateProduct = async(req, res) => {
+const updateProduct = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productRequest = req.params.tag
-    try{
+    try {
         let productName = req.body.name;
         let productDescription = req.body.description;
         let productAvailable = req.body.available
@@ -38,18 +38,18 @@ const updateProduct = async(req, res) => {
         // update field that changed
         if (productName) {
             let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
-            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {tag: productTag}})
+            await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { tag: productTag } })
             productRequest = productTag;
-            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {name: productName}})
+            await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { name: productName } })
         }
         if (productDescription) {
-            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {description: productDescription}})
+            await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { description: productDescription } })
         }
         if (productAvailable !== null) {
-            await Product.updateOne({userId: userId, tag: productRequest}, {$set: {available: productAvailable}})
+            await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { available: productAvailable } })
         }
-        
-        let product = await Product.findOne({userId: userId, tag: productRequest});
+
+        let product = await Product.findOne({ userId: userId, tag: productRequest });
         if (product) {
             console.log("Update product successfully")
             return res.status(200).json(product);
@@ -61,26 +61,26 @@ const updateProduct = async(req, res) => {
     catch (err) {
         console.log(err)
         return res.status(500).json({ msg: err })
-    } 
+    }
 }
 
 // delete product 
-const deleteProduct = async(req, res) => {
+const deleteProduct = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productTag = req.params.tag;
-    await Product.findOneAndDelete({userId: userId, tag: productTag })
-    .then( (result) => res.status(200).json(result))
-    .catch( (err) => res.status(500).json({ msg: err }));
+    await Product.findOneAndDelete({ userId: userId, tag: productTag })
+        .then((result) => res.status(200).json(result))
+        .catch((err) => res.status(500).json({ msg: err }));
 }
 
 // get particular product
-const getOneProduct = async(req, res)=>{
+const getOneProduct = async (req, res) => {
     let userId = req.cookies['userId'];
     userId = new ObjectId(userId);
     try {
         // find the product
-        const product = await Product.find({userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true , available: 'true' }).lean()
+        const product = await Product.find({ userId: userId, tag: req.params.tag }, { tag: true, name: true, price: true, photo: true, description: true, available: 'true' }).lean()
         // if product does not exist
         if (product.length == 0) {
             console.log("Product does not exist!")
@@ -94,13 +94,13 @@ const getOneProduct = async(req, res)=>{
 }
 
 // get all product
-const getAllProduct = async(req, res) => {
+const getAllProduct = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId)
-    try{
+    try {
         const products = await Product.find({ userId: userId }, { _id: false, userId: false }).lean()
         return res.status(200).json(products)
-    }catch (err) {
+    } catch (err) {
         console.log("failed to get product to the database!")
         return res.status(500).json({ msg: err });
     }
@@ -112,7 +112,7 @@ const getAvailableProduct = async (req, res) => {
     console.log(userId)
     userId = new ObjectId(userId)
     try {
-        const availableProducts = await Product.find({ userId: userId, available: 'true' }, { _id: false, userId: false}).lean()
+        const availableProducts = await Product.find({ userId: userId, available: 'true' }, { _id: false, userId: false }).lean()
 
         if (availableProducts.length == 0) {
             return res.json("No available product")
