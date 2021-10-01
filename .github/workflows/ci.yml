@@ -7,9 +7,11 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [master]
 
 jobs:
-  build:
+  integration_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,3 +34,8 @@ jobs:
         run: |
           cd server/
           npm ci
+          
+      - name: Run server integration tests on localhost
+        run: |
+          cd server
+          npm test
