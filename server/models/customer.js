@@ -15,11 +15,11 @@ const customerSchema = new mongoose.Schema({
     userId: { type: mongoose.Types.ObjectId, require: true, ref: "User" },
     givenName: { type: String, require: true },
     familyName: { type: String, require: true },
-    emailAddress: { type: String, require: true, unique: true },
-    phoneNumber: { type: Number, require: true, unique: true},
+    emailAddress: { type: String, require: true },
+    phoneNumber: { type: Number, require: true},
     companyName: { type: String, require: true },
     address: { type: String },
-    abn: { type: Number, require: true, unique: true },
+    abn: { type: Number, require: true },
     notes : String
 })
 
