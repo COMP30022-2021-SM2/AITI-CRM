@@ -39,3 +39,14 @@ jobs:
         run: |
           cd server
           npm test
+          
+  deploy_server:
+      runs-on: ubuntu-latest
+      needs : [integration_tests]
+      steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_DEPLOY_API_KEY}}
+          heroku_app_name: "aiti-crm-server" 
+          heroku_email: "ztom@student.unimelb.edu.au"
