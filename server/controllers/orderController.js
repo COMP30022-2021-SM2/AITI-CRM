@@ -122,7 +122,7 @@ const updateOrderStatus = async(req, res) => {
     let orderId = req.params.orderId
     try{
         let status = req.body.status
-        await Order.updateOne({_id: orderId}, {$set: {status: status}})
+        await Order.updateOne({_id: orderId}, {$set: {status: status}}, { timestamps: false })
 
         let order = await Order.findOne({_id: orderId});
         if (order) {
