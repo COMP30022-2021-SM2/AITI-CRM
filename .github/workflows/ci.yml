@@ -20,7 +20,7 @@ jobs:
         with:
           heroku_api_key: ${{secrets.HEROKU_DEPLOY_API_KEY}}
           heroku_app_name: "aiti-crm-server" 
-          heroku_email: "ztom@student.unimelb.edu.au"
+          heroku_email: ${{secrets.DEPLOY_EMAIL}}
 
   integration_tests:
     runs-on: ubuntu-latest
