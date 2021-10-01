@@ -23,8 +23,6 @@ export default function DashboardApp(props) {
   useEffect(() => {
     if (Cookies.get('token')) {
       console.log('success');
-      console.log(Cookies.get('token'));
-      // console.log(Cookies.get('userId'));
     } else {
       navigate('/404', { replace: true });
     }

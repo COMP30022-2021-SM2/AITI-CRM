@@ -1,4 +1,3 @@
-// import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
 // material
 import { Icon } from '@iconify/react';
@@ -16,11 +15,9 @@ import Cookies from 'js-cookie';
 import axios from '../commons/axios';
 import Page from '../components/Page';
 import { ProductList } from '../components/_dashboard/products';
-//
-import PRODUCTS from '../_mocks_/products';
 
 // ----------------------------------------------------------------------
-export default function EcommerceShop(props) {
+export default function EcommerceShop() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
@@ -37,33 +34,40 @@ export default function EcommerceShop(props) {
   useEffect(() => {
     if (Cookies.get('token')) {
       axios
-        .get('/product')
-        .then((response) => {
-          setProducts(response.data.products);
+        .get('/product', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
         })
-        .catch((error) => {
+        .then((response) => {
+          if (response.status === 200) {
+            setProducts(response.data);
+          }
+        })
+        .catch(() => {
           console.log('get products failed');
         });
-      console.log(products);
     } else {
       navigate('/404', { replace: true });
     }
+    console.log(products);
   }, []);
 
   // insert new product
   const insert = () => {
     axios
-      .post('/product', { name: newName, description: newDescription, avaliable: true })
+      .post(
+        '/product',
+        { name: newName, description: newDescription, avaliable: true },
+        { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+      )
       .then((response) => {
         if (response.status === 200) {
-          console.log('insert success');
-          console.log(response.data);
-          setName('');
-          setDescription('');
+          console.log('Product is inserted!');
+          setName();
+          setDescription();
         }
       })
-      .catch((error) => {
-        console.log('fail insert');
+      .catch(() => {
+        alert('Fail insert! Remember you cant have products with the same name!');
       });
   };
 
@@ -122,7 +126,7 @@ export default function EcommerceShop(props) {
             </DialogActions>
           </Dialog>
         </Stack>
-        <ProductList products={PRODUCTS} />
+        <ProductList products={products} />
       </Container>
     </Page>
   );

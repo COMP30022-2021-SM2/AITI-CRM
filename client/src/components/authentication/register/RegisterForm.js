@@ -12,9 +12,10 @@ import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
-export default function RegisterForm(props) {
+export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { errors, values, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
@@ -57,14 +58,12 @@ export default function RegisterForm(props) {
             navigate('/', { replace: true });
           }
         })
-        .catch((error) => {
+        .catch(() => {
           alert('Account register failed!');
           window.location.reload();
         });
     }
   });
-
-  const { errors, values, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>

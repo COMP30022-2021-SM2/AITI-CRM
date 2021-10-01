@@ -77,9 +77,9 @@ module.exports = function(passport) {
             // if we found user, provide the user instance to passport
             if (user) {
                 // If previously saved user cookies does not match with jwt extract
-                if (user.id != req.cookies['userId']){
-                    return done(null, false);
-                }
+                // if (user.id != req.cookies['userId']){
+                //     return done(null, false);
+                // }
                 return done(null, user);
             } else { // otherwise assign false to indicate that authentication failed
                 return done(null, false);

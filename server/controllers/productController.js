@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 // add product
 const addProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     let name = req.body.name;
     let tag = name.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
     const newProduct = new Product({
@@ -27,27 +27,25 @@ const addProduct = async (req, res) => {
 
 // update product information
 const updateProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productRequest = req.params.tag
     try {
         let productName = req.body.name;
         let productDescription = req.body.description;
-        let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
         let productAvailable = req.body.available
 
         // update field that changed
-        if (productTag) {
+        if (productName) {
+            let productTag = productName.toLowerCase().replace(/\s+/g, ' ').trim().replace(' ', '-');
             await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { tag: productTag } })
             productRequest = productTag;
-        }
-        if (productName) {
             await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { name: productName } })
         }
         if (productDescription) {
             await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { description: productDescription } })
         }
-        if (productAvailable) {
+        if (productAvailable !== null) {
             await Product.updateOne({ userId: userId, tag: productRequest }, { $set: { available: productAvailable } })
         }
 
@@ -68,7 +66,7 @@ const updateProduct = async (req, res) => {
 
 // delete product 
 const deleteProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId);
     let productTag = req.params.tag;
     await Product.findOneAndDelete({ userId: userId, tag: productTag })
@@ -97,15 +95,10 @@ const getOneProduct = async (req, res) => {
 
 // get all product
 const getAllProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
     userId = new ObjectId(userId)
     try {
         const products = await Product.find({ userId: userId }, { _id: false, userId: false }).lean()
-
-        if (products.length == 0) {
-            return res.json("Please insert product first")
-        }
-
         return res.status(200).json(products)
     } catch (err) {
         console.log("failed to get product to the database!")
@@ -115,7 +108,8 @@ const getAllProduct = async (req, res) => {
 
 // get all available product
 const getAvailableProduct = async (req, res) => {
-    let userId = req.cookies['userId'];
+    let userId = new ObjectId(req.user._id);
+    console.log(userId)
     userId = new ObjectId(userId)
     try {
         const availableProducts = await Product.find({ userId: userId, available: 'true' }, { _id: false, userId: false }).lean()

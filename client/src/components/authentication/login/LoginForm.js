@@ -44,7 +44,6 @@ export default function LoginForm(props) {
         .then((response) => {
           if (response.status === 200) {
             Cookies.set('token', response.data.token);
-            // Cookies.set('userId', response.data.data.userId);
             navigate('/dashboard', { replace: true });
           }
         })

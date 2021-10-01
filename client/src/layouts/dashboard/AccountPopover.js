@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,30 +21,33 @@ import {
   InputAdornment
 } from '@material-ui/core';
 // components
-import { Navigate } from 'react-router';
 import Cookies from 'js-cookie';
 import axios from '../../commons/axios';
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
-// import { negate } from 'lodash';
 
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
-  // const { givenName, familyName, emailAddress, password } = user;
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
   const [open, setOpen] = useState(false);
+  const [givenName, setGivenName] = useState();
+  const [familyName, setFamilyName] = useState();
+  const [email, setEmail] = useState();
+  const [newGivenName, setNewGivenName] = useState('');
+  const [newFamilyName, setNewFamilyName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newConfirmPassword, setConfirmPassword] = useState('');
+
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-
-  // Handle profile update
   const [openDialog, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -54,35 +56,26 @@ export default function AccountPopover() {
     setDialogOpen(false);
   };
 
-  const [givenName, setGivenName] = useState();
-  const [familyName, setFamilyName] = useState();
-  const [email, setEmail] = useState();
-
-  const [newGivenName, setNewGivenName] = useState('');
-  const [newFamilyName, setNewFamilyName] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [newConfirmPassword, setConfirmPassword] = useState('');
-
   // Get user information
   useEffect(() => {
     if (Cookies.get('token')) {
-      console.log('success');
       axios
-        .get('/profile')
+        .get('/profile', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
         .then((response) => {
           if (response.status === 200) {
-            console.log('get user success');
-            console.log(response.data.user);
             setGivenName(response.data.user.givenName);
             setFamilyName(response.data.user.familyName);
             setEmail(response.data.user.emailAddress);
           }
         })
-        .catch((error) => {
+        .catch(() => {
           console.log('cant get user info');
         });
-      setNewGivenName();
-      setNewFamilyName();
+      setNewGivenName(givenName);
+      setNewFamilyName(familyName);
+      setNewEmail(email);
       setNewPassword();
       setConfirmPassword();
     } else {
@@ -92,62 +85,43 @@ export default function AccountPopover() {
 
   // Update profile
   const submitUpdate = () => {
-    if (newPassword !== '' && newConfirmPassword !== '') {
-      axios
-        .put('/profile', {
+    if (newPassword && newConfirmPassword && newPassword !== newConfirmPassword) {
+      alert('Password update fail! Make sure you enter the password corretly!');
+      return;
+    }
+    axios
+      .put(
+        '/profile',
+        {
           givenName: newGivenName,
           familyName: newFamilyName,
-          password: newPassword,
-          confirmPassword: newConfirmPassword
-        })
-        .then((response) => {
-          if (response.data.success) {
-            console.log('profile update success');
-          } else {
-            console.log('profile update fail');
-          }
-        })
-        .catch((error) => {
-          alert('Profile update failed!');
-        });
-    } else {
-      console.log(newGivenName);
-      console.log(newFamilyName);
-      axios
-        .put('/profile', {
-          givenName: newGivenName,
-          familyName: newFamilyName
-        })
-        .then((response) => {
-          if (response.data.success) {
-            console.log('profile update success');
-          } else {
-            console.log('profile update fail');
-          }
-        })
-        .catch((error) => {
-          alert('Profile update failed!');
-        });
+          emailAddress: newEmail,
+          password: newPassword
+        },
+        {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('profile update success');
+        }
+      })
+      .catch(() => {
+        alert('Profile update failed!');
+      });
+    if (newEmail) {
+      alert('Please login in again with your new email address!');
+      navigate('/', { replace: true });
     }
   };
 
   // Logout
   const handleLogout = () => {
-    axios
-      .post('/logout')
-      .then((response) => {
-        if (response.status === 200) {
-          navigate('/', { replace: true });
-        } else {
-          handleClose();
-          alert('logout failed!');
-        }
-      })
-      .catch((error) => {
-        alert('logout failed!');
-        handleClose();
-      });
+    Cookies.remove('token');
+    navigate('/', { replace: true });
   };
+
   return (
     <>
       <IconButton
@@ -182,12 +156,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {/* {account.displayName} */}
             {givenName}
             {familyName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {/* {account.email} */}
             {email}
           </Typography>
         </Box>
@@ -213,7 +185,6 @@ export default function AccountPopover() {
           </Button>
         </Box>
       </MenuPopover>
-      {/* <SimpleDialog open={openDialog} onClose={handleDialogClose} /> */}
       <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={openDialog}>
         <DialogTitle id="simple-dialog-title">Update personal information</DialogTitle>
         <DialogContent>
@@ -223,7 +194,6 @@ export default function AccountPopover() {
             label="First name"
             type="text"
             defaultValue={givenName}
-            value={givenName}
             onChange={(e) => setNewGivenName(e.target.value)}
             fullWidth
           />
@@ -232,12 +202,26 @@ export default function AccountPopover() {
             label="Last name"
             type="text"
             defaultValue={familyName}
-            value={familyName}
             onChange={(e) => setNewFamilyName(e.target.value)}
             fullWidth
           />
+        </DialogContent>
+        <DialogContent>
           <DialogContentText>
-            Skip following if you don't want to change your password.
+            You will be kicked out after changing email, login again with new email!
+          </DialogContentText>
+          <TextField
+            margin="dense"
+            label="Email"
+            type="email"
+            defaultValue={email}
+            onChange={(e) => setNewEmail(e.target.value)}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText>
+            If you don't want to change your password, just skip.
           </DialogContentText>
           <TextField
             margin="dense"
