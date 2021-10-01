@@ -12,17 +12,6 @@ on:
 
 jobs:
 
-  deploy_server:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v2
-      - run: cd server/
-      - uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_DEPLOY_API_KEY}}
-          heroku_app_name: "aiti-crm-server" 
-          heroku_email: ${{secrets.DEPLOY_EMAIL}}
-
   integration_tests:
     runs-on: ubuntu-latest
     strategy:
