@@ -23,7 +23,7 @@ orderRouter.put('/status/:orderId', orderController.updateOrderStatus)
 orderRouter.put('/update/:orderId', orderController.updateOrderDetails)
 
 // delete list of orders
-orderRouter.delete('', orderController.deleteListOrder)
+orderRouter.put('', orderController.deleteListOrder)
 
 // delete one order
 orderRouter.delete('/:orderId', orderController.deleteOrder)

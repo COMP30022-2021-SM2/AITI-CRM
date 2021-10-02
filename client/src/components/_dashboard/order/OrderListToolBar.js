@@ -56,9 +56,10 @@ OrderListToolbar.propTypes = {
   onFilterName: PropTypes.func
 };
 
-export default function OrderListToolbar({ numSelected, filterName, onFilterName, _id }) {
+export default function OrderListToolbar({ numSelected, filterName, onFilterName, orderids }) {
   // const { _id } = order;
-  console.log(_id);
+  // console.log(JSON.stringify(_id));
+  // const { _id } = orderids;
 
   const [open, setOpen] = useState(false);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
@@ -77,8 +78,19 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
 
   // Handle delete
   const submitDelete = () => {
+    console.log(`orders`);
+    console.log(JSON.stringify(orderids));
+    console.log(Cookies.get('token'));
     axios
-      .delete(`/order/${_id}`, { headers: { Authorization: `Bearer ${Cookies.get('token')}` } })
+      .put(
+        `/order`,
+        {
+          orderid: orderids
+        },
+        {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           console.log('orders delete success');
@@ -86,7 +98,8 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
           console.log('orders delete fail');
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         console.log('orders delete fail2');
       });
   };

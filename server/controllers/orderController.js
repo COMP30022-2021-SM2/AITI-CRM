@@ -112,6 +112,7 @@ const getGrapeOrder = async(req, res) => {
 // delete order
 const deleteOrder = async(req, res) => {
     let orderId = req.params.orderId;
+    console.log(orderId)
     await Order.findOneAndDelete({_id: orderId })
         .then( (result) => res.status(200).json(result))
         .catch( (err) => res.status(500).json({ msg: err }));
@@ -120,7 +121,9 @@ const deleteOrder = async(req, res) => {
 // delete list of order
 const deleteListOrder = async(req, res) => {
     let userId = new ObjectId(req.user._id);
-    let orders = req.body
+    let orders = req.body.orderid
+    console.log('1')
+    console.log(orders)
     try {
         // delete selected orders
         for (let i = 0; i < orders.length; i++) {

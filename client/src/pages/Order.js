@@ -270,7 +270,7 @@ export default function Order() {
               numSelected={selected.length}
               filterName={filterName}
               onFilterName={handleFilterByName}
-              _id={selected}
+              orderids={selected}
             />
 
             <Scrollbar>
