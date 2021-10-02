@@ -125,7 +125,7 @@ const deleteListOrder = async(req, res) => {
         // delete selected orders
         for (let i = 0; i < orders.length; i++) {
             console.log(orders[i])
-            await Order.findOneAndDelete({_id: orders[i]["_id"]})
+            await Order.findOneAndDelete({_id: orders[i]})
         }
         const currentOrder = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
         return res.status(200).json(currentOrder)
