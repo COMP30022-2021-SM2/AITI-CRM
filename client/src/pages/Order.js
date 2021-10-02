@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
-// import axios from '../commons/axios.js';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,7 +14,6 @@ import { filter } from 'lodash';
 import {
   Card,
   Table,
-  Avatar,
   Checkbox,
   TableRow,
   TableBody,
@@ -33,21 +31,17 @@ import { makeStyles } from '@material-ui/styles';
 // components
 import { bgcolor } from '@material-ui/system';
 import TextField from '@material-ui/core/TextField';
+import Moment from 'react-moment';
+import Cookies from 'js-cookie';
+import axios from '../commons/axios';
 import Page from '../components/Page';
-import {
-  OrderPostCard,
-  OrderPostsSort,
-  OrderListToolBar,
-  OrderPostsSearch,
-  OrderListHead,
-  OrderMoreMenu
-} from '../components/_dashboard/order';
-import POSTS from '../_mocks_/order';
+import { OrderListToolBar, OrderListHead, OrderMoreMenu } from '../components/_dashboard/order';
 
 // components
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
+
 //
 import USERLIST from '../_mocks_/user';
 
@@ -64,10 +58,11 @@ const SORT_OPTIONS = [
 // sorting table related functions
 const TABLE_HEAD = [
   { id: 'name', label: 'Customer Name', alignRight: false },
-  // { id: 'details', label: 'Details', alignRight: false },
+
   // { id: 'role', label: 'Role', alignRight: false },
   { id: 'isVerified', label: 'Total Deal Amount', alignRight: false },
   { id: 'status', label: 'Order Status', alignRight: false },
+  { id: 'details', label: 'Last Updated', alignRight: false },
   { id: '' }
 ];
 
@@ -97,7 +92,10 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_user) => _user.customerId.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -143,17 +141,32 @@ SimpleDialog.propTypes = {
 };
 
 export default function Order() {
-  // const classes = useStyles();
-
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [orders, setOrders] = useState([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('recieved the orders from backend!');
+            setOrders(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    } else {
+      navigate('/404', { replace: true });
+    }
+    // console.log(orders.length);
+    // console.log(orders);
+  }, []);
 
   // // input textbox related function
   // const [value, setValue] = React.useState('');
@@ -169,6 +182,14 @@ export default function Order() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -177,8 +198,9 @@ export default function Order() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = orders.map((n) => n._id);
       setSelected(newSelecteds);
+      console.log(newSelecteds);
       return;
     }
     setSelected([]);
@@ -200,6 +222,7 @@ export default function Order() {
       );
     }
     setSelected(newSelected);
+    console.log(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -215,9 +238,9 @@ export default function Order() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -226,117 +249,128 @@ export default function Order() {
       <Container>
         <Stack direction="row" algnItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h3">Order</Typography>
-          <Button
+          {/* <Button
             variant="contained"
             onClick={handleClickOpen}
             startIcon={<Icon icon={plusFill} />}
           >
             New Order
-          </Button>
+          </Button> */}
         </Stack>
         <SimpleDialog open={open} onClose={handleClose} />
+        <div> </div>
 
-        <Stack mb={5} direction="row" alignItems="right" justifyContent="space-between">
-          {/* <OrderPostsSearch posts={POSTS} /> */}
-          {/* <OrderPostsSort options={SORT_OPTIONS} /> */}
-        </Stack>
+        {/* <Stack mb={5} direction="row" alignItems="right" justifyContent="space-between">
+          <OrderPostsSearch posts={POSTS} />
+          <OrderPostsSort options={SORT_OPTIONS} />
+        </Stack> */}
+        {orders.length > 0 ? (
+          <Card>
+            <OrderListToolBar
+              numSelected={selected.length}
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+              _id={selected}
+            />
 
-        <Card>
-          <OrderListToolBar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <OrderListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="1px">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          {/* <TableCell align="left">{company}</TableCell> */}
-                          {/* <TableCell align="left">{role}</TableCell> */}
-                          <TableCell align="left">{isVerified ? '123' : '123'}</TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant="ghost"
-                              color={(status === 'ongoing' && 'error') || 'success'}
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <OrderMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-                {isUserNotFound && (
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <OrderListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={orders.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
                   <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                    {filteredUsers
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const { updateTime, customerId, total, status, details } = row;
+                        const isItemSelected = selected.indexOf(row._id) !== -1;
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
+                        return (
+                          <TableRow
+                            hover
+                            key={customerId.givenName}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                onChange={(event) => handleClick(event, row._id)}
+                              />
+                            </TableCell>
+                            <TableCell component="th" scope="row" padding="1px">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <Typography variant="subtitle2" noWrap>
+                                  {customerId.givenName}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                            {/* <TableCell align="left">{company}</TableCell> */}
+                            {/* <TableCell align="left">{role}</TableCell> */}
+                            <TableCell align="left">{total}</TableCell>
+                            <TableCell align="left">
+                              <Label
+                                variant="ghost"
+                                color={
+                                  (status === 'ongoing' && 'error') ||
+                                  (status === 'cancelled' && 'error') ||
+                                  'success'
+                                }
+                              >
+                                {sentenceCase(status)}
+                              </Label>
+                            </TableCell>
+                            <TableCell align="left">
+                              <Moment format="dddd DD.MM.YYYY HH:mm">{updateTime}</Moment>{' '}
+                            </TableCell>
+
+                            <TableCell align="right">
+                              <OrderMoreMenu order={row} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                  {isUserNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <SearchNotFound searchQuery={filterName} />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={orders.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Card>
+        ) : (
+          <div style={{ textAlign: 'center' }}> currently you've got no orders </div>
+        )}
       </Container>
     </Page>
   );
