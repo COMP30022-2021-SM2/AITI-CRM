@@ -117,6 +117,26 @@ const deleteOrder = async(req, res) => {
         .catch( (err) => res.status(500).json({ msg: err }));
 }
 
+// delete list of order
+const deleteListOrder = async(req, res) => {
+    let userId = new ObjectId(req.user._id);
+    let orders = req.body
+    try {
+        // delete selected orders
+        for (let i = 0; i < orders.length; i++) {
+            console.log(orders[i])
+            await Order.findOneAndDelete({_id: orders[i]["_id"]})
+        }
+        const currentOrder = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
+        return res.status(200).json(currentOrder)
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ msg: err })
+    }
+
+}
+
 // update order status
 const updateOrderStatus = async(req, res) => {
     let orderId = req.params.orderId
@@ -169,4 +189,4 @@ const updateOrderDetails = async(req, res) => {
 
 
 
-module.exports ={addOrder, getAllOrder, deleteOrder, getCustomerOrder, updateOrderStatus, updateOrderDetails, getGrapeOrder}
+module.exports ={addOrder, getAllOrder, deleteOrder, getCustomerOrder, updateOrderStatus, updateOrderDetails, getGrapeOrder, deleteListOrder}

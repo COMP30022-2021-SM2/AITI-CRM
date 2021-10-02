@@ -22,7 +22,12 @@ orderRouter.put('/status/:orderId', orderController.updateOrderStatus)
 // update order details
 orderRouter.put('/update/:orderId', orderController.updateOrderDetails)
 
-// delete product
+// delete list of orders
+orderRouter.delete('', orderController.deleteListOrder)
+
+// delete one order
 orderRouter.delete('/:orderId', orderController.deleteOrder)
+
+
 
 module.exports = orderRouter;
