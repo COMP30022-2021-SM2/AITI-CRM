@@ -29,11 +29,12 @@ import {
 import ListItem from '@material-ui/core/ListItem';
 import Cookies from 'js-cookie';
 import axios from '../../../commons/axios';
+import { AddDetail } from './detail';
 
 // ----------------------------------------------------------------------
 
 export default function OrderMoreMenu({ order }) {
-  // console.log(order);
+  console.log(order);
   const { _id, customerId, details, total, status } = order;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -174,20 +175,16 @@ export default function OrderMoreMenu({ order }) {
         <DialogContent>
           <DialogContentText> Hi, {customerId.givenName}</DialogContentText>
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
-          {/* <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
-          <TextField margin="dense" id="name" label="Product Detail" type="text" fullWidth />
-          <TextField margin="dense" id="name" label="Status" type="text" fullWidth />
-          <TextField margin="dense" id="name" label="Price" type="text" fullWidth /> */}
         </DialogContent>
-        <addDetail />
+        <AddDetail order={order} />
 
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          {/* <Button onClick={handleClose} color="primary">
             Submit
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
     );
