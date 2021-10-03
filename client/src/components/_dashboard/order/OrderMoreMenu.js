@@ -127,26 +127,6 @@ export default function OrderMoreMenu({ order }) {
       });
   };
 
-  // Handle edit update
-  // const submitUpdate = () => {
-  //   axios
-  //     .put(
-  //       `/product/${tag}`,
-  //       { name: newName, description: newDescription },
-  //       { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
-  //     )
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         console.log('product info is updated');
-  //       } else {
-  //         console.log('info update fail');
-  //       }
-  //     })
-  //     .catch(() => {
-  //       console.log('update fail');
-  //     });
-  // };
-
   // Handle delete
   const submitDelete = () => {
     axios
