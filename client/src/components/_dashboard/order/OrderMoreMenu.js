@@ -1,10 +1,11 @@
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
+import { ArrayInput, SimpleFormIterator, DateInput, TextInput } from 'react-admin';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -91,7 +92,7 @@ export default function OrderMoreMenu({ order }) {
     axios
       .put(
         `/order/status/${_id}`,
-        { status: 'onging' },
+        { status: 'ongoing' },
         { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
       )
       .then((response) => {
@@ -161,7 +162,7 @@ export default function OrderMoreMenu({ order }) {
       });
   };
 
-  function SimpleDialog(props) {
+  function EditDialog(props) {
     const { onClose, open } = props;
     const handleClose = () => {
       onClose(true);
@@ -171,12 +172,15 @@ export default function OrderMoreMenu({ order }) {
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle id="edit-dialog-title">Edit your order </DialogTitle>
         <DialogContent>
+          <DialogContentText> Hi, {customerId.givenName}</DialogContentText>
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
-          <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
+          {/* <TextField autoFocus margin="dense" id="name" label="Customer ID" type="text" fullWidth />
           <TextField margin="dense" id="name" label="Product Detail" type="text" fullWidth />
           <TextField margin="dense" id="name" label="Status" type="text" fullWidth />
-          <TextField margin="dense" id="name" label="Price" type="text" fullWidth />
+          <TextField margin="dense" id="name" label="Price" type="text" fullWidth /> */}
         </DialogContent>
+        <addDetail />
+
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
@@ -188,11 +192,6 @@ export default function OrderMoreMenu({ order }) {
       </Dialog>
     );
   }
-
-  // SimpleDialog.propTypes = {
-  //   onClose: PropTypes.func.isRequired,
-  //   open: PropTypes.bool.isRequired
-  // };
 
   function DeleteDialog(props) {
     const { onClose, open } = props;
@@ -368,7 +367,7 @@ export default function OrderMoreMenu({ order }) {
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </ListItem>
-        <SimpleDialog open={open} onClose={handleClose} />
+        <EditDialog open={open} onClose={handleClose} />
       </Menu>
     </>
   );

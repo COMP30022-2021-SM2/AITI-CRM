@@ -166,7 +166,7 @@ export default function Order() {
     }
     // console.log(orders.length);
     // console.log(orders);
-  }, []);
+  }, [navigate]);
 
   // // input textbox related function
   // const [value, setValue] = React.useState('');
