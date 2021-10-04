@@ -9,7 +9,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 // add new order
 const addOrder = async(req, res) => {
     let userId = new ObjectId(req.user._id);
-    let cart = req.body;
+    let cart = JSON.parse(req.body.cart);
+    console.log(cart);
     let totalPrice = 0;
     // calculate total price
     for (let i=0; i < cart.length; i++){
@@ -152,8 +153,8 @@ const updateOrderStatus = async(req, res) => {
             console.log("Update order successfully")
             return res.status(200).json(order);
         } else {
-            console.log("could not find product")
-            return res.status(500).json({ msg: 'could not find product' })
+            console.log("could not find order")
+            return res.status(500).json({ msg: 'could not find order' })
         }
     } catch (err) {
             console.log(err)
@@ -163,7 +164,8 @@ const updateOrderStatus = async(req, res) => {
 
 // update order details
 const updateOrderDetails = async(req, res) => {
-    let cart = req.body;
+    let cart = JSON.parse(req.body.cart);
+    console.log(cart)
     let totalPrice = 0;
     // calculate total price
     for (let i=0; i < cart.length; i++){
@@ -172,21 +174,29 @@ const updateOrderDetails = async(req, res) => {
 
     let orderId = req.params.orderId
     if (orderId) {
-        let result = await Order.findOne({ _id: orderId }, {})
-        if (result === null || result === undefined) {
-            return res.send("no order found")
-        }
+        try{
+            let result = await Order.findOne({ _id: orderId }, {})
+            if (result === null || result === undefined) {
+                return res.send("no order found")
+            }
 
-        const orderChanged = { details: cart, total: totalPrice }
-        // update order
-        await Order.findOneAndUpdate({ _id: orderId }, orderChanged, { new: true })
-        .then( (result) => res.status(200).json(result))
-        .catch( (err) => res.status(500).json({ msg: err }));
-
+            const orderChanged = { details: cart, total: totalPrice }
+            await Order.updateOne({_id: orderId}, orderChanged)
+    
+            let order = await Order.findOne({_id: orderId});
+            if (order) {
+                console.log("Update order successfully")
+                return res.status(200).json(order);
+            } else {
+                console.log("could not find order")
+                return res.status(500).json({ msg: 'could not find order' })
+            }
+        } catch (err) {
+                console.log(err)
+                return res.status(500).json({ msg: err })
+        } 
     }
 }
-
-
 
 
 

@@ -78,9 +78,9 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import Cookies from 'js-cookie';
 import axios from '../../../../commons/axios';
 
-export default function AddDetail(props, { order }) {
+export default function AddDetail({ order }) {
   const { details, _id } = order;
-  console.log(details);
+  console.log(order);
   const navigate = useNavigate();
   const { Option } = Select;
   const [products, setProducts] = useState([]);
@@ -88,11 +88,12 @@ export default function AddDetail(props, { order }) {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    console.log('Received values of form:', values);
+    console.log('Received values of form:', values.product);
     axios
       .put(
         `/order/update/${_id}`,
-        { name: values.name, price: values.price, quantity: values.quantity },
+        { cart: JSON.stringify(values.product) },
+        // { name: values.name, price: values.price, quantity: values.quantity },
         { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
       )
       .then((response) => {
@@ -151,8 +152,8 @@ export default function AddDetail(props, { order }) {
                     <Form.Item
                       {...field}
                       label="product"
-                      name={[field.name, 'product']}
-                      fieldKey={[field.fieldKey, 'product']}
+                      name={[field.name, 'name']}
+                      fieldKey={[field.fieldKey, 'name']}
                       rules={[{ required: true, message: 'Missing product' }]}
                     >
                       <NativeSelect>
