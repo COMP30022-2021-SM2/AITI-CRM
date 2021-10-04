@@ -1,10 +1,10 @@
+import { useState, useEffect } from 'react';
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -28,13 +28,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
 // components
+import Cookies from 'js-cookie';
+import axios from '../commons/axios';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
-//
-import USERLIST from '../_mocks_/user';
+
+// import USERLIST from '../_mocks_/user';
 
 // ----------------------------------------------------------------------
 
@@ -78,7 +80,17 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
+  const nevigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [customers, setCustomers] = useState([]);
+  const [newGivenName, setGivenName] = useState('');
+  const [newFamilyName, setFamilyName] = useState('');
+  const [newEmailAddress, setEmailAddress] = useState('');
+  const [newPhoneNumber, setPhoneNumber] = useState('');
+  const [newCompanyName, setCompanyName] = useState('');
+  const [newAbn, setAbn] = useState('');
+  // add description, address, notes later
+
   const handleInsertOpen = () => {
     setOpen(true);
   };
@@ -86,59 +98,56 @@ export default function User() {
     setOpen(false);
   };
 
-  function AddCustomerDialog(props) {
-    const { onClose, open } = props;
-    const handleClose = () => {
-      onClose(true);
-    };
-    return (
-      <Dialog onClose={handleClose} aria-labelledby="add-customer-dialog" open={open}>
-        <DialogTitle id="add-customer-dialog">Add New Customer</DialogTitle>
-        <DialogContent>
-          <DialogContentText> Enter details of new customer delow. </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="customer-first-name"
-            label="First Name"
-            type="text"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="customer-last-name"
-            label="Last Name"
-            type="text"
-            fullWidth
-          />
-          <TextField margin="dense" id="customer-email" label="Email" type="text" fullWidth />
-          <TextField
-            margin="dense"
-            id="customer-phone-number"
-            label="Phone Number"
-            type="text"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="customer-company-name"
-            label="Company Name"
-            type="text"
-            fullWidth
-          />
-          <TextField margin="dense" id="customer-abn" label="ABN" type="ABN" fullWidth />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleClose} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+  // Get all customers
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/customer', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setCustomers(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get customers failed');
+        });
+    } else {
+      nevigate('/404', { replace: true });
+    }
+    console.log(customers);
+  }, []);
+
+  // insert new customer
+  const insert = () => {
+    axios
+      .post(
+        '/customer',
+        {
+          givenName: newGivenName,
+          familyName: newFamilyName,
+          emailAddress: newEmailAddress,
+          phoneNumber: newPhoneNumber,
+          companyName: newCompanyName,
+          abn: newAbn
+        },
+        { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          alert('Customer is inserted!');
+          setGivenName();
+          setFamilyName();
+          setEmailAddress();
+          setPhoneNumber();
+          setCompanyName();
+        }
+      })
+      .catch(() => {
+        alert('Fail insert!');
+      });
+  };
 
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -155,7 +164,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = customers.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -193,9 +202,9 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customers.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(customers, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -215,7 +224,89 @@ export default function User() {
           >
             New Customer
           </Button>
-          <AddCustomerDialog open={open} onClose={handleInsertClose} />
+          <Dialog onClose={handleInsertClose} aria-labelledby="add-customer-dialog" open={open}>
+            <DialogTitle id="add-customer-dialog">Add New Customer</DialogTitle>
+            <DialogContent>
+              <DialogContentText> Enter details of new customer delow. </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="customer-given-name"
+                label="Given Name"
+                type="text"
+                value={newGivenName}
+                onChange={(e) => setGivenName(e.target.value)}
+                fullWidth
+                placeholder="givenName"
+              />
+              <TextField
+                margin="dense"
+                id="customer-family-name"
+                label="Family Name"
+                type="text"
+                value={newFamilyName}
+                onChange={(e) => setFamilyName(e.target.value)}
+                fullWidth
+                placeholder="familyName"
+              />
+              <TextField
+                margin="dense"
+                id="customer-email"
+                label="Email"
+                type="text"
+                value={newEmailAddress}
+                onChange={(e) => setEmailAddress(e.target.value)}
+                fullWidth
+                placeholder="emailAddress"
+              />
+              <TextField
+                margin="dense"
+                id="customer-phone-number"
+                label="Phone Number"
+                type="text"
+                value={newPhoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                fullWidth
+                placeholder="phoneNumber"
+              />
+              <TextField
+                margin="dense"
+                id="customer-company-name"
+                label="Company Name"
+                type="text"
+                value={newCompanyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                fullWidth
+                placeholder="companyName"
+              />
+              <TextField
+                margin="dense"
+                id="customer-abn"
+                label="ABN"
+                type="text"
+                value={newAbn}
+                onChange={(e) => setAbn(e.target.value)}
+                fullWidth
+                placeholder="ABN"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleInsertClose} color="primary">
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  insert();
+                  handleInsertClose();
+                  nevigate('/dashboard/user');
+                }}
+                color="primary"
+              >
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Stack>
 
         <Card>
@@ -233,7 +324,7 @@ export default function User() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={customers.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -242,13 +333,21 @@ export default function User() {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, email, phone, company } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
+                      const {
+                        userId,
+                        givenName,
+                        familyName,
+                        emailAddress,
+                        phoneNumber,
+                        companyName,
+                        _id
+                      } = row;
+                      const isItemSelected = selected.indexOf(givenName) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={id}
+                          key={_id}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -257,17 +356,17 @@ export default function User() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
+                              onChange={(event) => handleClick(event, userId)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="1px">
+                          <TableCell component="th" scope="row" padding="normal">
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {givenName} {familyName}
                             </Typography>
                           </TableCell>
-                          <TableCell align="left">{company}</TableCell>
-                          <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{phone}</TableCell>
+                          <TableCell align="left">{companyName}</TableCell>
+                          <TableCell align="left">{emailAddress}</TableCell>
+                          <TableCell align="left">{phoneNumber}</TableCell>
                           <TableCell align="right">
                             <UserMoreMenu />
                           </TableCell>
@@ -297,7 +396,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={customers.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

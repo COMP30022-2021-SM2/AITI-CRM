@@ -307,7 +307,7 @@ export default function Order() {
                                 onChange={(event) => handleClick(event, row._id)}
                               />
                             </TableCell>
-                            <TableCell component="th" scope="row" padding="1px">
+                            <TableCell component="th" scope="row" padding="normal">
                               <Stack direction="row" alignItems="center" spacing={2}>
                                 <Typography variant="subtitle2" noWrap>
                                   {customerId.givenName}
