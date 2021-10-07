@@ -35,7 +35,43 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AppOrderCondition() {
-  const orderStatus = new Set();
+  const [orders, setOrders] = useState([]);
+  const [finished, setFinished] = useState(0);
+  const [unfinished, setUnfinished] = useState(0);
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setOrders(response.data);
+            let j = 0;
+            for (let i = 0; i < response.data.length; i += 1) {
+              if (response.data[i].status === 'completed') {
+                console.log('one order is completed');
+                j += 1;
+              }
+            }
+            setFinished(j);
+            setUnfinished(response.data.length - j);
+            console.log(finished);
+            console.log(unfinished);
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    }
+    console.log(orders);
+  }, []);
+  const orderStatus = [];
+  orderStatus[0] = finished;
+  orderStatus[1] = unfinished;
+
+  // const orderStatus = new Set();
   const theme = useTheme();
 
   const chartOptions = merge(BaseOptionChart(), {
@@ -57,42 +93,6 @@ export default function AppOrderCondition() {
       pie: { donut: { labels: { show: false } } }
     }
   });
-
-  const [orders, setOrders] = useState([]);
-  const [finished, setFinished] = useState(0);
-  const [unfinished, setUnfinished] = useState(0);
-  // Get all orders
-  useEffect(() => {
-    if (Cookies.get('token')) {
-      axios
-        .get('/order', {
-          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setOrders(response.data);
-          }
-        })
-        .catch(() => {
-          console.log('get orders failed');
-        });
-    }
-    console.log(orders.length);
-    let j = 0;
-    for (let i = 0; i < orders.length; i += 1) {
-      if (orders[i].status === 'completed') {
-        // console.log('flag!');
-        j += 1;
-        // console.log(j);
-      }
-    }
-    setFinished(j);
-    setUnfinished(orders.length - j);
-    console.log(finished);
-    console.log(unfinished);
-    orderStatus.add(finished);
-    orderStatus.add(unfinished);
-  }, []);
 
   return (
     <Card>

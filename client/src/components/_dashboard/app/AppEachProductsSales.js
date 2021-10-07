@@ -32,9 +32,6 @@ export default function AppEachProductsSales() {
           console.log('get products failed');
         });
     }
-    // const names = getAllProductsName(products);
-    // console.log(products);
-    // console.log(getAllProductsName(products));
     console.log(getProductsSales(orders, products));
   }, []);
 
@@ -67,23 +64,28 @@ export default function AppEachProductsSales() {
   };
 
   const getProductsSales = (orders, products) => {
-    const quantity = {};
-    // set all quantity to 0
+    const dict = {};
+
     for (let a = 0; a < products.length; a += 1) {
-      quantity[products[a].name] = 0;
+      dict[products[a].name] = 0;
     }
-    // console.log(quantity);
-    // sum
+
     for (let i = 0; i < orders.length; i += 1) {
-      for (let j = 0; j < orders[i].details; j += 1) {
+      for (let j = 0; j < orders[i].details.length; j += 1) {
         // console.log(orders[i].details[j]);
-        quantity[orders[i].details[j].name] =
-          quantity[orders[i].details[j].quantity] + orders[i].details[j].quantity;
+        dict[orders[i].details[j].name] += orders[i].details[j].quantity;
       }
     }
+
+    const quantity = Object.values(dict);
+    // for (let i = 0; i < dict.length; i += 1) {
+    //   quantity.push(dict[i]);
+    // }
     console.log(quantity);
     return quantity;
   };
+
+  const chartData = [{ data: getProductsSales(orders, products) }];
 
   const chartOptions = merge(BaseOptionChart(), {
     tooltip: {
@@ -108,7 +110,7 @@ export default function AppEachProductsSales() {
     <Card>
       <CardHeader title="Products' Sales" />
       <Box sx={{ mx: 3 }} dir="ltr">
-        <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={364} />
+        <ReactApexChart type="bar" series={chartData} options={chartOptions} height={364} />
       </Box>
     </Card>
   );

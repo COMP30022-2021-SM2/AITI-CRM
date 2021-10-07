@@ -83,6 +83,7 @@ function OrderItem({ item, isLast }) {
 
 export default function AppOrderTimeline() {
   const [orders, setOrders] = useState([]);
+  const [timelines, setTimelines] = useState([]);
   // Get all orders
   useEffect(() => {
     if (Cookies.get('token')) {
@@ -93,15 +94,46 @@ export default function AppOrderTimeline() {
         .then((response) => {
           if (response.status === 200) {
             setOrders(response.data);
-            console.log(response.data[0]._id);
-            TIMELINES[0].title = response.data[0]._id;
+            const newTimeLines = [];
+            for (let i = 0; i < 5; i += 1) {
+              // const dict = {};
+              // console.log(response.data[response.data.length - i - 1].customerId.givenName);
+              // console.log(response.data[response.data.length - i - 1].orderTime);
+              // console.log(`order${i + 1}`);
+              // dict.title = response.data[response.data.length - i - 1].customerId.givenName;
+              // dict.time = response.data[response.data.length - i - 1].orderTime;
+              // dict.type = `order${i + 1}`;
+              // console.log(dict);
+              newTimeLines.push({
+                title: `${response.data[response.data.length - i - 1].customerId.givenName}`,
+                time: `${response.data[response.data.length - i - 1].orderTime}`,
+                type: `order${i + 1}`
+              });
+            }
+            // console.log(newTimeLines);
           }
         })
         .catch(() => {
           console.log('get orders failed');
         });
     }
+    // console.log(orders);
+    // console.log(setTime(orders));
   }, []);
+
+  const setTime = (orders) => {
+    const newTimeLines = [];
+    for (let i = 0; i < 5; i += 1) {
+      const dict = {};
+      console.log(orders[orders.length - i - 1]);
+      // dict.title = orders[orders.length - i - 1].customerId.givenName;
+      // dict.time = orders[orders.length - i - 1].orderTime;
+      // dict.type = `order${i + 1}`;
+      newTimeLines.push(dict);
+    }
+    // console.log(newTimeLines);
+    return orders;
+  };
 
   return (
     <Card
