@@ -95,7 +95,11 @@ export default function AppOrderTimeline() {
           if (response.status === 200) {
             setOrders(response.data);
             const newTimeLines = [];
-            for (let i = 0; i < 5; i += 1) {
+            let len = 5;
+            if (response.data.length !== 5) {
+              len = response.data.length;
+            }
+            for (let i = 0; i < len; i += 1) {
               // const dict = {};
               // console.log(response.data[response.data.length - i - 1].customerId.givenName);
               // console.log(response.data[response.data.length - i - 1].orderTime);
@@ -105,12 +109,15 @@ export default function AppOrderTimeline() {
               // dict.type = `order${i + 1}`;
               // console.log(dict);
               newTimeLines.push({
-                title: `${response.data[response.data.length - i - 1].customerId.givenName}`,
+                title:
+                  `${response.data[response.data.length - i - 1].customerId.givenName} ` +
+                  `${response.data[response.data.length - i - 1].customerId.familyName}`,
                 time: `${response.data[response.data.length - i - 1].orderTime}`,
                 type: `order${i + 1}`
               });
             }
-            // console.log(newTimeLines);
+            console.log(newTimeLines);
+            setTimelines(newTimeLines);
           }
         })
         .catch(() => {
@@ -146,8 +153,8 @@ export default function AppOrderTimeline() {
       <CardHeader title="Order Timeline" />
       <CardContent>
         <Timeline>
-          {TIMELINES.map((item, index) => (
-            <OrderItem key={item.title} item={item} isLast={index === TIMELINES.length - 1} />
+          {timelines.map((item, index) => (
+            <OrderItem key={item.title} item={item} isLast={index === timelines.length - 1} />
           ))}
         </Timeline>
       </CardContent>
