@@ -1,10 +1,14 @@
+import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import appleFilled from '@iconify/icons-ant-design/apple-filled';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
 // utils
+import Cookies from 'js-cookie';
 import { fShortenNumber } from '../../../utils/formatNumber';
+
+import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,12 +41,32 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 const TOTAL = 1352831;
 
 export default function AppNewUsers() {
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/customer', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setCustomers(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get customers failed');
+        });
+    }
+    console.log(customers);
+  }, []);
+
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon="raphael:customer" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(customers.length)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total Customers
       </Typography>

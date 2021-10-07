@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { Card, Typography, CardHeader, CardContent } from '@material-ui/core';
@@ -11,6 +12,8 @@ import {
   TimelineDot
 } from '@material-ui/lab';
 // utils
+import Cookies from 'js-cookie';
+import axios from '../../../commons/axios';
 import { fDateTime } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
@@ -52,6 +55,7 @@ OrderItem.propTypes = {
 
 function OrderItem({ item, isLast }) {
   const { type, title, time } = item;
+  // const { _id, time } = item;
   return (
     <TimelineItem>
       <TimelineSeparator>
@@ -78,6 +82,27 @@ function OrderItem({ item, isLast }) {
 }
 
 export default function AppOrderTimeline() {
+  const [orders, setOrders] = useState([]);
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setOrders(response.data);
+            console.log(response.data[0]._id);
+            TIMELINES[0].title = response.data[0]._id;
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    }
+  }, []);
+
   return (
     <Card
       sx={{

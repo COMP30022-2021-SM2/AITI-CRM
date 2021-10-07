@@ -1,9 +1,12 @@
 import { Icon } from '@iconify/react';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import androidFilled from '@iconify/icons-ant-design/android-filled';
 // import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
+import axios from '../../../commons/axios';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 
@@ -38,6 +41,26 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 const TOTAL = 714000;
 
 export default function AppTotalSales() {
+  const [orders, setOrders] = useState([]);
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setOrders(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    }
+    console.log(orders.length);
+  }, []);
+  
   return (
     <RootStyle>
       <IconWrapperStyle>

@@ -1,10 +1,13 @@
+import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import bugFilled from '@iconify/icons-ant-design/bug-filled';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
 // utils
+import Cookies from 'js-cookie';
 import { fShortenNumber } from '../../../utils/formatNumber';
+import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,12 +40,30 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 const TOTAL = 234;
 
 export default function AppBugReports() {
+  const [products, setProducts] = useState([]);
+  // Get all products
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/product', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setProducts(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get products failed');
+        });
+    }
+  }, []);
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon="gridicons:product" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(products.length)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total Products
       </Typography>

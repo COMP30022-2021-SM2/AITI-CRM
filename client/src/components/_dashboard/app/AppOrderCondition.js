@@ -1,8 +1,11 @@
 import { merge } from 'lodash';
 import ReactApexChart from 'react-apexcharts';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 // material
 import { useTheme, styled } from '@material-ui/core/styles';
 import { Card, CardHeader } from '@material-ui/core';
+import axios from '../../../commons/axios';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 //
@@ -31,9 +34,8 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [4344, 5435];
-
 export default function AppOrderCondition() {
+  const orderStatus = new Set();
   const theme = useTheme();
 
   const chartOptions = merge(BaseOptionChart(), {
@@ -56,11 +58,47 @@ export default function AppOrderCondition() {
     }
   });
 
+  const [orders, setOrders] = useState([]);
+  const [finished, setFinished] = useState(0);
+  const [unfinished, setUnfinished] = useState(0);
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setOrders(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    }
+    console.log(orders.length);
+    let j = 0;
+    for (let i = 0; i < orders.length; i += 1) {
+      if (orders[i].status === 'completed') {
+        // console.log('flag!');
+        j += 1;
+        // console.log(j);
+      }
+    }
+    setFinished(j);
+    setUnfinished(orders.length - j);
+    console.log(finished);
+    console.log(unfinished);
+    orderStatus.add(finished);
+    orderStatus.add(unfinished);
+  }, []);
+
   return (
     <Card>
       <CardHeader title="Order Condition" />
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="pie" series={CHART_DATA} options={chartOptions} height={280} />
+        <ReactApexChart type="pie" series={orderStatus} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );

@@ -283,7 +283,7 @@ export default function OrderMoreMenu({ order }) {
       form.setFieldsValue({ products: [] });
     };
 
-    // Get all products
+    // Get all orders
     useEffect(() => {
       if (Cookies.get('token')) {
         axios

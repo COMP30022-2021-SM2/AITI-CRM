@@ -1,8 +1,12 @@
 import { Icon } from '@iconify/react';
+import { useState, useEffect } from 'react';
+
 import windowsFilled from '@iconify/icons-ant-design/windows-filled';
+import Cookies from 'js-cookie';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
+import axios from '../../../commons/axios';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 
@@ -37,12 +41,32 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 const TOTAL = 1723315;
 
 export default function AppItemOrders() {
+  const [orders, setOrders] = useState([]);
+  // Get all orders
+  useEffect(() => {
+    if (Cookies.get('token')) {
+      axios
+        .get('/order', {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setOrders(response.data);
+          }
+        })
+        .catch(() => {
+          console.log('get orders failed');
+        });
+    }
+    console.log(orders.length);
+  }, []);
+
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon="icon-park-outline:transaction-order" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(orders.length)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total Orders
       </Typography>
