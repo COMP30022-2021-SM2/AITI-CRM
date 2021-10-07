@@ -5,7 +5,8 @@ const axios = (baseUrl) => {
   const instance = _axios.create({
     // 'https://aiti-crm-server.herokuapp.com' ||
     // baseURL: 'https://aiti-crm-server.herokuapp.com'
-    baseURL: 'http://localhost:5000'
+    // 'http://localhost:5000'
+    baseURL: 'https://aiti-crm-server.herokuapp.com'
   });
   return instance;
 };
