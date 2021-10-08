@@ -74,7 +74,10 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_user) => _user.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -142,6 +145,7 @@ export default function User() {
           setEmailAddress();
           setPhoneNumber();
           setCompanyName();
+          window.location.reload(false);
         }
       })
       .catch(() => {
@@ -164,7 +168,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = customers.map((n) => n.name);
+      const newSelecteds = customers.map((n) => n._id);
       setSelected(newSelecteds);
       return;
     }
@@ -308,101 +312,105 @@ export default function User() {
             </DialogActions>
           </Dialog>
         </Stack>
+        {customers.length > 0 ? (
+          <Card>
+            {/* search bar to search the customers */}
+            <UserListToolbar
+              numSelected={selected.length}
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+            />
 
-        <Card>
-          {/* search bar to search the customers */}
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={customers.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        userId,
-                        givenName,
-                        familyName,
-                        emailAddress,
-                        phoneNumber,
-                        companyName,
-                        _id
-                      } = row;
-                      const isItemSelected = selected.indexOf(givenName) !== -1;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={_id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, userId)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="normal">
-                            <Typography variant="subtitle2" noWrap>
-                              {givenName} {familyName}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="left">{companyName}</TableCell>
-                          <TableCell align="left">{emailAddress}</TableCell>
-                          <TableCell align="left">{phoneNumber}</TableCell>
-                          <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-                {isUserNotFound && (
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={customers.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
                   <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                    {filteredUsers
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const {
+                          givenName,
+                          familyName,
+                          emailAddress,
+                          phoneNumber,
+                          companyName,
+                          _id
+                        } = row;
+                        const isItemSelected = selected.indexOf(_id) !== -1;
 
-          {/* display amount, change page and change row per page */}
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={customers.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
+                        return (
+                          <TableRow
+                            hover
+                            key={givenName}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                onChange={(event) => handleClick(event, _id)}
+                              />
+                            </TableCell>
+                            <TableCell component="th" scope="row" padding="normal">
+                              <Typography variant="subtitle2" noWrap>
+                                {givenName} {familyName}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="left">{companyName}</TableCell>
+                            <TableCell align="left">{emailAddress}</TableCell>
+                            <TableCell align="left">{phoneNumber}</TableCell>
+                            <TableCell align="right">
+                              <UserMoreMenu customer={_id} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                  {isUserNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <SearchNotFound searchQuery={filterName} />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            {/* display amount, change page and change row per page */}
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={customers.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Card>
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            It's loading... or currently you've got no customers
+          </div>
+        )}
       </Container>
     </Page>
   );

@@ -124,8 +124,9 @@ const updateCustomer = async (req, res) => {
 // delete product
 const deleteCustomer = async (req, res) => {
     let userId = new ObjectId(req.user._id);
-    let emailAddress = req.params.emailAddress;
-    await Customer.findOneAndDelete({ userId: userId, emailAddress: emailAddress })
+    let customerId = req.params.customerId;
+    console.log(customerId);
+    await Customer.findOneAndDelete({ userId: userId, _id: customerId })
         .then((result) => res.status(200).json(result))
         .catch((err) => res.status(500).json({ msg: err }));
 }

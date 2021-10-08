@@ -12,9 +12,9 @@ customerRouter.get('/:emailAddress', customerController.getOneCustomer);
 customerRouter.post('', customerController.addCustomer);
 
 // Edit customer details
-customerRouter.put('/:emailAddress', customerController.updateCustomer);
+customerRouter.put('/:customerId', customerController.updateCustomer);
 
 // Delete customer
-customerRouter.delete('/:emailAddress', customerController.deleteCustomer)
+customerRouter.delete('/:customerId', customerController.deleteCustomer)
 
 module.exports = customerRouter;

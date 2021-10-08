@@ -21,6 +21,8 @@ import {
   TextField,
   Button
 } from '@material-ui/core';
+import Cookies from 'js-cookie';
+import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
@@ -109,36 +111,32 @@ CustomerDetailsDialog.propTypes = {
   open: PropTypes.bool.isRequired
 };
 
-function DeleteCustomerDialog(props) {
-  const { onClose, open } = props;
-  const handleClose = () => {
-    onClose(true);
-  };
+// function DeleteCustomerDialog(props) {
+//   const { onClose, open } = props;
+//   const handleClose = () => {
+//     onClose(true);
+//   };
 
-  return (
-    <Dialog onClose={handleClose} aria-labelledby="delete-customer-dialog" open={open}>
-      <DialogTitle id="delete-customer-dialog">Delete the Order </DialogTitle>
-      <DialogContent>
-        <DialogContentText> Are you sure you want to delete this order?</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          No
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Yes
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
+//   return (
+//     <Dialog onClose={handleClose} aria-labelledby="delete-customer-dialog" open={open}>
+//       <DialogTitle id="delete-customer-dialog">Delete the Customer </DialogTitle>
+//       <DialogContent>
+//         <DialogContentText> Are you sure you want to delete this customer?</DialogContentText>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button onClick={handleClose} color="primary">
+//           No
+//         </Button>
+//         <Button onClick={submitDelete} color="primary">
+//           Yes
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// }
 
-DeleteCustomerDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired
-};
-
-export default function UserMoreMenu() {
+export default function UserMoreMenu(customerId) {
+  console.log(customerId.customer);
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -170,6 +168,59 @@ export default function UserMoreMenu() {
     setDetailsDialogOpen(false);
   };
 
+  // Handle delete of the customer
+  const submitDelete = () => {
+    axios
+      .delete(`/customer/${customerId.customer}`, {
+        headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          window.location.reload(false);
+          console.log('customer delete success');
+        } else {
+          console.log('customer delete fail');
+        }
+      })
+      .catch(() => {
+        console.log('customer delete fail2');
+      });
+  };
+
+  function DeleteCustomerDialog(props) {
+    const { onClose, open } = props;
+    const handleClose = () => {
+      onClose(true);
+    };
+
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="delete-customer-dialog" open={open}>
+        <DialogTitle id="delete-customer-dialog">Delete the Customer </DialogTitle>
+        <DialogContent>
+          <DialogContentText> Are you sure you want to delete this customer?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button
+            onClick={() => {
+              submitDelete();
+              handleClose();
+            }}
+            color="primary"
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  DeleteCustomerDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired
+  };
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
