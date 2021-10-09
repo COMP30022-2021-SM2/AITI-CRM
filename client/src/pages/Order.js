@@ -369,7 +369,9 @@ export default function Order() {
             />
           </Card>
         ) : (
-          <div style={{ textAlign: 'center' }}> currently you've got no orders </div>
+          <div style={{ textAlign: 'center' }}>
+            It's loading... or currently you've got no orders
+          </div>
         )}
       </Container>
     </Page>

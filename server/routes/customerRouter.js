@@ -6,7 +6,7 @@ const customerRouter = express.Router()
 customerRouter.get('', customerController.getAllCustomer);
 
 // Get one customer detail
-customerRouter.get('/:emailAddress', customerController.getOneCustomer);
+customerRouter.get('/:customerId', customerController.getOneCustomer);
 
 // Add new customer
 customerRouter.post('', customerController.addCustomer);

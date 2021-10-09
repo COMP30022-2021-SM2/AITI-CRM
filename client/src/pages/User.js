@@ -119,7 +119,6 @@ export default function User() {
     } else {
       nevigate('/404', { replace: true });
     }
-    console.log(customers);
   }, []);
 
   // insert new customer
@@ -350,7 +349,7 @@ export default function User() {
                         return (
                           <TableRow
                             hover
-                            key={givenName}
+                            key={_id}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}

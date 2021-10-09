@@ -18,36 +18,6 @@ import { fDateTime } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
-const TIMELINES = [
-  {
-    title: '1983, orders, $4220',
-    time: faker.date.past(),
-    type: 'order1'
-  },
-  {
-    title: '12 Invoices have been paid',
-    time: faker.date.past(),
-    type: 'order2'
-  },
-  {
-    title: 'Order #37745 from September',
-    time: faker.date.past(),
-    type: 'order3'
-  },
-  {
-    title: 'New order placed #XF-2356',
-    time: faker.date.past(),
-    type: 'order4'
-  },
-  {
-    title: 'New order placed #XF-2346',
-    time: faker.date.past(),
-    type: 'order5'
-  }
-];
-
-// ----------------------------------------------------------------------
-
 OrderItem.propTypes = {
   item: PropTypes.object,
   isLast: PropTypes.bool
@@ -82,7 +52,6 @@ function OrderItem({ item, isLast }) {
 }
 
 export default function AppOrderTimeline() {
-  const [orders, setOrders] = useState([]);
   const [timelines, setTimelines] = useState([]);
   // Get all orders
   useEffect(() => {
@@ -93,21 +62,12 @@ export default function AppOrderTimeline() {
         })
         .then((response) => {
           if (response.status === 200) {
-            setOrders(response.data);
             const newTimeLines = [];
             let len = 5;
             if (response.data.length !== 5) {
               len = response.data.length;
             }
             for (let i = 0; i < len; i += 1) {
-              // const dict = {};
-              // console.log(response.data[response.data.length - i - 1].customerId.givenName);
-              // console.log(response.data[response.data.length - i - 1].orderTime);
-              // console.log(`order${i + 1}`);
-              // dict.title = response.data[response.data.length - i - 1].customerId.givenName;
-              // dict.time = response.data[response.data.length - i - 1].orderTime;
-              // dict.type = `order${i + 1}`;
-              // console.log(dict);
               newTimeLines.push({
                 title:
                   `${response.data[response.data.length - i - 1].customerId.givenName} ` +
@@ -124,23 +84,7 @@ export default function AppOrderTimeline() {
           console.log('get orders failed');
         });
     }
-    // console.log(orders);
-    // console.log(setTime(orders));
   }, []);
-
-  const setTime = (orders) => {
-    const newTimeLines = [];
-    for (let i = 0; i < 5; i += 1) {
-      const dict = {};
-      console.log(orders[orders.length - i - 1]);
-      // dict.title = orders[orders.length - i - 1].customerId.givenName;
-      // dict.time = orders[orders.length - i - 1].orderTime;
-      // dict.type = `order${i + 1}`;
-      newTimeLines.push(dict);
-    }
-    // console.log(newTimeLines);
-    return orders;
-  };
 
   return (
     <Card
@@ -154,7 +98,7 @@ export default function AppOrderTimeline() {
       <CardContent>
         <Timeline>
           {timelines.map((item, index) => (
-            <OrderItem key={item.title} item={item} isLast={index === timelines.length - 1} />
+            <OrderItem key={item.type} item={item} isLast={index === timelines.length - 1} />
           ))}
         </Timeline>
       </CardContent>

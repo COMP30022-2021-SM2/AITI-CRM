@@ -17,10 +17,10 @@ const getAllCustomer = async (req, res) => {
 // Get one customer details
 const getOneCustomer = async (req, res) => {
     let userId = new ObjectId(req.user._id);
-    let emailAddress = req.params.emailAddress;
+    let customerId = req.params.customerId;
     try {
         // find the product
-        const customer = await Customer.find({ userId: userId, emailAddress: emailAddress }, '-_id').lean()
+        const customer = await Customer.find({ userId: userId, _id: customerId }, '-_id').lean()
         // if customer does not exist
         if (customer.length == 0) {
             console.log("Customer does not exist!")
@@ -63,7 +63,7 @@ const addCustomer = async (req, res) => {
 // Update customer details
 const updateCustomer = async (req, res) => {
     let userId = new ObjectId(req.user._id);
-    let customerEmail = req.params.emailAddress
+    let customerId = req.params.customerId
     userId = new ObjectId(userId);
     try {
         let description = req.body.description;
@@ -78,35 +78,35 @@ const updateCustomer = async (req, res) => {
 
         // update field that changed
         if (description) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { description: description } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { description: description } })
         }
         if (givenName) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { givenName: givenName } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { givenName: givenName } })
         }
         if (familyName) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { familyName: familyName } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { familyName: familyName } })
         }
         if (emailAddress) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { emailAddress: emailAddress } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { emailAddress: emailAddress } })
             customerEmail = emailAddress;
         }
         if (phoneNumber) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { phoneNumber: phoneNumber } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { phoneNumber: phoneNumber } })
         }
         if (companyName) {
-            await Customer.updateOne({ userId: userId, companyName: customerEmail }, { $set: { companyName: companyName } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { companyName: companyName } })
         }
         if (address) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { address: address } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { address: address } })
         }
         if (abn) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { abn: abn } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { abn: abn } })
         }
         if (notes) {
-            await Customer.updateOne({ userId: userId, emailAddress: customerEmail }, { $set: { notes: notes } })
+            await Customer.updateOne({ userId: userId, _id: customerId }, { $set: { notes: notes } })
         }
 
-        let customer = await Customer.findOne({ userId: userId, emailAddress: customerEmail });
+        let customer = await Customer.findOne({ userId: userId, _id: customerId });
         if (customer) {
             console.log("Update product successfully")
             return res.status(200).json(customer);
@@ -125,7 +125,6 @@ const updateCustomer = async (req, res) => {
 const deleteCustomer = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     let customerId = req.params.customerId;
-    console.log(customerId);
     await Customer.findOneAndDelete({ userId: userId, _id: customerId })
         .then((result) => res.status(200).json(result))
         .catch((err) => res.status(500).json({ msg: err }));
