@@ -7,10 +7,10 @@ import Cookies from 'js-cookie';
 import axios from '../commons/axios';
 import Page from '../components/Page';
 import {
+  AppTotalSales,
   AppNewUsers,
   AppProduct,
   AppItemOrders,
-  AppWeeklySales,
   AppOrderTimeline,
   AppOrderCondition,
   AppEachProductsSales
@@ -36,14 +36,17 @@ export default function DashboardApp(props) {
         </Box>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWeeklySales />
+            <AppTotalSales />
           </Grid>
+
           <Grid item xs={12} sm={6} md={3}>
             <AppNewUsers />
           </Grid>
+
           <Grid item xs={12} sm={6} md={3}>
             <AppItemOrders />
           </Grid>
+
           <Grid item xs={12} sm={6} md={3}>
             <AppProduct />
           </Grid>

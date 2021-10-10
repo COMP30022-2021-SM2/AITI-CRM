@@ -62,9 +62,9 @@ const getAllOrder = async(req, res) => {
     try{
         const orders = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
 
-        if (orders.length == 0){
-            return res.json("No orders")
-        }
+        // if (orders.length == 0){
+        //     return res.json("No orders")
+        // }
 
         return res.status(200).json(orders)
     } catch (err) {

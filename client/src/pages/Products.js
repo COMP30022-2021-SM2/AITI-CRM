@@ -126,7 +126,13 @@ export default function EcommerceShop() {
             </DialogActions>
           </Dialog>
         </Stack>
-        <ProductList products={products} />
+        {products.length > 0 ? (
+          <ProductList products={products} />
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            It's loading... or currently you've got no products
+          </div>
+        )}
       </Container>
     </Page>
   );

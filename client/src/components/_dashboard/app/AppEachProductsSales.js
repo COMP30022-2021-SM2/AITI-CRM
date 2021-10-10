@@ -12,11 +12,10 @@ import { BaseOptionChart } from '../../charts';
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [{ data: [400, 430, 448] }];
-
 export default function AppEachProductsSales() {
-  // Get all products
+  // Get all products and orders
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   useEffect(() => {
     if (Cookies.get('token')) {
       axios
@@ -31,14 +30,6 @@ export default function AppEachProductsSales() {
         .catch(() => {
           console.log('get products failed');
         });
-    }
-    console.log(getProductsSales(orders, products));
-  }, []);
-
-  // Get all orders
-  const [orders, setOrders] = useState([]);
-  useEffect(() => {
-    if (Cookies.get('token')) {
       axios
         .get('/order', {
           headers: { Authorization: `Bearer ${Cookies.get('token')}` }
@@ -52,7 +43,6 @@ export default function AppEachProductsSales() {
           console.log('get orders failed');
         });
     }
-    console.log(orders);
   }, []);
 
   const getAllProductsName = (products) => {
@@ -65,23 +55,15 @@ export default function AppEachProductsSales() {
 
   const getProductsSales = (orders, products) => {
     const dict = {};
-
     for (let a = 0; a < products.length; a += 1) {
       dict[products[a].name] = 0;
     }
-
     for (let i = 0; i < orders.length; i += 1) {
       for (let j = 0; j < orders[i].details.length; j += 1) {
-        // console.log(orders[i].details[j]);
         dict[orders[i].details[j].name] += orders[i].details[j].quantity;
       }
     }
-
     const quantity = Object.values(dict);
-    // for (let i = 0; i < dict.length; i += 1) {
-    //   quantity.push(dict[i]);
-    // }
-    console.log(quantity);
     return quantity;
   };
 
@@ -101,7 +83,6 @@ export default function AppEachProductsSales() {
       bar: { horizontal: true, barHeight: '28%', borderRadius: 2 }
     },
     xaxis: {
-      // categories: ['A', 'B', 'C', 'D']
       categories: getAllProductsName(products)
     }
   });
