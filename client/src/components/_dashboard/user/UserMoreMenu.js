@@ -279,8 +279,8 @@ export default function UserMoreMenu(customerId) {
               label="Given Name"
               type="text"
               defaultValue={givenName}
-              onChange={(e) => setNewGivenName(e.target.value)}
               fullWidth
+              onChange={(e) => setNewGivenName(e.target.value)}
             />
             <TextField
               margin="dense"
@@ -288,8 +288,8 @@ export default function UserMoreMenu(customerId) {
               label="Family Name"
               type="text"
               defaultValue={familyName}
-              onChange={(e) => setNewFamilyName(e.target.value)}
               fullWidth
+              onChange={(e) => setNewFamilyName(e.target.value)}
             />
             <TextField
               margin="dense"
@@ -297,8 +297,8 @@ export default function UserMoreMenu(customerId) {
               label="Email"
               type="text"
               defaultValue={emailAddress}
-              onChange={(e) => setNewEmailAddress(e.target.value)}
               fullWidth
+              onChange={(e) => setNewEmailAddress(e.target.value)}
             />
             <TextField
               margin="dense"
@@ -306,17 +306,17 @@ export default function UserMoreMenu(customerId) {
               label="Phone Number"
               type="text"
               defaultValue={phoneNumber}
-              onChange={(e) => setNewPhoneNumber(e.target.value)}
               fullWidth
+              onChange={(e) => setNewPhoneNumber(e.target.value)}
             />
             <TextField
               margin="dense"
               id="customer-company-name"
               label="Company Name"
-              defaultValue={companyName}
-              onChange={(e) => setNewCompanyName(e.target.value)}
               type="text"
+              defaultValue={companyName}
               fullWidth
+              onChange={(e) => setNewCompanyName(e.target.value)}
             />
             <TextField
               margin="dense"
@@ -324,8 +324,8 @@ export default function UserMoreMenu(customerId) {
               label="ABN"
               type="text"
               defaultValue={abn}
-              onChange={(e) => setNewAbn(e.target.value)}
               fullWidth
+              onChange={(e) => setNewAbn(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
