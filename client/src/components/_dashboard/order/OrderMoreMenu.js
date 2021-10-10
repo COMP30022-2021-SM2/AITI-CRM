@@ -165,7 +165,7 @@ export default function OrderMoreMenu({ order }) {
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
         </DialogContent>
         <DialogContent>
-          <AddDetail order={order} />
+          <AddDetail />
         </DialogContent>
 
         <DialogActions>
@@ -279,10 +279,6 @@ export default function OrderMoreMenu({ order }) {
         });
     };
 
-    const handleChange = () => {
-      form.setFieldsValue({ products: [] });
-    };
-
     // Get all orders
     useEffect(() => {
       if (Cookies.get('token')) {
@@ -309,63 +305,67 @@ export default function OrderMoreMenu({ order }) {
         <Form.List name="product">
           {(fields, { add, remove }) => (
             <>
-              {fields.map((field) => (
-                <Space key={field.key} align="baseline">
-                  <Form.Item
-                    noStyle
-                    shouldUpdate={(prevValues, curValues) =>
-                      prevValues.price !== curValues.price ||
-                      prevValues.product !== curValues.product ||
-                      prevValues.quantity !== curValues.quantity
-                    }
-                  >
-                    {() => (
+              {details.map((tmp) => (
+                <>
+                  {fields.map((field) => (
+                    <Space key={field.key} align="baseline">
+                      <Form.Item
+                        noStyle
+                        shouldUpdate={(prevValues, curValues) =>
+                          prevValues.price !== curValues.price ||
+                          prevValues.product !== curValues.product ||
+                          prevValues.quantity !== curValues.quantity
+                        }
+                      >
+                        {() => (
+                          <Form.Item
+                            {...field}
+                            label="product"
+                            name={[field.name, 'name']}
+                            fieldKey={[field.fieldKey, 'name']}
+                            rules={[{ required: true, message: 'Missing product' }]}
+                          >
+                            <NativeSelect label="product" defaultValue={tmp.name}>
+                              <option> </option>
+                              {products.map((item) => (
+                                <option value={item.name}>{item.name}</option>
+                              ))}
+                            </NativeSelect>
+                          </Form.Item>
+                        )}
+                      </Form.Item>
                       <Form.Item
                         {...field}
-                        label="product"
-                        name={[field.name, 'name']}
-                        fieldKey={[field.fieldKey, 'name']}
-                        rules={[{ required: true, message: 'Missing product' }]}
+                        label="Price"
+                        name={[field.name, 'price']}
+                        fieldKey={[field.fieldKey, 'price']}
+                        rules={[{ required: true, message: 'Missing price' }]}
                       >
-                        <NativeSelect label="product" defaultValue="">
-                          <option> </option>
-                          {products.map((item) => (
-                            <option value={item.name}>{item.name}</option>
-                          ))}
-                        </NativeSelect>
+                        <InputNumber defaultValue={tmp.price} />
                       </Form.Item>
-                    )}
-                  </Form.Item>
-                  <Form.Item
-                    {...field}
-                    label="Price"
-                    name={[field.name, 'price']}
-                    fieldKey={[field.fieldKey, 'price']}
-                    rules={[{ required: true, message: 'Missing price' }]}
-                  >
-                    <InputNumber />
-                  </Form.Item>
-                  <Form.Item
-                    {...field}
-                    label="quantity"
-                    name={[field.name, 'quantity']}
-                    fieldKey={[field.fieldKey, 'quantity']}
-                    rules={[{ required: true, message: 'Missing quantity' }]}
-                  >
-                    <InputNumber />
-                  </Form.Item>
+                      <Form.Item
+                        {...field}
+                        label="quantity"
+                        name={[field.name, 'quantity']}
+                        fieldKey={[field.fieldKey, 'quantity']}
+                        rules={[{ required: true, message: 'Missing quantity' }]}
+                      >
+                        <InputNumber defaultValue={tmp.quantity} />
+                      </Form.Item>
 
-                  <MinusCircleOutlined onClick={() => remove(field.name)} />
-                </Space>
+                      <MinusCircleOutlined onClick={() => remove(field.name)} />
+                    </Space>
+                  ))}
+
+                  <Form.Item>
+                    <div style={{ textAlign: 'center' }}>
+                      <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                        Add product
+                      </Button>
+                    </div>
+                  </Form.Item>
+                </>
               ))}
-
-              <Form.Item>
-                <div style={{ textAlign: 'center' }}>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add product
-                  </Button>
-                </div>
-              </Form.Item>
             </>
           )}
         </Form.List>

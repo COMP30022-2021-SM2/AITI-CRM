@@ -19,8 +19,12 @@ import {
   ListItemIcon,
   ListItemText,
   TextField,
+  Tooltip,
   Button
 } from '@material-ui/core';
+import { Form, Space, InputNumber, Select } from 'antd';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import axios from '../../../commons/axios';
 
@@ -43,12 +47,22 @@ export default function UserMoreMenu(customerId) {
   const [newAbn, setNewAbn] = useState('');
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenStatus, setIsOpenStatus] = useState(false);
 
   const [open, setOpen] = useState(false);
   const handleInsertOpen = () => {
     setOpen(true);
   };
+
   const handleInsertClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -219,8 +233,168 @@ export default function UserMoreMenu(customerId) {
     open: PropTypes.bool.isRequired
   };
 
+  function AddOrderDialog(props) {
+    const { onClose, open } = props;
+
+    const handleClose = () => {
+      onClose(true);
+    };
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="edit-dialog-title">Edit your order </DialogTitle>
+        <DialogContent>
+          <DialogContentText> Adding a new order to {givenName}...</DialogContentText>
+        </DialogContent>
+        <DialogContent>
+          <AddDetail />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Go Back
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  function AddDetail(props) {
+    const navigate = useNavigate();
+    const { Option } = Select;
+    const [products, setProducts] = useState([]);
+
+    const [form] = Form.useForm();
+
+    const onFinish = (values) => {
+      console.log('Received values of form:', values.product);
+      axios
+        .post(
+          `/order/${emailAddress}`,
+          { cart: JSON.stringify(values.product) },
+          // { name: values.name, price: values.price, quantity: values.quantity },
+          { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('order info is updated');
+          } else {
+            console.log('order info update fail');
+          }
+        })
+        .catch(() => {
+          console.log('update fail');
+        });
+    };
+
+    // Get all orders
+    useEffect(() => {
+      if (Cookies.get('token')) {
+        axios
+          .get('/product/available', {
+            headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              setProducts(response.data);
+            }
+          })
+          .catch(() => {
+            console.log('get products failed');
+          });
+      } else {
+        navigate('/404', { replace: true });
+      }
+      console.log(products);
+    }, []);
+
+    return (
+      <Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
+        <Form.List name="product">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Space key={field.key} align="baseline">
+                  <Form.Item
+                    noStyle
+                    shouldUpdate={(prevValues, curValues) =>
+                      prevValues.price !== curValues.price ||
+                      prevValues.product !== curValues.product ||
+                      prevValues.quantity !== curValues.quantity
+                    }
+                  >
+                    {() => (
+                      <Form.Item
+                        {...field}
+                        label="product"
+                        name={[field.name, 'name']}
+                        fieldKey={[field.fieldKey, 'name']}
+                        rules={[{ required: true, message: 'Missing product' }]}
+                      >
+                        <NativeSelect label="product">
+                          <option> </option>
+                          {products.map((item) => (
+                            <option value={item.name}>{item.name}</option>
+                          ))}
+                        </NativeSelect>
+                      </Form.Item>
+                    )}
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    label="Price"
+                    name={[field.name, 'price']}
+                    fieldKey={[field.fieldKey, 'price']}
+                    rules={[{ required: true, message: 'Missing price' }]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    label="quantity"
+                    name={[field.name, 'quantity']}
+                    fieldKey={[field.fieldKey, 'quantity']}
+                    rules={[{ required: true, message: 'Missing quantity' }]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+
+                  <MinusCircleOutlined onClick={() => remove(field.name)} />
+                </Space>
+              ))}
+
+              <Form.Item>
+                <div style={{ textAlign: 'center' }}>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add product
+                  </Button>
+                </div>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+        <Form.Item>
+          <div style={{ textAlign: 'center' }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </div>
+        </Form.Item>
+      </Form>
+    );
+  }
+
   return (
     <>
+      <Tooltip title="Add a new order">
+        <IconButton ref={ref} onClick={handleClickOpen}>
+          <Icon icon="carbon:add-alt" width={20} height={20} />
+        </IconButton>
+      </Tooltip>
+      <AddOrderDialog open={open} onClose={handleClose} />
+
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
         <Icon icon={moreVerticalFill} width={20} height={20} />
       </IconButton>
