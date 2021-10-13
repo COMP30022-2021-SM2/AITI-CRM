@@ -14,7 +14,7 @@ const addOrder = async(req, res) => {
     let totalPrice = 0;
     // calculate total price
     for (let i=0; i < cart.length; i++){
-        totalPrice += cart[i]["price"]
+        totalPrice += cart[i]["price"];
     }
 
     let customerEmail = req.params.emailAddress
@@ -169,7 +169,7 @@ const updateOrderDetails = async(req, res) => {
     let totalPrice = 0;
     // calculate total price
     for (let i=0; i < cart.length; i++){
-        totalPrice += cart[i]["price"]
+        totalPrice += cart[i]["price"];
     }
 
     let orderId = req.params.orderId

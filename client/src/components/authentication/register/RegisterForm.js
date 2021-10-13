@@ -13,9 +13,6 @@ import axios from '../../../commons/axios';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const { errors, values, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
@@ -25,7 +22,6 @@ export default function RegisterForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
   });
-
   const formik = useFormik({
     initialValues: {
       firstName: '',
@@ -64,6 +60,9 @@ export default function RegisterForm() {
         });
     }
   });
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const { errors, values, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
