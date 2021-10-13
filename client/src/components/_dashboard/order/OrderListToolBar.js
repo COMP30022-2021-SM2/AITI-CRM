@@ -93,6 +93,7 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('orders delete success');
         } else {
           console.log('orders delete fail');

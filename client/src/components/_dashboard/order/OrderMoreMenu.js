@@ -87,6 +87,7 @@ export default function OrderMoreMenu({ order }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('order is marked completed');
         } else {
           console.log('mark complete fail');
@@ -106,6 +107,7 @@ export default function OrderMoreMenu({ order }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('order is marked ongoing');
         } else {
           console.log('mark ongoing fail');
@@ -125,6 +127,7 @@ export default function OrderMoreMenu({ order }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('order is marked cancelled');
         } else {
           console.log('mark cancelled fail');
@@ -141,6 +144,7 @@ export default function OrderMoreMenu({ order }) {
       .delete(`/order/${_id}`, { headers: { Authorization: `Bearer ${Cookies.get('token')}` } })
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('order delete success');
         } else {
           console.log('order delete fail');
@@ -156,6 +160,22 @@ export default function OrderMoreMenu({ order }) {
     const handleClose = () => {
       onClose(true);
     };
+    const List = ({ list }) => (
+      <ul>
+        {list.map((item) => (
+          <ListItem key={item.name} item={item} />
+        ))}
+      </ul>
+    );
+
+    const ListItem = ({ item }) => (
+      <li>
+        <div style={{ marginLeft: '5%' }}>Product Name: {item.name}</div>
+        <div style={{ marginLeft: '7%' }}>Price: {item.price}</div>
+        <div style={{ marginLeft: '7%' }}>Quantity: {item.quantity}</div>
+        <p> </p>
+      </li>
+    );
 
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
@@ -163,19 +183,25 @@ export default function OrderMoreMenu({ order }) {
         <DialogContent>
           <DialogContentText> Hi, {customerId.givenName}</DialogContentText>
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
+          <DialogTitle> Original Details </DialogTitle>
+
+          <List list={details} />
+
+          <DialogContentText>total deal amount : {total} </DialogContentText>
         </DialogContent>
         <DialogContent>
+          <DialogTitle id="edit-dialog-title">Set Your Products Here... </DialogTitle>
           <AddDetail />
         </DialogContent>
 
-        <DialogActions>
+        {/* <DialogActions style={{ justifyContent: 'center' }}>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleClose} color="primary">
             Go Back
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     );
   }
@@ -269,6 +295,7 @@ export default function OrderMoreMenu({ order }) {
         )
         .then((response) => {
           if (response.status === 200) {
+            window.location.reload(false);
             console.log('order info is updated');
           } else {
             console.log('order info update fail');
@@ -305,74 +332,70 @@ export default function OrderMoreMenu({ order }) {
         <Form.List name="product">
           {(fields, { add, remove }) => (
             <>
-              {details.map((tmp) => (
-                <>
-                  {fields.map((field) => (
-                    <Space key={field.key} align="baseline">
-                      <Form.Item
-                        noStyle
-                        shouldUpdate={(prevValues, curValues) =>
-                          prevValues.price !== curValues.price ||
-                          prevValues.product !== curValues.product ||
-                          prevValues.quantity !== curValues.quantity
-                        }
-                      >
-                        {() => (
-                          <Form.Item
-                            {...field}
-                            label="product"
-                            name={[field.name, 'name']}
-                            fieldKey={[field.fieldKey, 'name']}
-                            rules={[{ required: true, message: 'Missing product' }]}
-                          >
-                            <NativeSelect label="product" defaultValue={tmp.name}>
-                              <option> </option>
-                              {products.map((item) => (
-                                <option value={item.name}>{item.name}</option>
-                              ))}
-                            </NativeSelect>
-                          </Form.Item>
-                        )}
-                      </Form.Item>
+              {fields.map((field) => (
+                <Space key={field.key} align="baseline">
+                  <Form.Item
+                    noStyle
+                    shouldUpdate={(prevValues, curValues) =>
+                      prevValues.price !== curValues.price ||
+                      prevValues.product !== curValues.product ||
+                      prevValues.quantity !== curValues.quantity
+                    }
+                  >
+                    {() => (
                       <Form.Item
                         {...field}
-                        label="Price"
-                        name={[field.name, 'price']}
-                        fieldKey={[field.fieldKey, 'price']}
-                        rules={[{ required: true, message: 'Missing price' }]}
+                        label="product"
+                        name={[field.name, 'name']}
+                        fieldKey={[field.fieldKey, 'name']}
+                        rules={[{ required: true, message: 'Missing product' }]}
                       >
-                        <InputNumber defaultValue={tmp.price} />
+                        <NativeSelect label="product">
+                          <option> </option>
+                          {products.map((item) => (
+                            <option value={item.name}>{item.name}</option>
+                          ))}
+                        </NativeSelect>
                       </Form.Item>
-                      <Form.Item
-                        {...field}
-                        label="quantity"
-                        name={[field.name, 'quantity']}
-                        fieldKey={[field.fieldKey, 'quantity']}
-                        rules={[{ required: true, message: 'Missing quantity' }]}
-                      >
-                        <InputNumber defaultValue={tmp.quantity} />
-                      </Form.Item>
-
-                      <MinusCircleOutlined onClick={() => remove(field.name)} />
-                    </Space>
-                  ))}
-
-                  <Form.Item>
-                    <div style={{ textAlign: 'center' }}>
-                      <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                        Add product
-                      </Button>
-                    </div>
+                    )}
                   </Form.Item>
-                </>
+                  <Form.Item
+                    {...field}
+                    label="Price"
+                    name={[field.name, 'price']}
+                    fieldKey={[field.fieldKey, 'price']}
+                    rules={[{ required: true, message: 'Missing price' }]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    label="quantity"
+                    name={[field.name, 'quantity']}
+                    fieldKey={[field.fieldKey, 'quantity']}
+                    rules={[{ required: true, message: 'Missing quantity' }]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+
+                  <MinusCircleOutlined onClick={() => remove(field.name)} />
+                </Space>
               ))}
+
+              <Form.Item>
+                <div style={{ textAlign: 'center' }}>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add product
+                  </Button>
+                </div>
+              </Form.Item>
             </>
           )}
         </Form.List>
         <Form.Item>
           <div style={{ textAlign: 'center' }}>
             <Button type="primary" htmlType="submit">
-              Save
+              Submit
             </Button>
           </div>
         </Form.Item>

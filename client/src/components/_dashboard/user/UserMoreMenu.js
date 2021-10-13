@@ -249,14 +249,14 @@ export default function UserMoreMenu(customerId) {
           <AddDetail />
         </DialogContent>
 
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleClose} color="primary">
             Go Back
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     );
   }
@@ -279,6 +279,7 @@ export default function UserMoreMenu(customerId) {
         )
         .then((response) => {
           if (response.status === 200) {
+            window.location.reload(false);
             console.log('order info is updated');
           } else {
             console.log('order info update fail');
