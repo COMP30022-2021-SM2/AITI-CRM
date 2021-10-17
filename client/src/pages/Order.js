@@ -20,17 +20,12 @@ import {
   TableCell,
   TableContainer,
   TablePagination,
-  Grid,
-  Button,
   Container,
   Stack,
-  Typography,
-  Modal
+  Typography
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+
 // components
-import { bgcolor } from '@material-ui/system';
-import TextField from '@material-ui/core/TextField';
 import Moment from 'react-moment';
 import Cookies from 'js-cookie';
 import axios from '../commons/axios';
@@ -42,17 +37,6 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 
-//
-import USERLIST from '../_mocks_/user';
-
-// ----------------------------------------------------------------------
-
-const SORT_OPTIONS = [
-  { value: 'latest', label: 'Latest' },
-  // { value: 'popular', label: 'Popular' },
-  { value: 'oldest', label: 'Oldest' }
-];
-
 // ----------------------------------------------------------------------
 
 // sorting table related functions
@@ -60,9 +44,9 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Customer Name', alignRight: false },
 
   // { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Total Deal Amount', alignRight: false },
+  { id: 'total', label: 'Total Deal Amount', alignRight: false },
   { id: 'status', label: 'Order Status', alignRight: false },
-  { id: 'details', label: 'Last Updated', alignRight: false },
+  { id: 'lastUpdated', label: 'Last Updated', alignRight: false },
   { id: '' }
 ];
 
@@ -100,49 +84,8 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function SimpleDialog(props) {
-  const { onClose, open } = props;
-  const handleClose = () => {
-    onClose(true);
-  };
-
-  return (
-    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Adding a new order...</DialogTitle>
-      <DialogContent>
-        <DialogContentText>Please enter the details of your new order below. </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Customer Email Address"
-          type="text"
-          fullWidth
-        />
-        <TextField margin="dense" id="name" label="Product Name" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product Price" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product quantity" type="text" fullWidth />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Add
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired
-};
-
 export default function Order() {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [orders, setOrders] = useState([]);
 
   // Get all orders
@@ -168,27 +111,12 @@ export default function Order() {
     // console.log(orders);
   }, [navigate]);
 
-  // // input textbox related function
-  // const [value, setValue] = React.useState('');
-
-  // const handleChange = (event) => {
-  //   setValue(event.target.value);
-  // };
-
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -243,27 +171,15 @@ export default function Order() {
   const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
+  console.log(filteredUsers);
 
   return (
     <Page title="Dashboard: Order">
       <Container>
         <Stack direction="row" algnItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h3">Order</Typography>
-          {/* <Button
-            variant="contained"
-            onClick={handleClickOpen}
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Order
-          </Button> */}
         </Stack>
-        <SimpleDialog open={open} onClose={handleClose} />
-        <div> </div>
 
-        {/* <Stack mb={5} direction="row" alignItems="right" justifyContent="space-between">
-          <OrderPostsSearch posts={POSTS} />
-          <OrderPostsSort options={SORT_OPTIONS} />
-        </Stack> */}
         {orders.length > 0 ? (
           <Card>
             <OrderListToolBar
@@ -289,7 +205,7 @@ export default function Order() {
                     {filteredUsers
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
-                        const { updateTime, customerId, total, status, details } = row;
+                        const { updateTime, customerId, total, status } = row;
                         const isItemSelected = selected.indexOf(row._id) !== -1;
 
                         return (
@@ -309,13 +225,10 @@ export default function Order() {
                             </TableCell>
                             <TableCell component="th" scope="row" padding="normal">
                               <Stack direction="row" alignItems="center" spacing={2}>
-                                <Typography variant="subtitle2" noWrap>
-                                  {customerId.givenName}
-                                </Typography>
+                                {customerId.givenName}
                               </Stack>
                             </TableCell>
-                            {/* <TableCell align="left">{company}</TableCell> */}
-                            {/* <TableCell align="left">{role}</TableCell> */}
+
                             <TableCell align="left">{total}</TableCell>
                             <TableCell align="left">
                               <Label
