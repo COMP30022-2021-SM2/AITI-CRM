@@ -39,14 +39,11 @@ import SearchNotFound from '../components/SearchNotFound';
 
 // ----------------------------------------------------------------------
 
-// sorting table related functions
 const TABLE_HEAD = [
-  { id: 'name', label: 'Customer Name', alignRight: false },
-
-  // { id: 'role', label: 'Role', alignRight: false },
-  { id: 'total', label: 'Total Deal Amount', alignRight: false },
-  { id: 'status', label: 'Order Status', alignRight: false },
-  { id: 'lastUpdated', label: 'Last Updated', alignRight: false },
+  { id: 'customerId.givenName', label: 'Name', alignRight: false },
+  { id: 'total', label: 'Total', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'updateTime', label: 'LastUpdated', alignRight: false },
   { id: '' }
 ];
 
@@ -78,7 +75,7 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(
       array,
-      (_user) => _user.customerId.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_order) => _order.customerId.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
@@ -97,7 +94,7 @@ export default function Order() {
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log('recieved the orders from backend!');
+            console.log(response.data);
             setOrders(response.data);
           }
         })
@@ -107,8 +104,6 @@ export default function Order() {
     } else {
       navigate('/404', { replace: true });
     }
-    // console.log(orders.length);
-    // console.log(orders);
   }, [navigate]);
 
   const [page, setPage] = useState(0);
@@ -126,9 +121,8 @@ export default function Order() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = orders.map((n) => n._id);
+      const newSelecteds = orders.map((n) => n.name);
       setSelected(newSelecteds);
-      console.log(newSelecteds);
       return;
     }
     setSelected([]);
@@ -150,7 +144,6 @@ export default function Order() {
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -168,16 +161,17 @@ export default function Order() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
 
-  const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredOrders = applySortFilter(orders, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
-  console.log(filteredUsers);
+  const isOrderNotFound = filteredOrders.length === 0;
 
   return (
-    <Page title="Dashboard: Order">
+    <Page title="order">
       <Container>
-        <Stack direction="row" algnItems="center" justifyContent="space-between" mb={2}>
-          <Typography variant="h3">Order</Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h3" gutterBottom>
+            Order
+          </Typography>
         </Stack>
 
         {orders.length > 0 ? (
@@ -202,7 +196,7 @@ export default function Order() {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredUsers
+                    {filteredOrders
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
                         const { updateTime, customerId, total, status } = row;
@@ -211,7 +205,7 @@ export default function Order() {
                         return (
                           <TableRow
                             hover
-                            key={customerId.givenName}
+                            key={row._id}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}
@@ -223,12 +217,13 @@ export default function Order() {
                                 onChange={(event) => handleClick(event, row._id)}
                               />
                             </TableCell>
-                            <TableCell component="th" scope="row" padding="normal">
+                            <TableCell component="th" scope="row" padding="none">
                               <Stack direction="row" alignItems="center" spacing={2}>
-                                {customerId.givenName}
+                                <Typography variant="subtitle2" noWrap>
+                                  {customerId.givenName}
+                                </Typography>
                               </Stack>
                             </TableCell>
-
                             <TableCell align="left">{total}</TableCell>
                             <TableCell align="left">
                               <Label
@@ -258,7 +253,7 @@ export default function Order() {
                       </TableRow>
                     )}
                   </TableBody>
-                  {isUserNotFound && (
+                  {isOrderNotFound && (
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
