@@ -217,12 +217,13 @@ export default function Order() {
                                 onChange={(event) => handleClick(event, row._id)}
                               />
                             </TableCell>
-                            <TableCell component="th" scope="row" padding="none">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Typography variant="subtitle2" noWrap>
-                                  {customerId.givenName}
-                                </Typography>
-                              </Stack>
+                            <TableCell
+                              id="customerId.givenName"
+                              component="th"
+                              scope="row"
+                              padding="none"
+                            >
+                              {customerId.givenName}
                             </TableCell>
                             <TableCell align="left">{total}</TableCell>
                             <TableCell align="left">
@@ -238,7 +239,7 @@ export default function Order() {
                               </Label>
                             </TableCell>
                             <TableCell align="left">
-                              <Moment format="dddd DD.MM.YYYY HH:mm">{updateTime}</Moment>{' '}
+                              <Moment format="dddd DD.MM.YYYY HH:mm">{updateTime}</Moment>
                             </TableCell>
 
                             <TableCell align="right">
