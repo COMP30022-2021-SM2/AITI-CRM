@@ -73,9 +73,9 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
     console.log(JSON.stringify(customerlist));
     axios
       .put(
-        '/customer/delete',
+        '/customer',
         {
-          customerlist
+          customerids: customerlist
         },
         {
           headers: { Authorization: `Bearer ${Cookies.get('token')}` }

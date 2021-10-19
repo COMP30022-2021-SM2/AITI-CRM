@@ -133,13 +133,11 @@ const deleteCustomer = async (req, res) => {
 // delete list of order
 const deleteListCustomer = async(req, res) => {
     let userId = new ObjectId(req.user._id);
-    let customerIds = req.body.customerlist
-    console.log(customerIds)
+    let customerIds = req.body.customerids
     try {
         // delete selected orders
         for (let i = 0; i < customerIds.length; i++) {
-            console.log(customerIds[i])
-            await Customer.findOneAndDelete({_id: customerIds[i]})
+            await Customer.findOneAndDelete({userId: userId, _id: customerIds[i]})
         }
         const currentCustomer = await Customer.find({userId: userId}, {}).lean()
         return res.status(200).json(currentCustomer)

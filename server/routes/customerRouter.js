@@ -18,6 +18,6 @@ customerRouter.put('/:customerId', customerController.updateCustomer);
 customerRouter.delete('/:customerId', customerController.deleteCustomer);
 
 // Delete list of customers
-customerRouter.put('/delete', customerController.deleteListCustomer)
+customerRouter.put('', customerController.deleteListCustomer)
 
 module.exports = customerRouter;
