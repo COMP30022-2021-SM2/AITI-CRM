@@ -1,4 +1,5 @@
 const Customer = require('../models/customer')
+const Order = require('../models/order')
 const mongoose = require('mongoose')
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -137,10 +138,21 @@ const deleteListCustomer = async(req, res) => {
     try {
         // delete selected orders
         for (let i = 0; i < customerIds.length; i++) {
+            let customerDetail = await Customer.findOne({userId: userId, emailAddress: req.params.emailAddress}, {_id: true})
+            let customerId = new ObjectId(customerDetail._id);
+            // delete order under the customer
+            const orders = await Order.find({userId: userId, customerId: customerId}, {userId: false})
+            for (let i = 0; i < orders.length; i++) {
+                console.log(orders[i])
+                await Order.findOneAndDelete({_id: orders[i]})
+            }
+            //delete customer
             await Customer.findOneAndDelete({userId: userId, _id: customerIds[i]})
         }
         const currentCustomer = await Customer.find({userId: userId}, {}).lean()
         return res.status(200).json(currentCustomer)
+        l
+
 
     } catch (err) {
         console.log(err)
