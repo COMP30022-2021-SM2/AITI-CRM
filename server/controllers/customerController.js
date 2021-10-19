@@ -138,7 +138,7 @@ const deleteListCustomer = async(req, res) => {
     try {
         // delete selected orders
         for (let i = 0; i < customerIds.length; i++) {
-            let customerDetail = await Customer.findOne({userId: userId, emailAddress: req.params.emailAddress}, {_id: true})
+            let customerDetail = await Customer.findOne({userId: userId, _id: customerIds[i]}, {_id: true})
             let customerId = new ObjectId(customerDetail._id);
             // delete order under the customer
             const orders = await Order.find({userId: userId, customerId: customerId}, {userId: false})
