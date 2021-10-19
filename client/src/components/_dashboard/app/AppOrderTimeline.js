@@ -62,7 +62,7 @@ export default function AppOrderTimeline() {
           if (response.status === 200) {
             const newTimeLines = [];
             let len = 5;
-            if (response.data.length !== 5) {
+            if (response.data.length < 5) {
               len = response.data.length;
             }
             for (let i = 0; i < len; i += 1) {

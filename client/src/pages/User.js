@@ -138,7 +138,6 @@ export default function User() {
       )
       .then((response) => {
         if (response.status === 200) {
-          alert('Customer is inserted!');
           setGivenName();
           setFamilyName();
           setEmailAddress();
@@ -339,6 +338,7 @@ export default function User() {
               numSelected={selected.length}
               filterName={filterName}
               onFilterName={handleFilterByName}
+              customerlist={selected}
             />
 
             <Scrollbar>
