@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // material
 import { Box, Grid, Container, Typography } from '@material-ui/core';
 // components
 import Cookies from 'js-cookie';
-import axios from '../commons/axios';
 import Page from '../components/Page';
 import {
   AppTotalSales,
@@ -18,7 +17,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardApp(props) {
+export default function DashboardApp() {
   const navigate = useNavigate();
   useEffect(() => {
     if (Cookies.get('token')) {
@@ -26,7 +25,7 @@ export default function DashboardApp(props) {
     } else {
       navigate('/404', { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <Page title="Dashboard">

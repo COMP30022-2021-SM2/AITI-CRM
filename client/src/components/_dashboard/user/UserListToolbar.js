@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
 import trash2Fill from '@iconify/icons-eva/trash-2-fill';
-import roundFilterList from '@iconify/icons-ic/round-filter-list';
 // material
 import { styled } from '@material-ui/core/styles';
 import {
@@ -64,7 +63,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search customer..."
+          placeholder="Search customer by given name..."
           startAdornment={
             <InputAdornment position="start">
               <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />

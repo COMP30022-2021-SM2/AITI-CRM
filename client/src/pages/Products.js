@@ -48,8 +48,7 @@ export default function EcommerceShop() {
     } else {
       navigate('/404', { replace: true });
     }
-    console.log(products);
-  }, []);
+  }, [navigate]);
 
   // insert new product
   const insert = () => {
@@ -64,6 +63,7 @@ export default function EcommerceShop() {
           console.log('Product is inserted!');
           setName();
           setDescription();
+          window.location.reload(false);
         }
       })
       .catch(() => {

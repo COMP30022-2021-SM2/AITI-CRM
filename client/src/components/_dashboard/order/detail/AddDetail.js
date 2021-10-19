@@ -29,6 +29,7 @@ export default function AddDetail({ order }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('order info is updated');
         } else {
           console.log('order info update fail');

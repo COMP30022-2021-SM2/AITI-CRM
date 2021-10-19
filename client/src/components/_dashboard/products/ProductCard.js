@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -72,6 +72,7 @@ export default function ShopProductCard({ product }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('avaliability is updated');
         } else {
           console.log('update fail');
@@ -92,6 +93,7 @@ export default function ShopProductCard({ product }) {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('product info is updated');
         } else {
           console.log('info update fail');
@@ -108,6 +110,7 @@ export default function ShopProductCard({ product }) {
       .delete(`/product/${tag}`, { headers: { Authorization: `Bearer ${Cookies.get('token')}` } })
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('product delete success');
         } else {
           console.log('delete fail');
@@ -120,6 +123,7 @@ export default function ShopProductCard({ product }) {
 
   // Dialog
   function DeleteDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
     const handleClose = () => {
       onClose(true);
@@ -174,8 +178,9 @@ export default function ShopProductCard({ product }) {
               right: 50,
               position: 'absolute'
             }}
+            onClick={handleEditOpen}
           >
-            <ColorizeIcon onClick={handleEditOpen} />
+            <ColorizeIcon />
           </IconButton>
           <IconButton
             aria-label="delete"
@@ -185,8 +190,9 @@ export default function ShopProductCard({ product }) {
               right: 16,
               position: 'absolute'
             }}
+            onClick={handleDeleteOpen}
           >
-            <DeleteIcon onClick={handleDeleteOpen} />
+            <DeleteIcon />
           </IconButton>
           <Dialog onClose={handleEditClose} aria-labelledby="simple-dialog-title" open={openEdit}>
             <DialogTitle id="simple-dialog-title">Edit Product</DialogTitle>

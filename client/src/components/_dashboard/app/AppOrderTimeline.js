@@ -1,4 +1,3 @@
-import faker from 'faker';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 // material
@@ -25,7 +24,6 @@ OrderItem.propTypes = {
 
 function OrderItem({ item, isLast }) {
   const { type, title, time } = item;
-  // const { _id, time } = item;
   return (
     <TimelineItem>
       <TimelineSeparator>

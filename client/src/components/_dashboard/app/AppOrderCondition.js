@@ -35,7 +35,7 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AppOrderCondition() {
-  const [orders, setOrders] = useState([]);
+  // const [orders, setOrders] = useState([]);
   const [finished, setFinished] = useState(0);
   const [unfinished, setUnfinished] = useState(0);
   // Get all orders
@@ -47,7 +47,7 @@ export default function AppOrderCondition() {
         })
         .then((response) => {
           if (response.status === 200) {
-            setOrders(response.data);
+            // setOrders(response.data);
             let j = 0;
             for (let i = 0; i < response.data.length; i += 1) {
               if (response.data[i].status === 'completed') {
@@ -57,15 +57,12 @@ export default function AppOrderCondition() {
             }
             setFinished(j);
             setUnfinished(response.data.length - j);
-            console.log(finished);
-            console.log(unfinished);
           }
         })
         .catch(() => {
           console.log('get orders failed');
         });
     }
-    console.log(orders);
   }, []);
   const orderStatus = [];
   orderStatus[0] = finished;

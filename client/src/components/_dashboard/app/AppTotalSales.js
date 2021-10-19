@@ -54,7 +54,6 @@ export default function AppTotalSales() {
           console.log('get orders failed');
         });
     }
-    console.log(orders.length);
   }, []);
 
   const sum = (orders) => {

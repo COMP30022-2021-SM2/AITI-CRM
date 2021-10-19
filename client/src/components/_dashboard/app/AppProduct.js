@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import bugFilled from '@iconify/icons-ant-design/bug-filled';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
@@ -36,8 +35,6 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-
-const TOTAL = 234;
 
 export default function AppBugReports() {
   const [products, setProducts] = useState([]);

@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-// import { Icon } from '@iconify/react';
-// import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 // material
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import { sentenceCase } from 'change-case';
 import { filter } from 'lodash';
 import {
@@ -40,7 +33,7 @@ import SearchNotFound from '../components/SearchNotFound';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'customerId.givenName', label: 'Name', alignRight: false },
+  { id: 'customerId', label: 'Name', alignRight: false },
   { id: 'total', label: 'Total', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'updateTime', label: 'LastUpdated', alignRight: false },

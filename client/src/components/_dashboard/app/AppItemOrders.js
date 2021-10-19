@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
 
-import windowsFilled from '@iconify/icons-ant-design/windows-filled';
 import Cookies from 'js-cookie';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
@@ -38,8 +37,6 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 1723315;
-
 export default function AppItemOrders() {
   const [orders, setOrders] = useState([]);
   // Get all orders
@@ -58,7 +55,6 @@ export default function AppItemOrders() {
           console.log('get orders failed');
         });
     }
-    console.log(orders.length);
   }, []);
 
   return (
