@@ -10,7 +10,7 @@ import editFill from '@iconify/icons-eva/edit-fill';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 
-import { Form, Space, InputNumber, Select } from 'antd';
+import { Form, Space, InputNumber } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
@@ -20,29 +20,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 // material
-import {
-  Menu,
-  MenuItem,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-  Container,
-  Stack,
-  Typography,
-  Button,
-  TextField
-} from '@material-ui/core';
+import { Menu, IconButton, ListItemIcon, ListItemText, Tooltip, Button } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import Cookies from 'js-cookie';
 import axios from '../../../commons/axios';
-import { ProductSort } from '../products';
-// import { AddDetail } from './detail';
 
 // ----------------------------------------------------------------------
 
+// eslint-disable-next-line
 export default function OrderMoreMenu({ order }) {
   console.log(order);
+  // eslint-disable-next-line
   const { _id, customerId, details, total, status } = order;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -156,22 +144,29 @@ export default function OrderMoreMenu({ order }) {
   };
 
   function EditDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
     const handleClose = () => {
       onClose(true);
     };
+    // eslint-disable-next-line
     const List = ({ list }) => (
       <ul>
+        {/* eslint-disable-next-line */}
         {list.map((item) => (
           <ListItem key={item.name} item={item} />
         ))}
       </ul>
     );
 
+    // eslint-disable-next-line
     const ListItem = ({ item }) => (
       <li>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '5%' }}>Product Name: {item.name}</div>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '7%' }}>Price: {item.price}</div>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '7%' }}>Quantity: {item.quantity}</div>
         <p> </p>
       </li>
@@ -181,6 +176,7 @@ export default function OrderMoreMenu({ order }) {
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle id="edit-dialog-title">Edit your order </DialogTitle>
         <DialogContent>
+          {/* eslint-disable-next-line */}
           <DialogContentText> Hi, {customerId.givenName}</DialogContentText>
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
           <DialogTitle> Original Details </DialogTitle>
@@ -207,6 +203,7 @@ export default function OrderMoreMenu({ order }) {
   }
 
   function DeleteDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
 
     const handleClose = () => {
@@ -237,23 +234,29 @@ export default function OrderMoreMenu({ order }) {
   }
 
   function OrderDetailsDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
     const handleClose = () => {
       onClose(true);
     };
 
+    // eslint-disable-next-line
     const List = ({ list }) => (
       <ul>
+        {/* eslint-disable-next-line */}
         {list.map((item) => (
           <ListItem key={item.name} item={item} />
         ))}
       </ul>
     );
-
+    // eslint-disable-next-line
     const ListItem = ({ item }) => (
       <li>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '5%' }}>Product Name: {item.name}</div>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '7%' }}>Price: {item.price}</div>
+        {/* eslint-disable-next-line */}
         <div style={{ marginLeft: '7%' }}>Quantity: {item.quantity}</div>
         <p> </p>
       </li>
@@ -261,6 +264,7 @@ export default function OrderMoreMenu({ order }) {
 
     return (
       <Dialog fullWidth="sm" maxWidth="md" onClose={handleClose} open={open}>
+        {/* eslint-disable-next-line */}
         <DialogTitle>{customerId.givenName} </DialogTitle>
         <DialogTitle> Product Details </DialogTitle>
 
@@ -277,9 +281,8 @@ export default function OrderMoreMenu({ order }) {
     );
   }
 
-  function AddDetail(props) {
+  function AddDetail() {
     const navigate = useNavigate();
-    const { Option } = Select;
     const [products, setProducts] = useState([]);
 
     const [form] = Form.useForm();
@@ -324,8 +327,7 @@ export default function OrderMoreMenu({ order }) {
       } else {
         navigate('/404', { replace: true });
       }
-      console.log(products);
-    }, []);
+    }, [navigate]);
 
     return (
       <Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
@@ -353,6 +355,7 @@ export default function OrderMoreMenu({ order }) {
                         <NativeSelect label="product">
                           <option> </option>
                           {products.map((item) => (
+                            // eslint-disable-next-line
                             <option value={item.name}>{item.name}</option>
                           ))}
                         </NativeSelect>

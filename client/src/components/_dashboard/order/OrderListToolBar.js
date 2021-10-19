@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
 import trash2Fill from '@iconify/icons-eva/trash-2-fill';
-import roundFilterList from '@iconify/icons-ic/round-filter-list';
 // material
 import { styled } from '@material-ui/core/styles';
 import {
@@ -37,14 +36,15 @@ const RootStyle = styled(Toolbar)(({ theme }) => ({
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   width: 240,
+  height: 40,
   transition: theme.transitions.create(['box-shadow', 'width'], {
     easing: theme.transitions.easing.easeInOut,
     duration: theme.transitions.duration.shorter
   }),
-  '&.Mui-focused': { width: 320, boxShadow: theme.customShadows.z8 },
+  '&.Mui-focused': { width: 320, height: 60, boxShadow: theme.customShadows.z8 },
   '& fieldset': {
     borderWidth: `1px !important`,
-    borderColor: `${theme.palette.grey[500_32]} !important`
+    borderColor: `#F3F0EF !important`
   }
 }));
 
@@ -56,17 +56,9 @@ OrderListToolbar.propTypes = {
   onFilterName: PropTypes.func
 };
 
+// eslint-disable-next-line
 export default function OrderListToolbar({ numSelected, filterName, onFilterName, orderids }) {
-  // const { _id } = order;
-  // console.log(JSON.stringify(_id));
-  // const { _id } = orderids;
-
-  const [open, setOpen] = useState(false);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleDeleteDialogOpen = () => {
     setDeleteDialogOpen(true);
@@ -106,6 +98,7 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
   };
 
   function DeleteDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
 
     const handleClose = () => {
@@ -164,12 +157,7 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
       {numSelected > 0 ? (
         <>
           <Tooltip title="Delete">
-            <IconButton
-              onClick={() => {
-                handleClose();
-                handleDeleteDialogOpen();
-              }}
-            >
+            <IconButton onClick={handleDeleteDialogOpen}>
               <Icon icon={trash2Fill} />
             </IconButton>
           </Tooltip>

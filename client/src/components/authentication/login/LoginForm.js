@@ -8,21 +8,13 @@ import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import {
-  Link,
-  Stack,
-  Checkbox,
-  TextField,
-  IconButton,
-  InputAdornment,
-  FormControlLabel
-} from '@material-ui/core';
+import { Link, Stack, TextField, IconButton, InputAdornment } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
-export default function LoginForm(props) {
+export default function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -49,6 +41,7 @@ export default function LoginForm(props) {
         })
         .catch((error) => {
           alert('wrong account!');
+          console.log(error);
           navigate('/', { replace: true });
         });
     }

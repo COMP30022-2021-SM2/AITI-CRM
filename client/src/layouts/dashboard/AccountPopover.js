@@ -81,7 +81,7 @@ export default function AccountPopover() {
     } else {
       navigate('/404', { replace: true });
     }
-  }, []);
+  }, [email, familyName, givenName, navigate]);
 
   // Update profile
   const submitUpdate = () => {
@@ -104,6 +104,7 @@ export default function AccountPopover() {
       )
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload(false);
           console.log('profile update success');
         }
       })

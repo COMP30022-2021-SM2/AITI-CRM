@@ -46,7 +46,7 @@ export default function OrderListHead({
           >
             <TableSortLabel
               hideSortIcon
-              active={orderBy === headCell.id}
+              active={orderBy === headCell.id && headCell.id !== 'customerId.givenName'}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >

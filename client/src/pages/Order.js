@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-// import { Icon } from '@iconify/react';
-// import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 // material
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import { sentenceCase } from 'change-case';
 import { filter } from 'lodash';
 import {
@@ -20,17 +13,12 @@ import {
   TableCell,
   TableContainer,
   TablePagination,
-  Grid,
-  Button,
   Container,
   Stack,
-  Typography,
-  Modal
+  Typography
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+
 // components
-import { bgcolor } from '@material-ui/system';
-import TextField from '@material-ui/core/TextField';
 import Moment from 'react-moment';
 import Cookies from 'js-cookie';
 import axios from '../commons/axios';
@@ -42,27 +30,13 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 
-//
-import USERLIST from '../_mocks_/user';
-
 // ----------------------------------------------------------------------
 
-const SORT_OPTIONS = [
-  { value: 'latest', label: 'Latest' },
-  // { value: 'popular', label: 'Popular' },
-  { value: 'oldest', label: 'Oldest' }
-];
-
-// ----------------------------------------------------------------------
-
-// sorting table related functions
 const TABLE_HEAD = [
-  { id: 'name', label: 'Customer Name', alignRight: false },
-
-  // { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Total Deal Amount', alignRight: false },
-  { id: 'status', label: 'Order Status', alignRight: false },
-  { id: 'details', label: 'Last Updated', alignRight: false },
+  { id: 'customerId', label: 'Name', alignRight: false },
+  { id: 'total', label: 'Total', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'updateTime', label: 'LastUpdated', alignRight: false },
   { id: '' }
 ];
 
@@ -94,55 +68,14 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(
       array,
-      (_user) => _user.customerId.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_order) => _order.customerId.givenName.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-function SimpleDialog(props) {
-  const { onClose, open } = props;
-  const handleClose = () => {
-    onClose(true);
-  };
-
-  return (
-    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Adding a new order...</DialogTitle>
-      <DialogContent>
-        <DialogContentText>Please enter the details of your new order below. </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Customer Email Address"
-          type="text"
-          fullWidth
-        />
-        <TextField margin="dense" id="name" label="Product Name" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product Price" type="text" fullWidth />
-        <TextField margin="dense" id="name" label="Product quantity" type="text" fullWidth />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Add
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired
-};
-
 export default function Order() {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [orders, setOrders] = useState([]);
 
   // Get all orders
@@ -154,7 +87,7 @@ export default function Order() {
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log('recieved the orders from backend!');
+            console.log(response.data);
             setOrders(response.data);
           }
         })
@@ -164,16 +97,7 @@ export default function Order() {
     } else {
       navigate('/404', { replace: true });
     }
-    // console.log(orders.length);
-    // console.log(orders);
   }, [navigate]);
-
-  // // input textbox related function
-  // const [value, setValue] = React.useState('');
-
-  // const handleChange = (event) => {
-  //   setValue(event.target.value);
-  // };
 
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -181,14 +105,6 @@ export default function Order() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -198,9 +114,8 @@ export default function Order() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = orders.map((n) => n._id);
+      const newSelecteds = orders.map((n) => n.name);
       setSelected(newSelecteds);
-      console.log(newSelecteds);
       return;
     }
     setSelected([]);
@@ -222,7 +137,6 @@ export default function Order() {
       );
     }
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -240,30 +154,19 @@ export default function Order() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
 
-  const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredOrders = applySortFilter(orders, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
+  const isOrderNotFound = filteredOrders.length === 0;
 
   return (
-    <Page title="Dashboard: Order">
+    <Page title="order">
       <Container>
-        <Stack direction="row" algnItems="center" justifyContent="space-between" mb={2}>
-          <Typography variant="h3">Order</Typography>
-          {/* <Button
-            variant="contained"
-            onClick={handleClickOpen}
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Order
-          </Button> */}
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h3" gutterBottom>
+            Order
+          </Typography>
         </Stack>
-        <SimpleDialog open={open} onClose={handleClose} />
-        <div> </div>
 
-        {/* <Stack mb={5} direction="row" alignItems="right" justifyContent="space-between">
-          <OrderPostsSearch posts={POSTS} />
-          <OrderPostsSort options={SORT_OPTIONS} />
-        </Stack> */}
         {orders.length > 0 ? (
           <Card>
             <OrderListToolBar
@@ -286,16 +189,16 @@ export default function Order() {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredUsers
+                    {filteredOrders
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
-                        const { updateTime, customerId, total, status, details } = row;
+                        const { updateTime, customerId, total, status } = row;
                         const isItemSelected = selected.indexOf(row._id) !== -1;
 
                         return (
                           <TableRow
                             hover
-                            key={customerId.givenName}
+                            key={row._id}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}
@@ -307,15 +210,14 @@ export default function Order() {
                                 onChange={(event) => handleClick(event, row._id)}
                               />
                             </TableCell>
-                            <TableCell component="th" scope="row" padding="normal">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Typography variant="subtitle2" noWrap>
-                                  {customerId.givenName}
-                                </Typography>
-                              </Stack>
+                            <TableCell
+                              id="customerId.givenName"
+                              component="th"
+                              scope="row"
+                              padding="none"
+                            >
+                              {customerId.givenName}
                             </TableCell>
-                            {/* <TableCell align="left">{company}</TableCell> */}
-                            {/* <TableCell align="left">{role}</TableCell> */}
                             <TableCell align="left">{total}</TableCell>
                             <TableCell align="left">
                               <Label
@@ -330,7 +232,7 @@ export default function Order() {
                               </Label>
                             </TableCell>
                             <TableCell align="left">
-                              <Moment format="dddd DD.MM.YYYY HH:mm">{updateTime}</Moment>{' '}
+                              <Moment format="dddd DD.MM.YYYY HH:mm">{updateTime}</Moment>
                             </TableCell>
 
                             <TableCell align="right">
@@ -345,7 +247,7 @@ export default function Order() {
                       </TableRow>
                     )}
                   </TableBody>
-                  {isUserNotFound && (
+                  {isOrderNotFound && (
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>

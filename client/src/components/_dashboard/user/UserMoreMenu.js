@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 
@@ -22,7 +22,7 @@ import {
   Tooltip,
   Button
 } from '@material-ui/core';
-import { Form, Space, InputNumber, Select } from 'antd';
+import { Form, Space, InputNumber } from 'antd';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
@@ -39,24 +39,20 @@ export default function UserMoreMenu(customerId) {
   const [phoneNumber, setPhoneNumber] = useState();
   const [companyName, setCompanyName] = useState();
   const [abn, setAbn] = useState();
+  const [address, setAddress] = useState();
+  const [description, setDescription] = useState();
   const [newGivenName, setNewGivenName] = useState('');
   const [newFamilyName, setNewFamilyName] = useState('');
   const [newEmailAddress, setNewEmailAddress] = useState('');
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [newCompanyName, setNewCompanyName] = useState('');
   const [newAbn, setNewAbn] = useState('');
+  const [newAddress, setNewAddress] = useState('');
+  const [newDescription, setNewDescription] = useState('');
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenStatus, setIsOpenStatus] = useState(false);
 
   const [open, setOpen] = useState(false);
-  const handleInsertOpen = () => {
-    setOpen(true);
-  };
-
-  const handleInsertClose = () => {
-    setOpen(false);
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,6 +72,16 @@ export default function UserMoreMenu(customerId) {
     setDeleteDialogOpen(false);
   };
 
+  const [openEditDialog, setEditDialogOpen] = useState(false);
+
+  const handleEditDialogOpen = () => {
+    setEditDialogOpen(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setEditDialogOpen(false);
+  };
+
   const [openDetailsDialog, setDetailsDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -93,6 +99,8 @@ export default function UserMoreMenu(customerId) {
             setPhoneNumber(response.data[0].phoneNumber);
             setCompanyName(response.data[0].companyName);
             setAbn(response.data[0].abn);
+            setAddress(response.data[0].address);
+            setDescription(response.data[0].description);
           }
         })
         .catch(() => {
@@ -104,10 +112,23 @@ export default function UserMoreMenu(customerId) {
       setNewPhoneNumber(phoneNumber);
       setNewCompanyName(companyName);
       setNewAbn(abn);
+      setNewAddress(address);
+      setNewDescription(description);
     } else {
       navigate('/404', { replace: true });
     }
-  }, []);
+  }, [
+    abn,
+    companyName,
+    customerId.customer,
+    emailAddress,
+    familyName,
+    givenName,
+    navigate,
+    phoneNumber,
+    address,
+    description
+  ]);
 
   const handleDetailsDialogOpen = () => {
     setDetailsDialogOpen(true);
@@ -182,7 +203,9 @@ export default function UserMoreMenu(customerId) {
           emailAddress: newEmailAddress,
           phoneNumber: newPhoneNumber,
           companyName: newCompanyName,
-          abn: newAbn
+          abn: newAbn,
+          address: newAddress,
+          description: newDescription
         },
         {
           headers: { Authorization: `Bearer ${Cookies.get('token')}` }
@@ -218,6 +241,8 @@ export default function UserMoreMenu(customerId) {
           </DialogContentText>
           <DialogContentText>Phone: {customer[0].phoneNumber}</DialogContentText>
           <DialogContentText>ABN: {customer[0].abn}</DialogContentText>
+          <DialogContentText>Address: {customer[0].address}</DialogContentText>
+          <DialogContentText>Description: {customer[0].description}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -234,6 +259,7 @@ export default function UserMoreMenu(customerId) {
   };
 
   function AddOrderDialog(props) {
+    // eslint-disable-next-line
     const { onClose, open } = props;
 
     const handleClose = () => {
@@ -261,9 +287,8 @@ export default function UserMoreMenu(customerId) {
     );
   }
 
-  function AddDetail(props) {
+  function AddDetail() {
     const navigate = useNavigate();
-    const { Option } = Select;
     const [products, setProducts] = useState([]);
 
     const [form] = Form.useForm();
@@ -308,8 +333,7 @@ export default function UserMoreMenu(customerId) {
       } else {
         navigate('/404', { replace: true });
       }
-      console.log(products);
-    }, []);
+    }, [navigate]);
 
     return (
       <Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
@@ -337,6 +361,7 @@ export default function UserMoreMenu(customerId) {
                         <NativeSelect label="product">
                           <option> </option>
                           {products.map((item) => (
+                            // eslint-disable-next-line
                             <option value={item.name}>{item.name}</option>
                           ))}
                         </NativeSelect>
@@ -422,14 +447,7 @@ export default function UserMoreMenu(customerId) {
           customer={customer}
         />
 
-        <MenuItem
-          button="true"
-          onClick={() => {
-            handleInsertClose();
-            handleDeleteDialogOpen();
-          }}
-          sx={{ color: 'text.secondary' }}
-        >
+        <MenuItem button="true" onClick={handleDeleteDialogOpen} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
@@ -437,13 +455,17 @@ export default function UserMoreMenu(customerId) {
         </MenuItem>
         <DeleteCustomerDialog open={openDeleteDialog} onClose={handleDeleteDialogClose} />
 
-        <MenuItem button="true" onClick={handleInsertOpen} sx={{ color: 'text.secondary' }}>
+        <MenuItem button="true" onClick={handleEditDialogOpen} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <Dialog onClose={handleInsertClose} aria-labelledby="change-customer-dialog" open={open}>
+        <Dialog
+          onClose={handleEditDialogClose}
+          aria-labelledby="change-customer-dialog"
+          open={openEditDialog}
+        >
           <DialogTitle id="change-customer-dialog">Change Customer Details</DialogTitle>
           <DialogContent>
             <DialogContentText> Enter new details of this customer delow. </DialogContentText>
@@ -502,16 +524,36 @@ export default function UserMoreMenu(customerId) {
               fullWidth
               onChange={(e) => setNewAbn(e.target.value)}
             />
+            <TextField
+              margin="dense"
+              id="customer-address"
+              label="Address"
+              type="text"
+              defaultValue={address}
+              fullWidth
+              onChange={(e) => setNewAddress(e.target.value)}
+            />
+            <TextField
+              multiline
+              rows="5"
+              margin="dense"
+              id="customer-description"
+              label="Desctiption"
+              type="text"
+              defaultValue={description}
+              fullWidth
+              onChange={(e) => setNewDescription(e.target.value)}
+            />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleInsertClose} color="primary">
+            <Button onClick={handleEditDialogClose} color="primary">
               Cancel
             </Button>
             <Button
               variant="contained"
               onClick={() => {
                 submitUpdate();
-                handleInsertClose();
+                handleEditDialogClose();
               }}
               color="primary"
             >

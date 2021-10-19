@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import PropTypes from 'prop-types';
-import { sentenceCase } from 'change-case';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
@@ -31,7 +29,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import Cookies from 'js-cookie';
 import axios from '../commons/axios';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
@@ -41,10 +38,10 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dash
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Customer Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'phone', label: 'Phone', alignRight: false },
+  { id: 'givenName', label: 'Customer Name', alignRight: false },
+  { id: 'companyName', label: 'Company', alignRight: false },
+  { id: 'emailAssress', label: 'Email', alignRight: false },
+  { id: 'phoneNumber', label: 'Phone', alignRight: false },
   { id: '' }
 ];
 
@@ -92,7 +89,8 @@ export default function User() {
   const [newPhoneNumber, setPhoneNumber] = useState('');
   const [newCompanyName, setCompanyName] = useState('');
   const [newAbn, setAbn] = useState('');
-  // add description, address, notes later
+  const [newAddress, setAddress] = useState('');
+  const [newDescription, setDescription] = useState('');
 
   const handleInsertOpen = () => {
     setOpen(true);
@@ -119,7 +117,7 @@ export default function User() {
     } else {
       nevigate('/404', { replace: true });
     }
-  }, []);
+  }, [nevigate]);
 
   // insert new customer
   const insert = () => {
@@ -132,7 +130,9 @@ export default function User() {
           emailAddress: newEmailAddress,
           phoneNumber: newPhoneNumber,
           companyName: newCompanyName,
-          abn: newAbn
+          abn: newAbn,
+          address: newAddress,
+          description: newDescription
         },
         { headers: { Authorization: `Bearer ${Cookies.get('token')}` } }
       )
@@ -292,6 +292,28 @@ export default function User() {
                 fullWidth
                 placeholder="ABN"
               />
+              <TextField
+                margin="dense"
+                id="customer-address"
+                label="Address"
+                type="text"
+                value={newAddress}
+                onChange={(e) => setAddress(e.target.value)}
+                fullWidth
+                placeholder="Address"
+              />
+              <TextField
+                multiline
+                rows="5"
+                margin="dense"
+                id="customer-description"
+                label="Desctiption"
+                type="text"
+                value={newDescription}
+                onChange={(e) => setDescription(e.target.value)}
+                fullWidth
+                placeholder="Desctiption"
+              />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleInsertClose} color="primary">
@@ -302,7 +324,6 @@ export default function User() {
                 onClick={() => {
                   insert();
                   handleInsertClose();
-                  nevigate('/dashboard/user');
                 }}
                 color="primary"
               >

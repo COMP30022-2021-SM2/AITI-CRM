@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import appleFilled from '@iconify/icons-ant-design/apple-filled';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
@@ -38,8 +37,6 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 1352831;
-
 export default function AppNewUsers() {
   const [customers, setCustomers] = useState([]);
 
@@ -58,7 +55,6 @@ export default function AppNewUsers() {
           console.log('get customers failed');
         });
     }
-    console.log(customers);
   }, []);
 
   return (
