@@ -130,5 +130,25 @@ const deleteCustomer = async (req, res) => {
         .catch((err) => res.status(500).json({ msg: err }));
 }
 
+// delete list of order
+const deleteListCustomer = async(req, res) => {
+    let userId = new ObjectId(req.user._id);
+    let customerIds = req.body.customerlist
+    console.log(customerIds)
+    try {
+        // delete selected orders
+        for (let i = 0; i < customerIds.length; i++) {
+            console.log(customerIds[i])
+            await Customer.findOneAndDelete({_id: customerIds[i]})
+        }
+        const currentCustomer = await Customer.find({userId: userId}, {}).lean()
+        return res.status(200).json(currentCustomer)
 
-module.exports = { getAllCustomer, getOneCustomer, addCustomer, updateCustomer, deleteCustomer }
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ msg: err })
+    }
+
+}
+
+module.exports = { getAllCustomer, getOneCustomer, addCustomer, updateCustomer, deleteCustomer, deleteListCustomer }

@@ -123,7 +123,6 @@ const deleteOrder = async(req, res) => {
 const deleteListOrder = async(req, res) => {
     let userId = new ObjectId(req.user._id);
     let orders = req.body.orderid
-    console.log('1')
     console.log(orders)
     try {
         // delete selected orders
