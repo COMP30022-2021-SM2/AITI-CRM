@@ -53,10 +53,10 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
-  onFilterName: PropTypes.func
+  onFilterName: PropTypes.func,
+  customerlist: PropTypes.array
 };
 
-// eslint-disable-next-line
 export default function UserListToolbar({ numSelected, filterName, onFilterName, customerlist }) {
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
 
