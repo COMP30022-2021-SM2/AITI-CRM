@@ -106,9 +106,9 @@ export default function OrderListToolbar({ numSelected, filterName, onFilterName
     };
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">Delete the Order </DialogTitle>
+        <DialogTitle id="simple-dialog-title">Delete Orders </DialogTitle>
         <DialogContent>
-          <DialogContentText> Are you sure you want to delete this order?</DialogContentText>
+          <DialogContentText> Are you sure you want to delete selected orders?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

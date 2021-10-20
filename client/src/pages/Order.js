@@ -192,13 +192,13 @@ export default function Order() {
                     {filteredOrders
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
-                        const { updateTime, customerId, total, status } = row;
-                        const isItemSelected = selected.indexOf(row._id) !== -1;
+                        const { updateTime, customerId, total, status, _id } = row;
+                        const isItemSelected = selected.indexOf(_id) !== -1;
 
                         return (
                           <TableRow
                             hover
-                            key={row._id}
+                            key={_id}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}

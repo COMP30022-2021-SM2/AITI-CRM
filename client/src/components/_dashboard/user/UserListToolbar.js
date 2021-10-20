@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
 import trash2Fill from '@iconify/icons-eva/trash-2-fill';
@@ -11,8 +12,18 @@ import {
   IconButton,
   Typography,
   OutlinedInput,
-  InputAdornment
+  InputAdornment,
+  Button
 } from '@material-ui/core';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
+import Cookies from 'js-cookie';
+import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
@@ -42,10 +53,79 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
-  onFilterName: PropTypes.func
+  onFilterName: PropTypes.func,
+  customerlist: PropTypes.array
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, customerlist }) {
+  const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteDialogOpen = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  // Handle delete
+  const submitDelete = () => {
+    console.log(JSON.stringify(customerlist));
+    axios
+      .put(
+        '/customer',
+        {
+          customerids: customerlist
+        },
+        {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          window.location.reload(false);
+          console.log('customers delete success');
+        } else {
+          console.log('customers delete fail');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('customers delete fail2');
+      });
+  };
+
+  function DeleteDialog(props) {
+    // eslint-disable-next-line
+    const { onClose, open } = props;
+
+    const handleClose = () => {
+      onClose(true);
+    };
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">Delete Customers </DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete selected customers?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button
+            onClick={() => {
+              submitDelete();
+              handleClose();
+            }}
+            color="primary"
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   return (
     <RootStyle
       sx={{
@@ -73,11 +153,14 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Icon icon={trash2Fill} />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Delete">
+            <IconButton onClick={handleDeleteDialogOpen}>
+              <Icon icon={trash2Fill} />
+            </IconButton>
+          </Tooltip>
+          <DeleteDialog open={openDeleteDialog} onClose={handleDeleteDialogClose} />
+        </>
       ) : (
         <div> </div>
       )}
