@@ -8,6 +8,7 @@ const getAllCustomer = async (req, res) => {
     let userId = new ObjectId(req.user._id);
     try {
         const customers = await Customer.find({ userId: userId }).lean()
+        console.log("get all customer")
         return res.status(200).json(customers);
     } catch (err) {
         console.log("failed to get customer from the database!")
@@ -27,6 +28,7 @@ const getOneCustomer = async (req, res) => {
             console.log("Customer does not exist!")
             return res.status(400).json({ msg: 'Customer does not exist!' })
         }
+        console.log("get customer infomation")
         return res.send(customer)
     } catch (err) {
         console.log("Database query 'menu' failed!")
