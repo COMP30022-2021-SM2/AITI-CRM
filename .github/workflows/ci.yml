@@ -36,7 +36,7 @@ jobs:
           cd server/
           npm ci
           
-      - name: Run server integration tests on localhost
+      - name: Run server integration and unit tests on localhost
         run: |
           cd server/
           npm test
