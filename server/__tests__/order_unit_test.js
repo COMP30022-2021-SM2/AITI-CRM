@@ -73,16 +73,11 @@ describe('customerController', function() {
         expect(console.log).toHaveBeenLastCalledWith('Update order successfully')
      });
 
-    // Test 2: testing correct redirect routes 
     test("Test 2: testing the order update successfully, expecting return json object ", () => {
         // when I run the controller, I expect that the json method will
         // be called exactly once        
         expect(res.json.mock.calls.length).toEqual(1);
         expect(res.statusCode).toBe(200);
-
-        
-    //     expect(res.redirect).toHaveBeenCalledWith('/vendor/order');
-    //     });
 
       });
     })
