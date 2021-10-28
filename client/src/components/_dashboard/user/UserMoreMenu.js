@@ -538,7 +538,7 @@ export default function UserMoreMenu(customerId) {
               rows="5"
               margin="dense"
               id="customer-description"
-              label="Desctiption"
+              label="Description"
               type="text"
               defaultValue={description}
               fullWidth
