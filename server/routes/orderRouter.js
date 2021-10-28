@@ -1,6 +1,5 @@
 const express = require("express")
 require('jsonwebtoken');
-const passport = require('passport');
 const orderController = require("../controllers/orderController")
 const orderRouter = express.Router()
 
@@ -27,7 +26,5 @@ orderRouter.put('', orderController.deleteListOrder)
 
 // delete one order
 orderRouter.delete('/:orderId', orderController.deleteOrder)
-
-
 
 module.exports = orderRouter;

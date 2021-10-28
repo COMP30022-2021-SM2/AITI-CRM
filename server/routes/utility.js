@@ -21,10 +21,5 @@ exports.validatePassword = function(password) {
 }
 
 exports.validateUserCookies = function(req, res, next){
-    // let userId = req.cookies['userId']
-    // if (userId == null){
-    //     console.log('User cookies expired')
-    //     return res.status(401).send('Unauthorized');
-    // }
     return next();
 }

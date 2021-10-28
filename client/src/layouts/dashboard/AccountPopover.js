@@ -24,8 +24,6 @@ import {
 import Cookies from 'js-cookie';
 import axios from '../../commons/axios';
 import MenuPopover from '../../components/MenuPopover';
-//
-import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
@@ -146,7 +144,11 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" sx={{ width: 60, height: 60 }} />
+        <Avatar
+          src="/static/mock-images/avatars/user.png"
+          alt="photoURL"
+          sx={{ width: 60, height: 60 }}
+        />
       </IconButton>
 
       <MenuPopover

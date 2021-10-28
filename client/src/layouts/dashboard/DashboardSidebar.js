@@ -23,14 +23,6 @@ const RootStyle = styled('div')(({ theme }) => ({
   }
 }));
 
-// const AccountStyle = styled('div')(({ theme }) => ({
-//   display: 'flex',
-//   alignItems: 'center',
-//   padding: theme.spacing(2, 2.5),
-//   borderRadius: theme.shape.borderRadiusSm,
-//   backgroundColor: '#D8C6E1'
-// }));
-
 // ----------------------------------------------------------------------
 
 DashboardSidebar.propTypes = {
@@ -60,20 +52,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           <Logo />
         </Box>
       </Box>
-
       <NavSection navConfig={sidebarConfig} />
-      {/* <IconButton
-        edge="false"
-        ref={anchorRef}
-        onClick={handleOpen}
-        sx={{
-          px: 2.5,
-          py: 30
-        }}
-      >
-        <Avatar src={account.photoURL} alt="photoURL" />
-      </IconButton> */}
-
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
   );

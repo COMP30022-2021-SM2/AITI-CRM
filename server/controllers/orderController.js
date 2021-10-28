@@ -1,10 +1,6 @@
 const Order = require("../models/order")
 const Customer = require("../models/customer")
-const User = require("../models/user")
-const mongoose = require('mongoose')
-const Product = require("../models/product")
 const ObjectId = require('mongoose').Types.ObjectId;
-
 
 // add new order
 const addOrder = async(req, res) => {
@@ -61,11 +57,6 @@ const getAllOrder = async(req, res) => {
     let userId = new ObjectId(req.user._id);
     try{
         const orders = await Order.find({userId: userId}, {}).populate("customerId", "-_id").lean()
-
-        // if (orders.length == 0){
-        //     return res.json("No orders")
-        // }
-
         return res.status(200).json(orders)
     } catch (err) {
         console.log("failed to get product to the database!")
@@ -196,9 +187,5 @@ const updateOrderDetails = async(req, res) => {
         } 
     }
 }
-
-
-
-
 
 module.exports ={addOrder, getAllOrder, deleteOrder, getCustomerOrder, updateOrderStatus, updateOrderDetails, getGrapeOrder, deleteListOrder}
