@@ -176,12 +176,7 @@ export default function OrderMoreMenu({ order }) {
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle id="edit-dialog-title">Edit your order </DialogTitle>
         <DialogContent>
-<<<<<<< Updated upstream
-          {/* eslint-disable-next-line */}
-          <DialogContentText> Hi, {customerId.givenName}</DialogContentText>
-=======
           <DialogContentText> Hi, </DialogContentText>
->>>>>>> Stashed changes
           <DialogContentText> Please modify the details of your order below...</DialogContentText>
           <DialogTitle> Original Details </DialogTitle>
 
