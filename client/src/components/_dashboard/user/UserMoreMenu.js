@@ -100,7 +100,7 @@ export default function UserMoreMenu(customerId) {
             setCompanyName(response.data[0].companyName);
             setAbn(response.data[0].abn);
             setAddress(response.data[0].address);
-            setDescription(response.data[0].description);
+            setDescription(response.data[0].notes);
           }
         })
         .catch(() => {
@@ -205,7 +205,7 @@ export default function UserMoreMenu(customerId) {
           companyName: newCompanyName,
           abn: newAbn,
           address: newAddress,
-          description: newDescription
+          notes: newDescription
         },
         {
           headers: { Authorization: `Bearer ${Cookies.get('token')}` }
@@ -242,7 +242,7 @@ export default function UserMoreMenu(customerId) {
           <DialogContentText>Phone: {customer[0].phoneNumber}</DialogContentText>
           <DialogContentText>ABN: {customer[0].abn}</DialogContentText>
           <DialogContentText>Address: {customer[0].address}</DialogContentText>
-          <DialogContentText>Description: {customer[0].description}</DialogContentText>
+          <DialogContentText>Description: {customer[0].notes}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -470,7 +470,6 @@ export default function UserMoreMenu(customerId) {
           <DialogContent>
             <DialogContentText> Enter new details of this customer delow. </DialogContentText>
             <TextField
-              autoFocus
               margin="dense"
               id="customer-first-name"
               label="Given Name"
