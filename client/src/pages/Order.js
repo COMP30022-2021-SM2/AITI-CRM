@@ -114,7 +114,7 @@ export default function Order() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = orders.map((n) => n.name);
+      const newSelecteds = orders.map((n) => n._id);
       setSelected(newSelecteds);
       return;
     }
@@ -210,12 +210,7 @@ export default function Order() {
                                 onChange={(event) => handleClick(event, row._id)}
                               />
                             </TableCell>
-                            <TableCell
-                              id="customerId.givenName"
-                              component="th"
-                              scope="row"
-                              padding="none"
-                            >
+                            <TableCell id="customerId" component="th" scope="row" padding="normal">
                               {customerId.givenName}
                             </TableCell>
                             <TableCell align="left">{total}</TableCell>

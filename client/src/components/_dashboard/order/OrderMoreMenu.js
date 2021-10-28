@@ -188,15 +188,6 @@ export default function OrderMoreMenu({ order }) {
           <DialogTitle id="edit-dialog-title">Set Your Products Here... </DialogTitle>
           <AddDetail />
         </DialogContent>
-
-        {/* <DialogActions style={{ justifyContent: 'center' }}>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Go Back
-          </Button>
-        </DialogActions> */}
       </Dialog>
     );
   }
