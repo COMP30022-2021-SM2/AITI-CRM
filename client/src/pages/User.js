@@ -263,7 +263,7 @@ export default function User() {
                 margin="dense"
                 id="customer-phone-number"
                 label="Phone Number"
-                type="text"
+                type="number"
                 value={newPhoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 fullWidth
@@ -283,7 +283,7 @@ export default function User() {
                 margin="dense"
                 id="customer-abn"
                 label="ABN"
-                type="text"
+                type="number"
                 value={newAbn}
                 onChange={(e) => setAbn(e.target.value)}
                 fullWidth
@@ -389,7 +389,7 @@ export default function User() {
                             <TableCell align="left">{emailAddress}</TableCell>
                             <TableCell align="left">{phoneNumber}</TableCell>
                             <TableCell align="right">
-                              <UserMoreMenu customer={_id} />
+                              <UserMoreMenu customer={row} />
                             </TableCell>
                           </TableRow>
                         );

@@ -30,17 +30,18 @@ import axios from '../../../commons/axios';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu(customerId) {
-  const navigate = useNavigate();
-  const [customer, setCustomer] = useState([]);
-  const [givenName, setGivenName] = useState();
-  const [familyName, setFamilyName] = useState();
-  const [emailAddress, setEmailAddress] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [companyName, setCompanyName] = useState();
-  const [abn, setAbn] = useState();
-  const [address, setAddress] = useState();
-  const [description, setDescription] = useState();
+export default function UserMoreMenu(customer) {
+  const {
+    givenName,
+    familyName,
+    emailAddress,
+    phoneNumber,
+    companyName,
+    abn,
+    address,
+    notes,
+    _id
+  } = customer.customer;
   const [newGivenName, setNewGivenName] = useState('');
   const [newFamilyName, setNewFamilyName] = useState('');
   const [newEmailAddress, setNewEmailAddress] = useState('');
@@ -48,7 +49,7 @@ export default function UserMoreMenu(customerId) {
   const [newCompanyName, setNewCompanyName] = useState('');
   const [newAbn, setNewAbn] = useState('');
   const [newAddress, setNewAddress] = useState('');
-  const [newDescription, setNewDescription] = useState('');
+  const [newNotes, setNewNotes] = useState('');
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -84,52 +85,6 @@ export default function UserMoreMenu(customerId) {
 
   const [openDetailsDialog, setDetailsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (Cookies.get('token')) {
-      axios
-        .get(`/customer/${customerId.customer}`, {
-          headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setCustomer(response.data);
-            setGivenName(response.data[0].givenName);
-            setFamilyName(response.data[0].familyName);
-            setEmailAddress(response.data[0].emailAddress);
-            setPhoneNumber(response.data[0].phoneNumber);
-            setCompanyName(response.data[0].companyName);
-            setAbn(response.data[0].abn);
-            setAddress(response.data[0].address);
-            setDescription(response.data[0].notes);
-          }
-        })
-        .catch(() => {
-          console.log('get customers failed');
-        });
-      setNewGivenName(givenName);
-      setNewFamilyName(familyName);
-      setNewEmailAddress(emailAddress);
-      setNewPhoneNumber(phoneNumber);
-      setNewCompanyName(companyName);
-      setNewAbn(abn);
-      setNewAddress(address);
-      setNewDescription(description);
-    } else {
-      navigate('/404', { replace: true });
-    }
-  }, [
-    abn,
-    companyName,
-    customerId.customer,
-    emailAddress,
-    familyName,
-    givenName,
-    navigate,
-    phoneNumber,
-    address,
-    description
-  ]);
-
   const handleDetailsDialogOpen = () => {
     setDetailsDialogOpen(true);
   };
@@ -141,7 +96,7 @@ export default function UserMoreMenu(customerId) {
   // Handle delete of the customer
   const submitDelete = () => {
     axios
-      .delete(`/customer/${customerId.customer}`, {
+      .delete(`/customer/${_id}`, {
         headers: { Authorization: `Bearer ${Cookies.get('token')}` }
       })
       .then((response) => {
@@ -196,7 +151,7 @@ export default function UserMoreMenu(customerId) {
   const submitUpdate = () => {
     axios
       .put(
-        `/customer/${customerId.customer}`,
+        `/customer/${_id}`,
         {
           givenName: newGivenName,
           familyName: newFamilyName,
@@ -205,7 +160,7 @@ export default function UserMoreMenu(customerId) {
           companyName: newCompanyName,
           abn: newAbn,
           address: newAddress,
-          notes: newDescription
+          notes: newNotes
         },
         {
           headers: { Authorization: `Bearer ${Cookies.get('token')}` }
@@ -232,17 +187,17 @@ export default function UserMoreMenu(customerId) {
     return (
       <Dialog onClose={handleClose} aria-labelledby="customer-details-dialog" open={open}>
         <DialogTitle id="customer-details-dialog">
-          {customer[0].givenName} {customer[0].familyName}
+          {givenName} {familyName}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>Company: {customer[0].companyName}</DialogContentText>
+          <DialogContentText>Company: {companyName}</DialogContentText>
           <DialogContentText>
-            Email: <a href={`mailto:${customer[0].emailAddress}`}>{customer[0].emailAddress}</a>
+            Email: <a href={`mailto:${emailAddress}`}>{emailAddress}</a>
           </DialogContentText>
-          <DialogContentText>Phone: {customer[0].phoneNumber}</DialogContentText>
-          <DialogContentText>ABN: {customer[0].abn}</DialogContentText>
-          <DialogContentText>Address: {customer[0].address}</DialogContentText>
-          <DialogContentText>Description: {customer[0].notes}</DialogContentText>
+          <DialogContentText>Phone: {phoneNumber}</DialogContentText>
+          <DialogContentText>ABN: {abn}</DialogContentText>
+          <DialogContentText>Address: {address}</DialogContentText>
+          <DialogContentText>Notes: {notes}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -274,15 +229,6 @@ export default function UserMoreMenu(customerId) {
         <DialogContent>
           <AddDetail />
         </DialogContent>
-
-        {/* <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Go Back
-          </Button>
-        </DialogActions> */}
       </Dialog>
     );
   }
@@ -500,7 +446,7 @@ export default function UserMoreMenu(customerId) {
               margin="dense"
               id="customer-phone-number"
               label="Phone Number"
-              type="text"
+              type="number"
               defaultValue={phoneNumber}
               fullWidth
               onChange={(e) => setNewPhoneNumber(e.target.value)}
@@ -518,7 +464,7 @@ export default function UserMoreMenu(customerId) {
               margin="dense"
               id="customer-abn"
               label="ABN"
-              type="text"
+              type="number"
               defaultValue={abn}
               fullWidth
               onChange={(e) => setNewAbn(e.target.value)}
@@ -536,12 +482,12 @@ export default function UserMoreMenu(customerId) {
               multiline
               rows="5"
               margin="dense"
-              id="customer-description"
-              label="Description"
+              id="customer-notes"
+              label="Notes"
               type="text"
-              defaultValue={description}
+              defaultValue={notes}
               fullWidth
-              onChange={(e) => setNewDescription(e.target.value)}
+              onChange={(e) => setNewNotes(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
