@@ -50,8 +50,17 @@ export default function UserMoreMenu(customer) {
   const [newAbn, setNewAbn] = useState('');
   const [newAddress, setNewAddress] = useState('');
   const [newNotes, setNewNotes] = useState('');
+
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleIsOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleIsClose = () => {
+    setIsOpen(false);
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -367,14 +376,14 @@ export default function UserMoreMenu(customer) {
       </Tooltip>
       <AddOrderDialog open={open} onClose={handleClose} />
 
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+      <IconButton ref={ref} onClick={handleIsOpen}>
         <Icon icon={moreVerticalFill} width={20} height={20} />
       </IconButton>
 
       <Menu
         open={isOpen}
         anchorEl={ref.current}
-        onClose={() => setIsOpen(false)}
+        onClose={handleIsClose}
         PaperProps={{
           sx: { width: 200, maxWidth: '100%' }
         }}
@@ -392,7 +401,6 @@ export default function UserMoreMenu(customer) {
           onClose={handleDetailsDialogClose}
           customer={customer}
         />
-
         <MenuItem button="true" onClick={handleDeleteDialogOpen} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
@@ -423,6 +431,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={givenName}
               fullWidth
               onChange={(e) => setNewGivenName(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -432,6 +441,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={familyName}
               fullWidth
               onChange={(e) => setNewFamilyName(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -441,6 +451,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={emailAddress}
               fullWidth
               onChange={(e) => setNewEmailAddress(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -450,6 +461,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={phoneNumber}
               fullWidth
               onChange={(e) => setNewPhoneNumber(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -459,6 +471,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={companyName}
               fullWidth
               onChange={(e) => setNewCompanyName(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -468,6 +481,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={abn}
               fullWidth
               onChange={(e) => setNewAbn(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               margin="dense"
@@ -477,6 +491,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={address}
               fullWidth
               onChange={(e) => setNewAddress(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <TextField
               multiline
@@ -488,6 +503,7 @@ export default function UserMoreMenu(customer) {
               defaultValue={notes}
               fullWidth
               onChange={(e) => setNewNotes(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
             />
           </DialogContent>
           <DialogActions>
