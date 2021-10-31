@@ -25,12 +25,12 @@ This project aims to create a user-friendly CRM webapp that helps grape sellers 
 | Kexin Wen    |   Done   |
 
 ## Project Requirements
-Markup : 1. This system will allow the grapes whole seller to store at least 4 grape products.
-         2. This system will allow the grapes whole seller to store customers' details. The customers' details should include at least full name, phone numbers, email, and orders. 
-	        3. This system will allow the grapes whole seller to store orders' details. The orders' details should include at least amount, date, product type, product amount and status (ongoing, sold, cancelled).
-	        4. This system will allow the grapes whole seller to see all customers, details of each customer, all orders,  orders information and the particular customers related.
-	        5. Simplicity design for the front end, the design needs to look like an app related to grapes whole seller, in the way of color using and icon choices. It also need to be responsive.
-	        6. Https should be used.
+1. This system will allow the grapes whole seller to store at least 4 grape products.<br />
+2. This system will allow the grapes whole seller to store customers' details. The customers' details should include at least full name, phone numbers, email, and orders.<br />
+3. This system will allow the grapes whole seller to store orders' details. The orders' details should include at least amount, date, product type, product amount and status (ongoing, sold, cancelled).<br />
+4. This system will allow the grapes whole seller to see all customers, details of each customer, all orders,  orders information and the particular customers related.<br />
+5. Simplicity design for the front end, the design needs to look like an app related to grapes whole seller, in the way of color using and icon choices. It also need to be responsive.<br />
+6. Https should be used.
 
 ## Tech Stacks
 
