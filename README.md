@@ -7,6 +7,7 @@
   * [Demo](#demo)
   * [Feature Highlights](#feature-highlights)
   * [Documentation](#documentation)
+  * [License](#license)
 
 ## Project Overview
 This project aims to create a user-friendly CRM webapp that helps grape sellers to organise customer relationship and sale orders.
@@ -41,3 +42,7 @@ This project aims to create a user-friendly CRM webapp that helps grape sellers 
 
 ## Documentation
 Link to documentation: [click here](https://unimelbcloud.sharepoint.com/:o:/t/ITProject359/Et7eHCrn7k5PhQlJ5L_9NVQBE5y05-dyrEROxG0Vhsia3Q?e=w2vA8y)
+
+## License
+The frontend design was distributed under the MIT License. See [LICENSE](https://github.com/minimal-ui-kit/minimal.free/blob/main/LICENSE.md) for more information.
+The backend was distributed under the MIT License.
